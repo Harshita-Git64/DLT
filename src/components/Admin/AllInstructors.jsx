@@ -2,7 +2,532 @@ import React, { useState } from "react";
 import ReactModal from "react-modal";
 import { FaSearch, FaFilter, FaTh, FaBars, FaCaretDown } from "react-icons/fa";
 import { BiReset } from "react-icons/bi";
+import { FaAngleLeft } from "react-icons/fa6";
+import { FaAngleRight } from "react-icons/fa6";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { HiLocationMarker } from "react-icons/hi";
+import { GoArrowLeft } from "react-icons/go";
+import { BookingCard } from "./AllBookings";
 
+const testimonialsData = [
+  {
+    id: "1",
+    fullname: "George Wilkinson",
+    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    date: "14 Sep 2024",
+    description:
+      "I had an amazing experience learning to drive with my instructor from this platform.",
+  },
+  {
+    id: "2",
+    fullname: "Samantha Roberts",
+    avatar: "https://randomuser.me/api/portraits/women/1.jpg",
+    date: "20 Sep 2024",
+    description:
+      "Thanks to my instructor, I passed my driving test on the first try.",
+  },
+  {
+    id: "3",
+    fullname: "David Johnson",
+    avatar: "https://randomuser.me/api/portraits/men/2.jpg",
+    date: "02 Oct 2024",
+    description:
+      "The instructor was very patient and knowledgeable, I highly recommend this platform.",
+  },
+  {
+    id: "4",
+    fullname: "Emily Cooper",
+    avatar: "https://randomuser.me/api/portraits/women/3.jpg",
+    date: "12 Oct 2024",
+    description:
+      "Great experience overall. The instructor made me feel comfortable and prepared for the test.",
+  },
+  {
+    id: "5",
+    fullname: "Michael Brown",
+    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+    date: "14 Oct 2024",
+    description:
+      "I was nervous about driving but the instructor was calm and helpful.",
+  },
+  {
+    id: "6",
+    fullname: "Lisa Grey",
+    avatar: "https://randomuser.me/api/portraits/men/7.jpg",
+    date: "18 Oct 2024",
+    description:
+      "I passed my test thanks to the guidance of my instructor. Highly recommend!",
+  },
+  {
+    id: "7",
+    fullname: "John Smith",
+    avatar: "https://randomuser.me/api/portraits/women/7.jpg",
+    date: "20 Oct 2024",
+    description:
+      "A great service with top-notch instructors who truly care about the students.",
+  },
+  {
+    id: "8",
+    fullname: "Sophie Williams",
+    avatar: "https://randomuser.me/api/portraits/men/8.jpg",
+    date: "22 Oct 2024",
+    description:
+      "Amazing guidance and instruction. Passed the test on my first attempt!",
+  },
+];
+const bookingData = [
+  {
+    id: "#AU-BK-2024-00123",
+    instructor: "Robert Fox",
+    learner: "Leslie Alexander",
+    bookingDate: "2024-10-02",
+    packageType: "Standard",
+    sessionFee: "$550",
+    instructorAvatar: "https://randomuser.me/api/portraits/men/1.jpg",
+    learnerAvatar: "https://randomuser.me/api/portraits/women/1.jpg",
+  },
+  {
+    id: "#AU-BK-2024-00124",
+    instructor: "Jacob Jones",
+    learner: "Courtney Henry",
+    bookingDate: "2024-09-15",
+    packageType: "Premium",
+    sessionFee: "$750",
+    instructorAvatar: "https://randomuser.me/api/portraits/men/2.jpg",
+    learnerAvatar: "https://randomuser.me/api/portraits/women/2.jpg",
+  },
+  {
+    id: "#AU-BK-2024-00125",
+    instructor: "Wade Warren",
+    learner: "Jane Cooper",
+    bookingDate: "2024-09-30",
+    packageType: "Basic",
+    sessionFee: "$450",
+    instructorAvatar: "https://randomuser.me/api/portraits/men/3.jpg",
+    learnerAvatar: "https://randomuser.me/api/portraits/women/3.jpg",
+  },
+  {
+    id: "#AU-BK-2024-00126",
+    instructor: "Albert Flores",
+    learner: "Theresa Webb",
+    bookingDate: "2024-08-21",
+    packageType: "Standard",
+    sessionFee: "$500",
+    instructorAvatar: "https://randomuser.me/api/portraits/men/4.jpg",
+    learnerAvatar: "https://randomuser.me/api/portraits/women/4.jpg",
+  },
+];
+
+export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const testimonialsPerPage = 3;
+
+  const totalPages = Math.ceil(testimonialsData.length / testimonialsPerPage);
+  const startIndex = (currentPage - 1) * testimonialsPerPage;
+
+  const currentTestimonials = testimonialsData.slice(
+    startIndex,
+    startIndex + testimonialsPerPage
+  );
+
+  // Handle the next and previous page toggles
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const [currentBookingPage, setCurrentBookingPage] = useState(1);
+  const bookingsPerPage = 3;
+
+  const totalBookingPages = Math.ceil(bookingData.length / bookingsPerPage);
+  const bookingCardstartIndex = (currentBookingPage - 1) * bookingsPerPage;
+
+  const currentBookings = bookingData.slice(
+    bookingCardstartIndex,
+    bookingCardstartIndex + bookingsPerPage
+  );
+
+  // Handle the next and previous page toggles
+  const nextBookingsPage = () => {
+    if (currentBookingPage < totalBookingPages) {
+      setCurrentBookingPage(currentBookingPage + 1);
+    }
+  };
+
+  const prevBookingsPage = () => {
+    if (currentBookingPage > 1) {
+      setCurrentBookingPage(currentBookingPage - 1);
+    }
+  };
+
+  return (
+    <div>
+      <GoArrowLeft
+        size={28}
+        className="hover:cursor-pointer"
+        onClick={() => setModalInstructorDetailOpen(false)}
+      />
+      <div className="border border-neutral-100 rounded-lg mt-8 mb-20">
+        {/* profile section */}
+        <div className="flex justify-between p-4">
+          <div className="flex gap-4 items-start">
+            <img
+              src="https://randomuser.me/api/portraits/men/8.jpg"
+              className="w-16 h-16 rounded-full"
+            ></img>
+
+            <div>
+              <h1 className="font-bold text-2xl">John Doe</h1>
+              <div className="flex gap-1 ">
+                <span>
+                  <HiLocationMarker size={20} />
+                </span>
+                <span className="text-sm">Sydney</span>
+              </div>
+              <button className="px-6 rounded-full text-success-300 border border-success-300 mt-2 text-sm">
+                Active
+              </button>
+            </div>
+          </div>
+
+          <HiDotsHorizontal size={22} className="hover:cursor-pointer" />
+        </div>
+        <hr className="border-neutral-100"></hr>
+
+        <div className="flex">
+          <div className="border-r-2 border-neutral-100 ">
+            {/* Personal details */}
+            <div className="p-4 text-sm">
+              <div className="font-bold mt-4">Phone Number</div>
+              <div>+61 400 123 455</div>
+              <div className="font-bold mt-4">Email Address</div>
+              <div>Instructor@example.com</div>
+              <div className="font-bold mt-4">Date of Birth</div>
+              <div className="">02/04/1994</div>
+              <div className="font-bold mt-4">License Expiry Date</div>
+              <div className="">02/04/2020</div>
+              <div className="font-bold mt-4">Years of Experience</div>
+              <div className="">3 years</div>
+              <div className="font-bold mt-4">Last Active Date</div>
+              <div>02/10/2024</div>
+              <div className="font-bold mt-4">Location</div>
+              <div>Sydney,xyz</div>
+              <div>Postcode,2000</div>
+              <div>Area,abc</div>
+              <div className="font-bold mt-4">Date Joined</div>
+              <div>02/10/2024</div>
+            </div>
+            <hr className="border-neutral-100"></hr>
+            
+            <div className="p-4 text-sm">
+              <div className="font-bold mt-4">Statistics</div>
+              <div className="font-bold mt-4">Total Lessons Conducted </div>
+              <div>150 Lessons</div>
+              <div className="font-bold mt-4">Total Hours Taught</div>
+              <div>300 Hours</div>
+              <div className="font-bold mt-4">Student Ratings</div>
+              <div className="">4.8/5 Stars</div>
+              <div className="font-bold mt-4">Number of Reviews</div>
+              <div className="">45 Reviews</div>
+              <div className="font-bold mt-4">Approval Rate</div>
+              <div className="">95%</div>
+              <div className="font-bold mt-4">Cancellation Rate</div>
+              <div>3%</div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            {/* License Details */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold text-secondary-500">
+                License and Certification Information
+              </h2>
+              <div className="text-sm">
+                <div className="font-bold mt-4">Driver’s License Number</div>
+                <div>NSW1234567</div>
+                <div className="font-bold mt-4">License Issuing State</div>
+                <div>New South Wales</div>
+                <div className="font-bold mt-4">License Expiry Date</div>
+                <div>12/10/2025</div>
+                <div className="font-bold mt-4">License Type</div>
+                <div>Manual</div>
+                <div className="font-bold mt-4">
+                  Certificate IV in Training and Assessment
+                </div>
+                <div>Yes</div>
+              </div>
+            </div>
+            <hr className="border-neutral-100 my-5"></hr>
+            {/* Vehicle Information */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold text-secondary-500">
+                Vehicle Information
+              </h2>
+              <div className="text-sm">
+                <div className="font-bold mt-4">Vehicle 1 Details</div>
+                <div className="font-bold mt-4">Vehicle Make</div>
+                <div>Toyota</div>
+                <div className="font-bold mt-4">Vehicle Model</div>
+                <div>Corolla</div>
+                <div className="font-bold mt-4">Vehicle Year</div>
+                <div>2020</div>
+                <div className="font-bold mt-4">
+                  Vehicle Registration Number
+                </div>
+                <div>ABC1234</div>
+                <div className="flex mt-4 gap-3">
+                  <div>
+                    <div className="font-bold">
+                      Vehicle Registration Documents
+                    </div>
+                    <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                  </div>
+
+                  <div>
+                    <div className="font-bold">Vehicle Insurance Documents</div>
+                    <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr className="border-neutral-100 my-5"></hr>
+            {/* Additional Documents */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold text-secondary-500">
+                Additional Documents
+              </h2>
+              <div className="flex mt-4 gap-3">
+                <div>
+                  <div className="font-bold">National Police Check</div>
+                  <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                </div>
+
+                <div>
+                  <div className="font-bold">Working with Children Check</div>
+                  <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                </div>
+              </div>
+            </div>
+            <hr className="border-neutral-100 my-5"></hr>
+            {/* Self Description */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold text-secondary-500">
+                Self Description
+              </h2>
+              <div className="text-sm mt-4">
+                I am a certified driving instructor with over 3 years of
+                experience, specialising in teaching both manual and automatic
+                transmission vehicles. I aim to create a safe and comfortable
+                learning environment for students of all skill levels, ensuring
+                they gain confidence on the road.
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr className="border-neutral-100"></hr>
+         {/* Pricing Plans */}
+         <div className="p-4">
+        <div className="text-2xl font-bold text-secondary-500 my-2">
+            Pricing Plans
+        </div>
+        {/* Cards */}
+        <div className="flex gap-3 my-3">
+          {/* Basic plan */}
+       <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
+       <div className="font-bold text-lg">Basic</div>
+       <div className="mt-2">Monthly Charge</div>
+       <div className="mt-2 font-bold text-3xl text-secondary-500">$300</div>
+       <hr className="my-3"></hr>
+       <div className="">
+       <h3>Duration: 5 lessons(1 hour each)</h3>
+       <h3 className="mt-3">Basic driving skills(starting stopping,turning)</h3>
+       <h3 className="mt-3">Introduction to road signs and rules</h3>
+       <h3 className="mt-3">City driving preparation</h3>
+       <h3 className="mt-3">Regular feedback and progress tracking</h3>
+       <h3 className="mt-3">Bonus: 1 free mock driving test at the end of the package</h3>
+       </div>
+       </div>
+       {/* Standard plan */}
+       <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
+       <div className="font-bold text-lg">Standard</div>
+       <div className="mt-2">Monthly Charge</div>
+       <div className="mt-2 font-bold text-3xl text-secondary-500">$550</div>
+       <hr className="my-3"></hr>
+       <div className="">
+       <h3>Duration: 10 lessons(1 hour each)</h3>
+       <h3 className="mt-3">Advanced driving techniques (lane changes, merging)</h3>
+       <h3 className="mt-3">Highway driving</h3>
+       <h3 className="mt-3">Parking skills (parallel, reverse)</h3>
+       <h3 className="mt-3">Comprehensive feedback after each lesson</h3>
+       <h3 className="mt-3">Bonus: 2 free mock driving tests</h3>
+       <h3 className="mt-3">Flexible scheduling</h3>
+       </div>
+       </div>
+       {/* Premium plan */}
+       <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
+       <div className="font-bold text-lg">Premium</div>
+       <div className="mt-2">Monthly Charge</div>
+       <div className="mt-2 font-bold text-3xl text-secondary-500">$900</div>
+       <hr className="my-3"></hr>
+       <div className="">
+       <h3>Duration: 15 Lessons (1 hour each)</h3>
+       <h3 className="mt-3">All advanced driving techniques (city, highway, night driving)</h3>
+       <h3 className="mt-3">Defensive driving strategies</h3>
+       <h3 className="mt-3">Emergency maneuvers (braking, swerving)</h3>
+       <h3 className="mt-3">Access to exclusive driving workshops</h3>
+       <h3 className="mt-3">Bonus: Free test-day support (vehicle + instructor presence)</h3>
+       <h3 className="mt-3">Priority scheduling for lessons and test day</h3>
+       </div>
+       </div>
+
+        </div>
+        </div>
+        <hr className="border-neutral-100"></hr>
+        {/* Bookings details */}
+        <div className="p-4">
+          <div className="text-2xl font-bold text-secondary-500 my-2">
+            Bookings
+          </div>
+
+          <div className="flex space-x-3 gap-3 my-5">
+            {currentBookings.map((booking) => (
+              <BookingCard key={booking.id} booking={booking} />
+            ))}
+          </div>
+
+          <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+            <div className="flex justify-center space-x-2 ">
+              {[...Array(totalBookingPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentBookingPage(i + 1)}
+                  className={`h-7 w-7 text-gray-500  ${
+                    currentBookingPage === i + 1
+                      ? "bg-black text-white rounded-full"
+                      : ""
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            {/* pagination buttons */}
+            <div>
+              <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
+                <FaAngleLeft
+                  onClick={prevBookingsPage}
+                  className={`${
+                    currentBookingPage === 1 ? "text-gray-500" : ""
+                  }`}
+                />
+              </button>
+              <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
+                <FaAngleRight
+                  onClick={nextBookingsPage}
+                  className={`${
+                    currentBookingPage === totalBookingPages
+                      ? "text-gray-500"
+                      : ""
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr className="border-neutral-100"></hr>
+        {/* Stastistics details */}
+        <div className="p-4">
+        <div className="text-2xl font-bold text-secondary-500 my-2">
+            Stastistics
+        </div>
+        </div>
+  
+        <hr className="border-neutral-100"></hr>
+         {/*Testimonials*/}
+        <div className="p-4">
+          <div className="text-2xl font-bold text-secondary-500">
+            Testimonials
+          </div>
+
+          <div>
+            {currentTestimonials.map((data) => (
+              <div
+                key={data.id}
+                className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
+              >
+                <div className="text-neutral-800">{data.description}</div>
+                <div className="flex gap-3 items-center mt-3">
+                  <img
+                    src={data.avatar}
+                    className="w-12 h-12 rounded-full"
+                  ></img>
+                  <div>
+                    <div className="font-semibold text-sm">{data.fullname}</div>
+                    <div className="text-xs">{data.date}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* pagination buttons */}
+          <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+            <div className="flex justify-center space-x-2 ">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`h-7 w-7 text-gray-500  ${
+                    currentPage === i + 1
+                      ? "bg-black text-white rounded-full"
+                      : ""
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+            <div>
+              <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
+                <FaAngleLeft
+                  onClick={prevPage}
+                  className={`${currentPage === 1 ? "text-gray-500" : ""}`}
+                />
+              </button>
+              <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
+                <FaAngleRight
+                  onClick={nextPage}
+                  className={`${
+                    currentPage === totalPages ? "text-gray-500" : ""
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full">
+        <button className="bg-error-200 rounded-md px-8 py-2 text-white transition-colors duration-200 hover:bg-error-300">
+          Ban Account
+        </button>
+        <button
+          className="bg-neutral-300 rounded-md text-white px-8 py-2 transition-colors duration-200 hover:bg-neutral-400"
+          onClick={() => setModalInstructorDetailOpen(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
 const AllInstructors = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [isExperienceModalOpen, setIsExperienceModalOpen] = useState(false);
@@ -10,6 +535,8 @@ const AllInstructors = () => {
   const [selectedExperience, setSelectedExperience] = useState("");
   const [selectedAvailability, setSelectedAvailability] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [modalInstructorDetailOpen, setModalInstructorDetailOpen] =
+    useState(false);
 
   const instructors = [
     {
@@ -248,7 +775,10 @@ const AllInstructors = () => {
                     <p>{instructor.location}</p>
                   </p>
                 </div>
-                <button className="w-full mt-4 bg-secondary-400 text-white py-2 px-4 rounded-md">
+                <button
+                  className="w-full mt-4 bg-secondary-400 text-white py-2 px-4 rounded-md"
+                  onClick={() => setModalInstructorDetailOpen(true)}
+                >
                   View Profile
                 </button>
               </div>
@@ -305,7 +835,10 @@ const AllInstructors = () => {
                       </span>
                     </td>
                     <td className="py-3 px-4">
-                      <button className="bg-blue-500 text-white py-2 px-4 rounded-md">
+                      <button
+                        className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                        onClick={() => setModalInstructorDetailOpen(true)}
+                      >
                         View Profile
                       </button>
                     </td>
@@ -396,6 +929,17 @@ const AllInstructors = () => {
             Apply Now
           </button>
         </div>
+      </ReactModal>
+      {/* Instructor Full Detail Modal */}
+      <ReactModal
+        isOpen={modalInstructorDetailOpen}
+        onRequestClose={() => setModalInstructorDetailOpen(false)}
+        className="bg-white shadow-lg px-10 pt-5 w-full md:w-4/5 lg:w-8/12 overflow-y-auto"
+        overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-end"
+      >
+        <InstructorDetailModal
+          setModalInstructorDetailOpen={setModalInstructorDetailOpen}
+        />
       </ReactModal>
     </div>
   );

@@ -244,7 +244,7 @@ const AllBookings = () => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Queries</h1>
+        <h1 className="text-3xl font-bold">Bookings</h1>
         <div className="flex gap-4 items-center">
           <button
             onClick={() => setViewMode("grid")}
@@ -266,7 +266,7 @@ const AllBookings = () => {
       </div>
 
       <div className="">
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex justify-between items-center mb-12">
           {/* Search Bar */}
           <div className="flex items-center bg-gray-100 rounded-md px-4 py-2 w-[50%] border border-solid border-neutral-100">
             <FaSearch className="text-gray-500" />
@@ -280,10 +280,10 @@ const AllBookings = () => {
           </div>
 
           {/* Filters */}
-          <div className="flex space-x-4 mb-6">
+          <div className="flex space-x-4 items-center">
             <button
               onClick={() => setIsDateModalOpen(true)}
-              className="flex items-center gap-3 text-base text-slate-600 bg-transparent"
+              className="flex gap-3 bg-transparent items-center font-semibold font-poppins text-desk-b-3 text-neutral-600"
             >
               <FaFilter className="mr-2" />
               Date Filter
@@ -291,7 +291,7 @@ const AllBookings = () => {
             </button>
             <button
               onClick={() => setIsPackageModalOpen(true)}
-              className="flex items-center gap-3 text-base text-slate-600 bg-transparent"
+              className="flex items-center gap-3 font-semibold font-poppins text-desk-b-3 text-neutral-600 bg-transparent"
             >
               Package Filter
               <FaCaretDown />

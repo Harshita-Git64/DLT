@@ -490,7 +490,7 @@ const VisitorForm = () => {
                   <label className="block text-sm text-[#202224] font-semibold">
                     Vehicle Make
                   </label>
-                  {/* <select className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"></select> */}
+                 
                   <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
