@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoNotifications } from "react-icons/io5";
-import { FaUserCircle } from "react-icons/fa";
+import { FaUserCircle, FaSearch } from "react-icons/fa";
 
 function AdminNavBar() {
   return (
@@ -14,20 +14,19 @@ function AdminNavBar() {
         </div>
 
         <div className="flex gap-5 items-center">
-          {/* search bar  */}
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-              <IoSearchOutline className="text-gray-500 h-4 w-4" />
-            </span>
+          <div className="flex items-center bg-gray-100 rounded-md px-4 py-2 w-[500px] border border-solid border-neutral-100 mr-4">
+            <FaSearch className="text-gray-500" />
             <input
               type="text"
-              className="pl-10 pr-4 py-2 border rounded-full w-96 focus:outline-none   bg-[#F5F6FA] focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Search"
+              // value={searchTerm}
+              // onChange={(e) => setSearchTerm(e.target.value)}
+              className="ml-2 bg-transparent focus:outline-none text-neutral-600"
             />
           </div>
 
-          <IoNotifications className="h-5 w-5" />
-          <FaUserCircle className="h-5 w-5" />
+          <IoNotifications className="h-6 w-6" />
+          <FaUserCircle className="h-6 w-6" />
         </div>
       </div>
     </nav>

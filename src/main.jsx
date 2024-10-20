@@ -15,7 +15,9 @@ import LoginModal from "./components/Auth/LoginModal.jsx";
 import ForgotPassword from "./components/Auth/ForgotPassword.jsx";
 import VerifyCode from "./components/Auth/VerifyCode.jsx";
 import SetNewPassword from "./components/Auth/SetNewPassword.jsx";
-import AdminNavBar from "./components/Boundary/AdminNavBar.jsx";
+import Test from "./Test.jsx";
+import AdminDashboard from "./components/Admin/AdminDashboard.jsx";
+import VisitorForm from "./components/VisitorDetails/VisitorForm.jsx";
 
 const Layout = () => {
   const location = useLocation();
@@ -24,6 +26,7 @@ const Layout = () => {
     "/forgotpassword",
     "/verifycode",
     "/setpassword",
+    "/visitorform"
   ];
   const shouldShowNavFooter = !noNavFooterRoutes.includes(location.pathname);
   return (
@@ -69,16 +72,24 @@ const appRouter = createBrowserRouter([
         element: <SetNewPassword />,
       },
       {
-        path: "/admin",
-        element: <AdminNavBar/>
+        path: "testelement",
+        element: <Test />,
       },
       {
-        path: "/admindashboard",
-        element: <AdminNavBar/>
+        path: "admindashboard",
+        element: <AdminDashboard />,
+      },
+      {
+        path: "visitorform",
+        element: <VisitorForm/>
       }
     ],
   },
 ]);
+
+createRoot(document.getElementById("root")).render(
+  <RouterProvider router={appRouter} />
+);
 
 createRoot(document.getElementById("root")).render(
   <RouterProvider router={appRouter} />
