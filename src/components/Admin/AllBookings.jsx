@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { BiReset } from "react-icons/bi";
 import { FaBars, FaCaretDown, FaFilter, FaSearch, FaTh } from "react-icons/fa";
 import ReactModal from "react-modal";
+import { GoArrowLeft } from "react-icons/go";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { HiLocationMarker } from "react-icons/hi";
 import Modal from "react-modal";
 const bookingData = [
   {
@@ -138,7 +141,159 @@ const customStyles = {
   },
 };
 
-export const BookingCard = ({ booking }) => {
+export const BookingDetailModal = ({ setBookingDetailModalOpen }) => {
+  return (
+    <div>
+      <GoArrowLeft
+        size={28}
+        className="hover:cursor-pointer"
+        onClick={() => setBookingDetailModalOpen(false)}
+      />
+      <div className="border border-neutral-100 rounded-lg mt-8 mb-20">
+        {/* profile section */}
+        <div className="flex justify-between p-4">
+          <div className="flex gap-4 items-start">
+            <div className="flex">
+              <img
+                className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
+                src="https://randomuser.me/api/portraits/men/1.jpg"
+              ></img>
+
+              <img
+                className="w-12 h-12 rounded-full border-2 border-white shadow-lg"
+                src="https://randomuser.me/api/portraits/women/1.jpg"
+              ></img>
+            </div>
+            <div>
+              <div className="flex gap-1 ">
+                <span className="font-semibold">Instructor:</span>
+                <span className="">Robert Fox</span>
+              </div>
+              <div className="flex gap-1 mt-1">
+                <span className="font-semibold">Learner:</span>
+                <span className="">Lasie Alexander</span>
+              </div>
+              <button className="px-6 rounded-full text-success-300 border border-success-300 mt-2 text-sm">
+                Ongoing
+              </button>
+            </div>
+          </div>
+
+          <HiDotsHorizontal size={22} className="hover:cursor-pointer" />
+        </div>
+        <hr className="border-neutral-100"></hr>
+
+        <div className="flex">
+          <div className="border-r-2 border-neutral-100 ">
+            {/* Personal details */}
+            <div className="p-4 text-sm">
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Booking ID
+              </h3>
+              <p className="font-poppins text-[#202224]">#AU-BK-2024-00123</p>
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Instructor Name
+              </h3>
+              <p className="font-poppins text-[#202224]">Robert Fox</p>
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Learner Name
+              </h3>
+              <p className="font-poppins text-[#202224]">Leslie Alexander</p>
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Date of Booking
+              </h3>
+              <p className="font-poppins text-[#202224]">20 Sept 2024</p>
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Package Type
+              </h3>
+              <p className="font-poppins text-[#202224]">Standard Package</p>
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Number of Lessons
+              </h3>
+              <p className="font-poppins text-[#202224]">10</p>
+              <h3 className="font-semibold font-poppins text-[#000000] mt-4">
+                Lessons Taken
+              </h3>
+              <p className="font-poppins text-[#202224]">4</p>
+              <h3 className="font-semibold  font-poppins text-[#000000] mt-4">
+                Duration (length of each lesson)
+              </h3>
+              <p className="font-poppins text-[#202224]">1 hour</p>
+            </div>
+          </div>
+
+          <div className="w-full">
+            {/*  Booking Information */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold font-poppins text-secondary-500">
+                Booking Information
+              </h2>
+              <div className="text-sm">
+                <div className="font-bold mt-4 font-poppins">Package Type</div>
+                <div>Standard Package</div>
+                <div className="font-bold mt-4">Package Price</div>
+                <div>$550</div>
+                <div className="font-bold mt-4">Payment Status</div>
+                <div>Paid</div>
+                <div className="font-bold mt-4">Payment Method</div>
+                <div>Credit Card</div>
+              </div>
+            </div>
+            <hr className="border-neutral-100 my-3"></hr>
+            {/* Additional Details */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold text-secondary-500">
+                Additional Details
+              </h2>
+              <div className="text-sm">
+                <div className="font-bold mt-4 font-poppins">
+                  Instructor Contact
+                </div>
+                <div>Instructor Email</div>
+                <div className="font-bold mt-4">Learner Contact</div>
+                <div>xyz@gmail.com</div>
+                <div className="font-bold mt-4">Learner Contact</div>
+                <div>555-444-333</div>
+                <div className="font-bold mt-4">Learner Email</div>
+                <div>xyz@gmail.com</div>
+              </div>
+            </div>
+            <hr className="border-neutral-100 my-3"></hr>
+            {/* Notes */}
+            <div className="p-4 px-6">
+              <h2 className="text-2xl font-bold text-secondary-500">Notes</h2>
+              <div className="text-sm">
+                <div className="font-bold mt-4 font-poppins">
+                  Special Requests
+                </div>
+                <div>Please provide an automatic vehicle</div>
+                <div className="font-bold mt-4">Instructor Comments</div>
+                <div>
+                  Learner is progressing well,recommended focusing on parallel
+                  parking in the next lesson.{" "}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Action Butttons */}
+      <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full">
+        <button className="bg-error-200 rounded-md px-8 py-2 text-white transition-colors duration-200 hover:bg-error-300">
+          Ban Account
+        </button>
+        <button
+          className="bg-neutral-300 rounded-md text-white px-8 py-2 transition-colors duration-200 hover:bg-neutral-400"
+          onClick={() => setBookingDetailModalOpen(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export const BookingCard = ({ booking, setBookingDetailModalOpen }) => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 w-[240px] flex flex-col justify-between items-center border border-solid border-neutral-100">
       <div className="flex justify-center mb-4">
@@ -148,7 +303,7 @@ export const BookingCard = ({ booking }) => {
           alt="Instructor Avatar"
         />
         <img
-          className="w-12 h-12 rounded-full border-2 border-white shadow-lg"
+          className="w-12 h-12 rounded-full border-2 border-white shadow-lg "
           src={booking.learnerAvatar}
           alt="Learner Avatar"
         />
@@ -182,7 +337,10 @@ export const BookingCard = ({ booking }) => {
         </p>
       </div>
 
-      <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full">
+      <button
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
+        onClick={() => setBookingDetailModalOpen(true)}
+      >
         View Details
       </button>
     </div>
@@ -195,6 +353,7 @@ const AllBookings = () => {
   const [filteredData, setFilteredData] = useState(bookingData);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isPackageModalOpen, setIsPackageModalOpen] = useState(false);
+  const [isBookingDetailModalOpen, setBookingDetailModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
 
@@ -375,11 +534,27 @@ const AllBookings = () => {
           </div>
         </ReactModal>
 
+        {/* Booking Detail Modal */}
+        <ReactModal
+          isOpen={isBookingDetailModalOpen}
+          onRequestClose={() => setBookingDetailModalOpen(false)}
+          className="bg-white shadow-lg px-10 pt-5 w-full md:w-4/5 lg:w-8/12 overflow-y-auto"
+          overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-end z-20"
+        >
+          <BookingDetailModal
+            setBookingDetailModalOpen={setBookingDetailModalOpen}
+          />
+        </ReactModal>
+
         {/* Booking Cards */}
         {viewMode === "grid" && filteredData.length > 0 ? (
           <div className="flex gap-3 gap-y-6 flex-wrap justify-between">
             {filteredData.map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
+              <BookingCard
+                key={booking.id}
+                booking={booking}
+                setBookingDetailModalOpen={setBookingDetailModalOpen}
+              />
             ))}
           </div>
         ) : (
@@ -440,7 +615,10 @@ const AllBookings = () => {
                       <td className="py-3 px-4">{booking.packageType}</td>
                       <td className="py-3 px-4">{booking.sessionFee}</td>
                       <td className="py-3 px-4">
-                        <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+                        <button
+                          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                          onClick={() => setBookingDetailModalOpen(true)}
+                        >
                           View Details
                         </button>
                       </td>
