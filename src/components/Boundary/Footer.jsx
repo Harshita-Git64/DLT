@@ -1,4 +1,5 @@
 import React from "react";
+import {useLocation } from "react-router-dom";
 
 //react-icons imports
 import { FaTwitter } from "react-icons/fa";
@@ -6,6 +7,10 @@ import { FaFacebookF } from "react-icons/fa";
 import { FaGooglePlusG } from "react-icons/fa";
 
 const Footer = () => {
+  const location=useLocation()
+  if (location.pathname === '/admin') {
+    return null; // Do not render the landing page navbar if on the /admin route
+  }
   return (
     <div>
       <footer className="bg-[#0C0C0C] text-[#FFFFFF] w-full">
