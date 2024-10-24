@@ -41,7 +41,7 @@ const mockData = [
     date: "2024-10-03",
   },
   {
-    id: 1,
+    id: 5,
     name: "Rakesh Mehta",
     phone: "9876543210",
     location: "Mumbai",
@@ -49,7 +49,7 @@ const mockData = [
     date: "2024-10-01",
   },
   {
-    id: 2,
+    id: 6,
     name: "Ishika Mehta",
     phone: "9876543210",
     location: "Mumbai",
@@ -57,7 +57,7 @@ const mockData = [
     date: "2024-10-02",
   },
   {
-    id: 3,
+    id: 7,
     name: "Kunal Sharma",
     phone: "9876543210",
     location: "Mumbai",
@@ -65,7 +65,7 @@ const mockData = [
     date: "2024-10-03",
   },
   {
-    id: 4,
+    id: 8,
     name: "Rohan Verma",
     phone: "9876543210",
     location: "Mumbai",
@@ -73,7 +73,7 @@ const mockData = [
     date: "2024-10-03",
   },
   {
-    id: 1,
+    id: 9,
     name: "Rakesh Mehta",
     phone: "9876543210",
     location: "Mumbai",
@@ -81,7 +81,7 @@ const mockData = [
     date: "2024-10-01",
   },
   {
-    id: 2,
+    id: 10,
     name: "Ishika Mehta",
     phone: "9876543210",
     location: "Mumbai",
@@ -89,7 +89,7 @@ const mockData = [
     date: "2024-10-02",
   },
   {
-    id: 3,
+    id: 11,
     name: "Kunal Sharma",
     phone: "9876543210",
     location: "Mumbai",
@@ -97,7 +97,7 @@ const mockData = [
     date: "2024-10-03",
   },
   {
-    id: 4,
+    id: 12,
     name: "Rohan Verma",
     phone: "9876543210",
     location: "Mumbai",
@@ -120,7 +120,6 @@ const QueriesComponent = () => {
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
   };
-
   const handleStatusFilter = (status) => {
     setStatusFilter(status);
     setModalStatusOpen(false);
@@ -144,6 +143,8 @@ const QueriesComponent = () => {
       (dateFilter ? item.date === dateFilter : true)
     );
   });
+  console.log("filtered query is",filteredData)
+
 
   return (
     <div className="p-6">
@@ -179,7 +180,7 @@ const QueriesComponent = () => {
             placeholder="Search"
             value={searchQuery}
             onChange={handleSearch}
-            className="ml-2 bg-transparent focus:outline-none text-neutral-600"
+            className="ml-2 bg-transparent focus:outline-none text-neutral-600 w-full"
           />
         </div>
         <div className="flex space-x-4 text-slate-600">
@@ -246,7 +247,7 @@ const QueriesComponent = () => {
                           ? "bg-green-400 text-green-800"
                           : query.status === "Pending"
                           ? "bg-yellow-400 text-yellow-800"
-                          : "bg-red-700 text-red-800"
+                          : "bg-red-400 text-red-800"
                       }`}
                     ></span>
                   </div>
@@ -291,23 +292,23 @@ const QueriesComponent = () => {
         </div>
       ) : (
         <div className="p-4">
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border">
-              <thead>
+          <div className="overflow-x-auto rounded-xl border">
+            <table className="min-w-full bg-white">
+              <thead className="bg-slate-50">
                 <tr>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-center py-5 px-4 uppercase font-semibold text-sm">
                     Name
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Phone Number
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Location
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Status
                   </th>
-                  <th className="text-left py-3 px-4"></th>
+                  <th className="text-left py-5 px-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -318,7 +319,7 @@ const QueriesComponent = () => {
                       <img
                         src={`https://i.pravatar.cc/150?u=${instructor.id}`}
                         alt={instructor.name}
-                        className="w-10 h-10 rounded-full mr-4"
+                        className="w-10 h-10 rounded-full mr-8"
                       />
                       <span className="font-medium text-blue-600">
                         {instructor.name}
@@ -328,7 +329,7 @@ const QueriesComponent = () => {
                     <td className="py-3 px-4">{instructor.location}</td>
                     <td className="py-3 px-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        className={`px-3 py-1 rounded-md text-sm ${
                           instructor.status === "Accepted"
                             ? "bg-green-100 text-green-800"
                             : instructor.status === "Pending"
@@ -509,8 +510,10 @@ const QueriesComponent = () => {
           </h1>
 
           {/* Profile Photo */}
-          <div className="h-20 w-20 rounded-full bg-slate-50 mt-5 ml-2"></div>
-          <p>Profile Photo</p>
+          <div className="">
+            <img src="https://randomuser.me/api/portraits/women/1.jpg" className="h-20 w-20 rounded-full mt-5 ml-2"></img>
+          </div>
+          <p className="text-sm text-blue-500">Profile Photo</p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 ">
             {/* Full name */}
@@ -567,7 +570,7 @@ const QueriesComponent = () => {
           </div>
           <hr className="my-10"></hr>
           <h1 className="font-bold text-black text-3xl">Location Details</h1>
-          <div className="grid grid-cols-2 gap-x-5 mt-5">
+          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-5">
             {/* city */}
             <div>
               <label className="block text-sm text-[#202224] font-semibold">
@@ -584,7 +587,7 @@ const QueriesComponent = () => {
               </select>
             </div>
             {/* pin code */}
-            <div>
+            <div className="mt-3 sm:mt-0">
               <label className="block text-sm text-[#202224] font-semibold">
                 Pin code
               </label>
@@ -629,7 +632,7 @@ const QueriesComponent = () => {
           <h1 className="font-bold text-black text-3xl">
             License and Certification Details
           </h1>
-          <div className="grid grid-cols-2 gap-x-5 ">
+          <div className="sm:grid sm:grid-cols-2 gap-x-5 ">
             {/* license Number*/}
             <div className="mt-5">
               <label className="block text-sm text-[#202224] font-semibold">
@@ -644,7 +647,7 @@ const QueriesComponent = () => {
               />
             </div>
             {/* license issuing state */}
-            <div className="mt-5">
+            <div className="mt-3 sm:mt-5">
               <label className="block text-sm text-[#202224] font-semibold">
                 License Issuing State (Dropdown)
               </label>
@@ -721,7 +724,7 @@ const QueriesComponent = () => {
           <h1 className="font-bold text-black text-3xl">
             Experience and Availability
           </h1>
-          <div className="grid grid-cols-2 gap-x-5 mt-4">
+          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
             {/* Years of Experience */}
             <div className="">
               <label className="block text-sm text-[#202224] font-semibold">
@@ -739,7 +742,7 @@ const QueriesComponent = () => {
               </select>
             </div>
             {/*  Available Days (Optional)*/}
-            <div className="">
+            <div className="mt-3 sm:mt-0">
               <label className="block text-sm text-[#202224] font-semibold">
                 Available Days (Optional)
               </label>
@@ -754,7 +757,7 @@ const QueriesComponent = () => {
           <hr className="my-10"></hr>
           {/* Vehicle Information */}
           <h1 className="font-bold text-black text-3xl">Vehicle Information</h1>
-          <div className="grid grid-cols-2 gap-x-5 mt-4">
+          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
             {/*  Vehicle Make*/}
             <div className="">
               <label className="block text-sm text-[#202224] font-semibold">
@@ -770,7 +773,7 @@ const QueriesComponent = () => {
             </div>
 
             {/* Vehicle Model */}
-            <div className="">
+            <div className="mt-3 sm:mt-0">
               <label className="block text-sm text-[#202224] font-semibold">
                 Vehicle Model
               </label>
@@ -892,7 +895,7 @@ const QueriesComponent = () => {
           <h1 className="font-bold text-black text-3xl">
             Additional Documents
           </h1>
-          <div className="grid grid-cols-2 gap-x-5 mt-4">
+          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
             {/* National Police Check */}
 
             <div className="w-full">
@@ -927,7 +930,7 @@ const QueriesComponent = () => {
             </div>
 
             {/* Working with Children Check */}
-            <div className="w-full">
+            <div className="w-full mt-3 sm:mt-0">
               <label className="block text-sm text-[#202224] font-semibold">
                 Working with Children Check{" "}
               </label>

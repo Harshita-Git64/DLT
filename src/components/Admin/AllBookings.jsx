@@ -249,8 +249,8 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen }) => {
                 <div className="font-bold mt-4 font-poppins">
                   Instructor Contact
                 </div>
-                <div>Instructor Email</div>
-                <div className="font-bold mt-4">Learner Contact</div>
+                <div>555-444-333</div>
+                <div className="font-bold mt-4">Instructor Email</div>
                 <div>xyz@gmail.com</div>
                 <div className="font-bold mt-4">Learner Contact</div>
                 <div>555-444-333</div>
@@ -295,7 +295,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen }) => {
 
 export const BookingCard = ({ booking, setBookingDetailModalOpen }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 w-[240px] flex flex-col justify-between items-center border border-solid border-neutral-100">
+    <div className="bg-white shadow-lg rounded-lg p-4 w-[23%] flex flex-col justify-between items-center border border-solid border-neutral-100">
       <div className="flex justify-center mb-4">
         <img
           className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
@@ -309,18 +309,18 @@ export const BookingCard = ({ booking, setBookingDetailModalOpen }) => {
         />
       </div>
 
-      <h2 className="text-lg font-semibold text-center mb-2">{booking.id}</h2>
+      <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
 
-      <div className="text-left">
-        <p className="font-semibold flex w-full justify-between mb-2">
-          Instructor: <span className="font-normal">{booking.instructor}</span>
+      <div className="w-full">
+        <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
+          Instructor: <span className="font-normal text-black">{booking.instructor}</span>
         </p>
-        <p className="font-semibold flex w-full justify-between mb-2">
-          Learner: <span className="font-normal">{booking.learner}</span>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Learner: <span className="font-normal text-black">{booking.learner}</span>
         </p>
-        <p className="font-semibold flex w-full justify-between shrink-0 mb-2">
+        <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
           Date:{" "}
-          <span className="font-normal shrink-0 ">
+          <span className="font-normal shrink-0 text-black">
             {new Date(booking.bookingDate).toLocaleDateString("en-GB", {
               day: "2-digit",
               month: "short",
@@ -328,12 +328,12 @@ export const BookingCard = ({ booking, setBookingDetailModalOpen }) => {
             })}
           </span>
         </p>
-        <p className="font-semibold flex w-full justify-between mb-2">
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
           Package Type:{" "}
-          <span className="font-normal">{booking.packageType}</span>
+          <span className="font-normal text-black">{booking.packageType}</span>
         </p>
-        <p className="font-semibold flex w-full justify-between mb-2">
-          Session Fee: <span className="font-normal">{booking.sessionFee}</span>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Session Fee: <span className="font-normal text-black">{booking.sessionFee}</span>
         </p>
       </div>
 
@@ -403,7 +403,7 @@ const AllBookings = () => {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Bookings</h1>
+        <h1 className="font-bold text-desk-h-6 font-sans ">Bookings</h1>
         <div className="flex gap-4 items-center">
           <button
             onClick={() => setViewMode("grid")}
@@ -548,7 +548,7 @@ const AllBookings = () => {
 
         {/* Booking Cards */}
         {viewMode === "grid" && filteredData.length > 0 ? (
-          <div className="flex gap-3 gap-y-6 flex-wrap justify-between">
+          <div className="flex gap-5 gap-y-6 flex-wrap">
             {filteredData.map((booking) => (
               <BookingCard
                 key={booking.id}
@@ -559,26 +559,26 @@ const AllBookings = () => {
           </div>
         ) : (
           <div className="p-4">
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-xl border">
               <table className="min-w-full bg-white">
-                <thead>
+                <thead className="bg-slate-50">
                   <tr>
-                    <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                    <th className="text-center py-5 px-4 uppercase font-semibold text-sm ">
                       Instructor
                     </th>
-                    <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                    <th className="text-center py-5 px-4 uppercase font-semibold text-sm">
                       Learner
                     </th>
-                    <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                    <th className="text-left py-5 uppercase font-semibold text-sm">
                       Booking Date
                     </th>
-                    <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                    <th className="text-center py-5 uppercase font-semibold text-sm">
                       Package Type
                     </th>
-                    <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                    <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                       Session Fee
                     </th>
-                    <th className="text-left py-3 px-4"></th>
+                    <th className="text-left py-5 px-4"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -588,7 +588,7 @@ const AllBookings = () => {
                         <img
                           src={booking.instructorAvatar}
                           alt={booking.instructor}
-                          className="w-10 h-10 rounded-full mr-4"
+                          className="w-10 h-10 rounded-full mr-8"
                         />
                         <span className="font-medium text-blue-600">
                           {booking.instructor}
@@ -616,7 +616,7 @@ const AllBookings = () => {
                       <td className="py-3 px-4">{booking.sessionFee}</td>
                       <td className="py-3 px-4">
                         <button
-                          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                          className="bg-blue-500 text-white py-2 px-4 rounded-md"
                           onClick={() => setBookingDetailModalOpen(true)}
                         >
                           View Details

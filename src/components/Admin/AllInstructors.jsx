@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { FaSearch, FaFilter, FaTh, FaBars, FaCaretDown } from "react-icons/fa";
 import { BiReset } from "react-icons/bi";
@@ -8,6 +8,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import { GoArrowLeft } from "react-icons/go";
 import { BookingCard } from "./AllBookings";
+import axios from "../../axios";
 
 const testimonialsData = [
   {
@@ -118,7 +119,13 @@ const bookingData = [
   },
 ];
 
-export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
+export const InstructorDetailModal = ({
+  setModalInstructorDetailOpen,
+  selectedInstructorDetails,
+}) => {
+  const { first_name, last_name, phoneNumber, email, location, date_of_birth } =
+    selectedInstructorDetails[0]?.user_id;
+
   const [currentPage, setCurrentPage] = useState(1);
   const testimonialsPerPage = 3;
 
@@ -184,15 +191,17 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
             ></img>
 
             <div>
-              <h1 className="font-bold text-2xl">John Doe</h1>
+              <h1 className="font-bold text-2xl">
+                {first_name} {last_name}
+              </h1>
               <div className="flex gap-1 ">
                 <span>
                   <HiLocationMarker size={20} />
                 </span>
-                <span className="text-sm">Sydney</span>
+                <span className="text-sm">{location}</span>
               </div>
               <button className="px-6 rounded-full text-success-300 border border-success-300 mt-2 text-sm">
-                Active
+                {selectedInstructorDetails[0].Availibility}
               </button>
             </div>
           </div>
@@ -206,11 +215,11 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
             {/* Personal details */}
             <div className="p-4 text-sm">
               <div className="font-bold mt-4">Phone Number</div>
-              <div>+61 400 123 455</div>
+              <div>{phoneNumber}</div>
               <div className="font-bold mt-4">Email Address</div>
-              <div>Instructor@example.com</div>
+              <div>{email}</div>
               <div className="font-bold mt-4">Date of Birth</div>
-              <div className="">02/04/1994</div>
+              <div className="">{date_of_birth}</div>
               <div className="font-bold mt-4">License Expiry Date</div>
               <div className="">02/04/2020</div>
               <div className="font-bold mt-4">Years of Experience</div>
@@ -225,7 +234,7 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
               <div>02/10/2024</div>
             </div>
             <hr className="border-neutral-100"></hr>
-            
+
             <div className="p-4 text-sm">
               <div className="font-bold mt-4">Statistics</div>
               <div className="font-bold mt-4">Total Lessons Conducted </div>
@@ -251,17 +260,17 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
               </h2>
               <div className="text-sm">
                 <div className="font-bold mt-4">Driver’s License Number</div>
-                <div>NSW1234567</div>
+                <div>{selectedInstructorDetails[0].License_number}</div>
                 <div className="font-bold mt-4">License Issuing State</div>
-                <div>New South Wales</div>
+                <div>{selectedInstructorDetails[0].License_Issuing_state}</div>
                 <div className="font-bold mt-4">License Expiry Date</div>
-                <div>12/10/2025</div>
+                <div>{selectedInstructorDetails[0].License_expiry_date}</div>
                 <div className="font-bold mt-4">License Type</div>
-                <div>Manual</div>
+                <div>{selectedInstructorDetails[0].License_type}</div>
                 <div className="font-bold mt-4">
                   Certificate IV in Training and Assessment
                 </div>
-                <div>Yes</div>
+                <div>{selectedInstructorDetails[0].Certified_in_training}</div>
               </div>
             </div>
             <hr className="border-neutral-100 my-5"></hr>
@@ -270,32 +279,39 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
               <h2 className="text-2xl font-bold text-secondary-500">
                 Vehicle Information
               </h2>
-              <div className="text-sm">
-                <div className="font-bold mt-4">Vehicle 1 Details</div>
-                <div className="font-bold mt-4">Vehicle Make</div>
-                <div>Toyota</div>
-                <div className="font-bold mt-4">Vehicle Model</div>
-                <div>Corolla</div>
-                <div className="font-bold mt-4">Vehicle Year</div>
-                <div>2020</div>
-                <div className="font-bold mt-4">
-                  Vehicle Registration Number
-                </div>
-                <div>ABC1234</div>
-                <div className="flex mt-4 gap-3">
-                  <div>
-                    <div className="font-bold">
-                      Vehicle Registration Documents
+              {selectedInstructorDetails[0].vehicle.map(
+                (vehicleInfo, index) => (
+                  <div className="text-sm" key={vehicleInfo.id}>
+                    <div className="font-bold mt-4 text-lg">
+                      Vehicle {index + 1} Details
                     </div>
-                    <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                    <div className="font-bold mt-4">Vehicle Make</div>
+                    <div>{vehicleInfo.Company}</div>
+                    <div className="font-bold mt-4">Vehicle Model</div>
+                    <div>{vehicleInfo.Model}</div>
+                    <div className="font-bold mt-4">Vehicle Year</div>
+                    <div>{vehicleInfo.Year}</div>
+                    <div className="font-bold mt-4">
+                      Vehicle Registration Numbe{" "}
+                    </div>
+                    <div>{vehicleInfo.Registration_number}</div>
+                    <div className="flex mt-4 gap-3">
+                      <div>
+                        <div className="font-bold">
+                          Vehicle Registration Documents
+                        </div>
+                        <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                      </div>
+                      <div>
+                        <div className="font-bold">
+                          Vehicle Insurance Documents
+                        </div>
+                        <div className="h-20 w-20 rounded-md bg-slate-300"></div>
+                      </div>
+                    </div>
                   </div>
-
-                  <div>
-                    <div className="font-bold">Vehicle Insurance Documents</div>
-                    <div className="h-20 w-20 rounded-md bg-slate-300"></div>
-                  </div>
-                </div>
-              </div>
+                )
+              )}
             </div>
             <hr className="border-neutral-100 my-5"></hr>
             {/* Additional Documents */}
@@ -322,72 +338,89 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
                 Self Description
               </h2>
               <div className="text-sm mt-4">
-                I am a certified driving instructor with over 3 years of
-                experience, specialising in teaching both manual and automatic
-                transmission vehicles. I aim to create a safe and comfortable
-                learning environment for students of all skill levels, ensuring
-                they gain confidence on the road.
+                {selectedInstructorDetails[0].Self_description}
               </div>
             </div>
           </div>
         </div>
         <hr className="border-neutral-100"></hr>
-         {/* Pricing Plans */}
-         <div className="p-4">
-        <div className="text-2xl font-bold text-secondary-500 my-2">
+        {/* Pricing Plans */}
+        <div className="p-4">
+          <div className="text-2xl font-bold text-secondary-500 my-2">
             Pricing Plans
-        </div>
-        {/* Cards */}
-        <div className="flex gap-3 my-3">
-          {/* Basic plan */}
-       <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
-       <div className="font-bold text-lg">Basic</div>
-       <div className="mt-2">Monthly Charge</div>
-       <div className="mt-2 font-bold text-3xl text-secondary-500">$300</div>
-       <hr className="my-3"></hr>
-       <div className="">
-       <h3>Duration: 5 lessons(1 hour each)</h3>
-       <h3 className="mt-3">Basic driving skills(starting stopping,turning)</h3>
-       <h3 className="mt-3">Introduction to road signs and rules</h3>
-       <h3 className="mt-3">City driving preparation</h3>
-       <h3 className="mt-3">Regular feedback and progress tracking</h3>
-       <h3 className="mt-3">Bonus: 1 free mock driving test at the end of the package</h3>
-       </div>
-       </div>
-       {/* Standard plan */}
-       <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
-       <div className="font-bold text-lg">Standard</div>
-       <div className="mt-2">Monthly Charge</div>
-       <div className="mt-2 font-bold text-3xl text-secondary-500">$550</div>
-       <hr className="my-3"></hr>
-       <div className="">
-       <h3>Duration: 10 lessons(1 hour each)</h3>
-       <h3 className="mt-3">Advanced driving techniques (lane changes, merging)</h3>
-       <h3 className="mt-3">Highway driving</h3>
-       <h3 className="mt-3">Parking skills (parallel, reverse)</h3>
-       <h3 className="mt-3">Comprehensive feedback after each lesson</h3>
-       <h3 className="mt-3">Bonus: 2 free mock driving tests</h3>
-       <h3 className="mt-3">Flexible scheduling</h3>
-       </div>
-       </div>
-       {/* Premium plan */}
-       <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
-       <div className="font-bold text-lg">Premium</div>
-       <div className="mt-2">Monthly Charge</div>
-       <div className="mt-2 font-bold text-3xl text-secondary-500">$900</div>
-       <hr className="my-3"></hr>
-       <div className="">
-       <h3>Duration: 15 Lessons (1 hour each)</h3>
-       <h3 className="mt-3">All advanced driving techniques (city, highway, night driving)</h3>
-       <h3 className="mt-3">Defensive driving strategies</h3>
-       <h3 className="mt-3">Emergency maneuvers (braking, swerving)</h3>
-       <h3 className="mt-3">Access to exclusive driving workshops</h3>
-       <h3 className="mt-3">Bonus: Free test-day support (vehicle + instructor presence)</h3>
-       <h3 className="mt-3">Priority scheduling for lessons and test day</h3>
-       </div>
-       </div>
-
-        </div>
+          </div>
+          {/* Cards */}
+          <div className="flex gap-3 my-3">
+            {/* Basic plan */}
+            <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
+              <div className="font-bold text-lg">Basic</div>
+              <div className="mt-2">Monthly Charge</div>
+              <div className="mt-2 font-bold text-3xl text-secondary-500">
+                $300
+              </div>
+              <hr className="my-3"></hr>
+              <div className="">
+                <h3>Duration: 5 lessons(1 hour each)</h3>
+                <h3 className="mt-3">
+                  Basic driving skills(starting stopping,turning)
+                </h3>
+                <h3 className="mt-3">Introduction to road signs and rules</h3>
+                <h3 className="mt-3">City driving preparation</h3>
+                <h3 className="mt-3">Regular feedback and progress tracking</h3>
+                <h3 className="mt-3">
+                  Bonus: 1 free mock driving test at the end of the package
+                </h3>
+              </div>
+            </div>
+            {/* Standard plan */}
+            <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
+              <div className="font-bold text-lg">Standard</div>
+              <div className="mt-2">Monthly Charge</div>
+              <div className="mt-2 font-bold text-3xl text-secondary-500">
+                $550
+              </div>
+              <hr className="my-3"></hr>
+              <div className="">
+                <h3>Duration: 10 lessons(1 hour each)</h3>
+                <h3 className="mt-3">
+                  Advanced driving techniques (lane changes, merging)
+                </h3>
+                <h3 className="mt-3">Highway driving</h3>
+                <h3 className="mt-3">Parking skills (parallel, reverse)</h3>
+                <h3 className="mt-3">
+                  Comprehensive feedback after each lesson
+                </h3>
+                <h3 className="mt-3">Bonus: 2 free mock driving tests</h3>
+                <h3 className="mt-3">Flexible scheduling</h3>
+              </div>
+            </div>
+            {/* Premium plan */}
+            <div className="rounded-xl px-5 py-5 border shadow-lg text-center text-sm w-64">
+              <div className="font-bold text-lg">Premium</div>
+              <div className="mt-2">Monthly Charge</div>
+              <div className="mt-2 font-bold text-3xl text-secondary-500">
+                $900
+              </div>
+              <hr className="my-3"></hr>
+              <div className="">
+                <h3>Duration: 15 Lessons (1 hour each)</h3>
+                <h3 className="mt-3">
+                  All advanced driving techniques (city, highway, night driving)
+                </h3>
+                <h3 className="mt-3">Defensive driving strategies</h3>
+                <h3 className="mt-3">
+                  Emergency maneuvers (braking, swerving)
+                </h3>
+                <h3 className="mt-3">Access to exclusive driving workshops</h3>
+                <h3 className="mt-3">
+                  Bonus: Free test-day support (vehicle + instructor presence)
+                </h3>
+                <h3 className="mt-3">
+                  Priority scheduling for lessons and test day
+                </h3>
+              </div>
+            </div>
+          </div>
         </div>
         <hr className="border-neutral-100"></hr>
         {/* Bookings details */}
@@ -444,37 +477,51 @@ export const InstructorDetailModal = ({ setModalInstructorDetailOpen }) => {
         <hr className="border-neutral-100"></hr>
         {/* Stastistics details */}
         <div className="p-4">
-        <div className="text-2xl font-bold text-secondary-500 my-2">
+          <div className="text-2xl font-bold text-secondary-500 my-2">
             Stastistics
+          </div>
         </div>
-        </div>
-  
+
         <hr className="border-neutral-100"></hr>
-         {/*Testimonials*/}
+        {/*Testimonials*/}
         <div className="p-4">
           <div className="text-2xl font-bold text-secondary-500">
             Testimonials
           </div>
 
           <div>
-            {currentTestimonials.map((data) => (
-              <div
-                key={data.id}
-                className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
-              >
-                <div className="text-neutral-800">{data.description}</div>
-                <div className="flex gap-3 items-center mt-3">
-                  <img
-                    src={data.avatar}
-                    className="w-12 h-12 rounded-full"
-                  ></img>
-                  <div>
-                    <div className="font-semibold text-sm">{data.fullname}</div>
-                    <div className="text-xs">{data.date}</div>
+            {selectedInstructorDetails[0].ratings.map((data) => {
+              const formattedDate = new Date(
+                data.date_updated
+              ).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              });
+              return (
+                data.Reviews && (
+                  <div
+                    key={data.id}
+                    className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
+                  >
+                    <div className="text-neutral-800">{data.Reviews}</div>
+                    <div className="flex gap-3 items-center mt-3">
+                      <img
+                        src={data.avatar}
+                        className="w-12 h-12 rounded-full"
+                      ></img>
+                      <div>
+                        <div className="font-semibold text-sm">
+                          {data.Given_by.user_id.first_name}{" "}
+                          {data.Given_by.user_id.last_name}
+                        </div>
+                        <div className="text-xs">{formattedDate}</div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                )
+              );
+            })}
           </div>
           {/* pagination buttons */}
           <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
@@ -537,6 +584,46 @@ const AllInstructors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [modalInstructorDetailOpen, setModalInstructorDetailOpen] =
     useState(false);
+  const [instructorDetails, setInstructorDetails] = useState([]);
+  const [selectedInstructorId, setSelectedInstructorId] = useState(null);
+  const [selectedInstructorDetails, setSelectedInstructorDetails] =
+    useState(null);
+
+  const getInstructors = async () => {
+    try {
+      //API for fetching all instructors
+      const response = await axios(
+        "items/Instructor?fields=id,Availibility,Experience,is_ban,user_id.id,user_id.first_name,user_id.last_name,user_id.email,user_id.phoneNumber,user_id.location,user_id.profileImg,user_id.status"
+      );
+      const instructorData = response.data;
+      setInstructorDetails(instructorData.data);
+    } catch (error) {
+      console.log("error in fetching data", error);
+    }
+  };
+  //
+  const handleViewprofile = async (instructorId) => {
+    try {
+      //API for fetching instructor detail by Id
+      setSelectedInstructorId(instructorId);
+      const response = await axios(
+        `items/Instructor?fields=*,user_id.*,booking.*,booking.learner.user_id.first_name,booking.learner.user_id.last_name,vehicle.*,ratings.*,ratings.Given_by.user_id.first_name,ratings.Given_by.user_id.last_name,ratings.Given_by.user_id.profileImg,vehicle.*&filter[id]=${instructorId}`
+      );
+      const instructorData = response.data;
+      setSelectedInstructorDetails(instructorData.data);
+      console.log("instructorData", selectedInstructorDetails);
+      setModalInstructorDetailOpen(true);
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    getInstructors();
+  }, []);
+
+  useEffect(() => {
+    if (selectedInstructorId) {
+    }
+  }, [selectedInstructorId]);
 
   const instructors = [
     {
@@ -651,14 +738,24 @@ const AllInstructors = () => {
   ];
 
   // Filter instructors based on search term, experience, and availability
-  const filteredInstructors = instructors.filter((instructor) => {
+  const filteredInstructors = instructorDetails.filter((instructor) => {
+    //const {first_name,last_name,location,phoneNumber,email } = instructor.userid;
+    // return (
+    //   instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    //   (!selectedExperience || instructor.experience === selectedExperience) &&
+    //   (!selectedAvailability ||
+    //     instructor.availability === selectedAvailability)
+    // );
     return (
-      instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (!selectedExperience || instructor.experience === selectedExperience) &&
+      instructor?.user_id?.first_name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) &&
+      (!selectedExperience || instructor.Experience === selectedExperience) &&
       (!selectedAvailability ||
-        instructor.availability === selectedAvailability)
+        instructor.Availibility === selectedAvailability)
     );
   });
+  console.log("result", filteredInstructors);
 
   // Clear all filters
   const clearFilters = () => {
@@ -692,7 +789,7 @@ const AllInstructors = () => {
         </div>
       </div>
       {/* Header with Search and Filters */}
-      <div className="flex justify-between items-center py-4 my-3">
+      <div className="flex justify-between items-center py-4 px-4 my-3">
         {/* Search Bar */}
         <div className="flex items-center bg-gray-100 rounded-md px-4 py-2 w-[50%] border border-solid border-neutral-100">
           <FaSearch className="text-gray-500" />
@@ -701,7 +798,7 @@ const AllInstructors = () => {
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="ml-2 bg-transparent focus:outline-none text-neutral-600"
+            className="ml-2 bg-transparent focus:outline-none text-neutral-600 w-full"
           />
         </div>
 
@@ -739,71 +836,83 @@ const AllInstructors = () => {
       {/* Instructor Cards */}
       {viewMode === "grid" ? (
         <div className="p-4 ">
-          <div className="flex flex-wrap justify-between gap-3 min-h-fit max-h-fit gap-y-6">
-            {filteredInstructors.map((instructor) => (
-              <div
-                key={instructor.id}
-                className="bg-white w-[23%] shadow-md rounded-lg p-4 flex flex-col items-center relative border border-solid border-neutral-100"
-              >
-                <div className="">
-                  <img
-                    src={instructor.profileImage}
-                    alt={instructor.name}
-                    className="w-14 h-14 rounded-full object-cover object-center"
-                  />
-                  {/* Status Indicator */}
-                  <span
-                    className={`absolute top-2 right-3 w-3 h-3 rounded-full ${
-                      instructor.availability === "Active"
-                        ? "bg-green-400 text-green-800"
-                        : instructor.availability === "onLeave"
-                        ? "bg-yellow-400 text-red-800"
-                        : "bg-red-400 text-red-800"
-                    }`}
-                  ></span>
-                </div>
-                <h3 className="mt-3 font-semibold font-poppins text-desk-b-2 ">
-                  {instructor.name}
-                </h3>
-                <div className="pt-2 w-full font-poppins text-desk-b-3 text-neutral-600">
-                  <p className="text-gray-500 w-full flex justify-between mb-2">
-                    <strong className="font-semibold">Phone: </strong>{" "}
-                    <p>{instructor.phone}</p>
-                  </p>
-                  <p className="text-gray-500 w-full flex justify-between">
-                    <strong className="font-semibold">Location:</strong>{" "}
-                    <p>{instructor.location}</p>
-                  </p>
-                </div>
-                <button
-                  className="w-full mt-4 bg-secondary-400 text-white py-2 px-4 rounded-md"
-                  onClick={() => setModalInstructorDetailOpen(true)}
+          <div className="flex flex-wrap gap-3 min-h-fit max-h-fit gap-y-6">
+            {filteredInstructors.map((instructor) => {
+              const {
+                first_name,
+                last_name,
+                location,
+                phoneNumber,
+                profileImg,
+                email,
+              } = instructor.user_id;
+
+              return (
+                <div
+                  key={instructor.id}
+                  className="bg-white min-w-[23%] shadow-md rounded-lg p-4 flex  flex-col items-center relative border border-solid border-neutral-100 shrink-0"
                 >
-                  View Profile
-                </button>
-              </div>
-            ))}
+                  <div className="">
+                    <img
+                      src={profileImg}
+                      alt={first_name}
+                      className="w-14 h-14 rounded-full object-cover object-center"
+                    />
+
+                    {/* Status Indicator */}
+                    <span
+                      className={`absolute top-2 right-3 w-3 h-3 rounded-full ${
+                        instructor.Availibility === "Active"
+                          ? "bg-green-400 text-green-800"
+                          : instructor.Availibility === "onLeave"
+                          ? "bg-yellow-400 text-red-800"
+                          : "bg-red-400 text-red-800"
+                      }`}
+                    ></span>
+                  </div>
+                  <h3 className="mt-3 font-semibold font-poppins text-desk-b-2 ">
+                    {first_name} {last_name}
+                  </h3>
+                  <div className="pt-2 w-full font-poppins text-desk-b-3 text-neutral-600">
+                    <p className="text-gray-500 w-full flex justify-between mb-2">
+                      <strong className="font-semibold">Phone: </strong>{" "}
+                      <p>{phoneNumber}</p>
+                    </p>
+                    <p className="text-gray-500 w-full flex justify-between">
+                      <strong className="font-semibold">Location:</strong>{" "}
+                      <p>{location}</p>
+                    </p>
+                  </div>
+                  <button
+                    className="w-full mt-4 bg-secondary-400 text-white py-2 px-4 rounded-md"
+                    onClick={() => handleViewprofile(instructor.id)}
+                  >
+                    View Profile
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       ) : (
         <div className="p-4">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-xl border">
             <table className="min-w-full bg-white">
-              <thead>
+              <thead className="bg-slate-50">
                 <tr>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-center py-5 px-4 uppercase font-semibold text-sm">
                     Name
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Phone Number
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Location
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Status
                   </th>
-                  <th className="text-left py-3 px-4"></th>
+                  <th className="text-left py-5 px-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -813,7 +922,7 @@ const AllInstructors = () => {
                       <img
                         src={instructor.profileImage}
                         alt={instructor.name}
-                        className="w-10 h-10 rounded-full mr-4"
+                        className="w-10 h-10 rounded-full mr-8"
                       />
                       <span className="font-medium text-blue-600">
                         {instructor.name}
@@ -823,7 +932,7 @@ const AllInstructors = () => {
                     <td className="py-3 px-4">{instructor.location}</td>
                     <td className="py-3 px-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        className={`px-3 py-1 rounded-md text-sm  ${
                           instructor.availability === "Active"
                             ? "bg-green-100 text-green-800"
                             : instructor.availability === "onLeave"
@@ -836,7 +945,7 @@ const AllInstructors = () => {
                     </td>
                     <td className="py-3 px-4">
                       <button
-                        className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                        className="bg-blue-500 text-white py-2 px-6 rounded-md"
                         onClick={() => setModalInstructorDetailOpen(true)}
                       >
                         View Profile
@@ -939,6 +1048,7 @@ const AllInstructors = () => {
       >
         <InstructorDetailModal
           setModalInstructorDetailOpen={setModalInstructorDetailOpen}
+          selectedInstructorDetails={selectedInstructorDetails}
         />
       </ReactModal>
     </div>

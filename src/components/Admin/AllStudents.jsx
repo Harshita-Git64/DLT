@@ -614,7 +614,7 @@ const AllStudents = () => {
   return (
     <div className="w-full px-5">
       <div className="flex justify-between">
-        <div className="text-4xl font-bold">Students</div>
+        <div className="font-bold text-desk-h-6 font-sans">Students</div>
         <div className="flex gap-4 items-center">
           <button
             onClick={() => setViewMode("grid")}
@@ -642,7 +642,7 @@ const AllStudents = () => {
             placeholder="Search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="ml-2 bg-transparent focus:outline-none text-neutral-600"
+            className="ml-2 bg-transparent focus:outline-none text-neutral-600 w-full"
           />
         </div>
         <div className="mt-4 lg:mt-0 flex items-center gap-7 cursor-pointer">
@@ -665,7 +665,7 @@ const AllStudents = () => {
 
           <button
               onClick={handleResetFilters}
-              className="text-error-300 px-4 py-2 flex gap-1 items-center"
+              className="text-error-300 px-4 py-2 flex gap-1 items-center font-poppins text-desk-b-2"
             >
               <BiReset />
               Reset Filters
@@ -673,34 +673,34 @@ const AllStudents = () => {
         </div>
       </div>
       {viewMode === "grid" ? (
-        <div className="mt-10 flex flex-wrap justify-between gap-2 gap-y-5">
+        <div className="mt-10 flex flex-wrap gap-2 min-h-fit max-h-fit gap-y-6">
           {filteredStudents.map((item, index) => (
             <div
               key={index}
-              className="w-[240px] p-3 rounded-lg shadow-md border border-solid border-slate-200 flex flex-col"
+              className="w-[240px] p-4 rounded-lg shadow-md border border-solid border-slate-200 flex flex-col"
             >
               <img
-                className="h-16 w-16 rounded-full shrink-0 object-cover self-center"
+                className="h-14 w-14 rounded-full shrink-0 object-cover self-center"
                 src={item.profil}
                 alt={item.name}
               />
-              <div className="mt-3 text-lg font-semibold text-center">
+              <div className="mt-3 font-semibold text-center font-poppins text-desk-b-2">
                 {item.name}
               </div>
-              <div className="flex items-center justify-between mt-4">
-                <div className="text-slate-600">Phone:</div>
+              <div className="flex items-center justify-between mt-4 font-poppins text-desk-b-3 text-neutral-600">
+                <div className="font-semibold">Phone:</div>
                 <div>{item.phone}</div>
               </div>
-              <div className="flex items-center justify-between mt-4">
-                <div className="text-slate-600">Lesson Status:</div>
+              <div className="flex items-center justify-between mt-4 text-desk-b-3 text-neutral-600 font-poppins">
+                <div className="font-semibold">Lesson Status:</div>
                 <div>{item.lession_status}</div>
               </div>
-              <div className="flex items-center justify-between mt-4">
-                <div className="text-slate-600">Active Lessons:</div>
+              <div className="flex items-center justify-between mt-4 font-poppins text-desk-b-3 text-neutral-600">
+                <div className="font-semibold">Active Lessons:</div>
                 <div>{item.active_lessons}</div>
               </div>
               <button
-                className="bg-[#2B6BE7] cursor-pointer w-full text-white rounded-lg mt-5 py-2 text-lg"
+                className="bg-[#2B6BE7] cursor-pointer w-full text-white rounded-lg mt-5 py-2 font-poppins"
                 onClick={() => setModalStudentDetailOpen(true)}
               >
                 View Details
@@ -709,24 +709,24 @@ const AllStudents = () => {
           ))}
         </div>
       ) : (
-        <div className="p-4">
-          <div className="overflow-x-auto">
+        <div className="p-4 mt-8">
+          <div className="overflow-x-auto rounded-xl border">
             <table className="min-w-full bg-white">
-              <thead>
+              <thead className="bg-slate-50">
                 <tr>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-center py-5 px-4 uppercase font-semibold text-sm">
                     Name
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Phone Number
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Lesson Status
                   </th>
-                  <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  <th className="text-left py-5 px-4 uppercase font-semibold text-sm">
                     Active Lessons
                   </th>
-                  <th className="text-left py-3 px-4"></th>
+                  <th className="text-left py-5 px-4"></th>
                 </tr>
               </thead>
               <tbody>
@@ -736,7 +736,7 @@ const AllStudents = () => {
                       <img
                         src={student.profil}
                         alt={student.name}
-                        className="w-10 h-10 rounded-full mr-4"
+                        className="w-10 h-10 rounded-full mr-8"
                       />
                       <span className="font-medium text-blue-600">
                         {student.name}
@@ -745,7 +745,7 @@ const AllStudents = () => {
                     <td className="py-3 px-4">{student.phone}</td>
                     <td className="py-3 px-4">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                        className={`px-3 py-1 rounded-md text-sm  ${
                           student.lession_status === "Ongoing"
                             ? "bg-green-100 text-green-800"
                             : student.lession_status === "Scheduled"

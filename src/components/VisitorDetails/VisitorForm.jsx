@@ -133,63 +133,96 @@ const VisitorForm = () => {
 
   return (
     <div>
-      <div className="text-[#001C51] text-3xl font-extrabold  mx-24 h-[100px] bg-white items-center flex">
+      <div className="text-[#001C51] text-3xl font-extrabold  px-24 h-[100px] bg-white items-center flex">
         <Link to="/">Startup</Link>
       </div>
       <hr></hr>
 
-      <div className="flex justify-between items-center my-2 mx-16 ">
+     
+      <div className="flex justify-between items-center my-2 px-16  w-full">
         {steps.map((step, index) => {
           const stepNumber = index + 1;
           const isCompleted = stepNumber < currentStep;
           const isCurrent = stepNumber === currentStep;
 
           return (
-            <div key={index} className="flex items-center">
-              {/* Step Circle */}
-              <div
-                className={`flex items-center justify-center w-7 h-7 rounded-full border 
-                ${isCompleted ? "border-green-500" : "border-blue-500"}
-                ${
-                  isCurrent
-                    ? "bg-blue-500 text-white border-blue-500"
-                    : "text-blue-500"
-                }`}
-              >
-                {isCompleted ? (
-                  <span className="text-green-500">
-                    <MdDone />
-                  </span>
-                ) : (
-                  <span>{stepNumber}</span>
-                )}
-              </div>
+            // <div key={index} className="flex items-center">
+             
+            //   <div
+            //     className={`flex items-center justify-center w-7 h-7 rounded-full border 
+            //     ${isCompleted ? "border-green-500" : "border-blue-500"}
+            //     ${
+            //       isCurrent
+            //         ? "bg-blue-500 text-white border-blue-500"
+            //         : "text-blue-500"
+            //     }`}
+            //   >
+            //     {isCompleted ? (
+            //       <span className="text-green-500">
+            //         <MdDone />
+            //       </span>
+            //     ) : (
+            //       <span>{stepNumber}</span>
+            //     )}
+            //   </div>
 
-              {/* Step Name */}
-              <span className="ml-2 text-xs text-[#202224] font-semibold">
-                {step}
-              </span>
+            //   Step Name
+            //   <span className="ml-2 text-xs text-[#202224] font-semibold">
+            //     {step}
+            //   </span>
 
-              {/* Connector Line */}
-              {index < steps.length - 1 && (
-                <FaChevronRight className="text-gray-300 mx-10" />
+            //   Connector Line
+            //   {index < steps.length - 1 && (
+            //     <FaChevronRight className="text-gray-300 mx-10" />
+            //   )}
+            // </div>
+            
+            <div key={index} className="flex justify-center items-center w-full">
+             {/* numbers */}
+            <div
+              className={`flex items-center justify-center  w-7 h-7 rounded-full border 
+              ${isCompleted ? "border-green-500" : "border-blue-500"}
+              ${
+                isCurrent
+                  ? "bg-blue-500 text-white border-blue-500"
+                  : "text-blue-500"
+              }`}
+            >
+              {isCompleted ? (
+                <span className="text-green-500">
+                  <MdDone />
+                </span>
+              ) : (
+                <span>{stepNumber}</span>
               )}
             </div>
+
+            {/* Step Name */}
+            <span className="ml-2 text-xs text-[#202224] font-semibold ">
+              {step}
+            </span>
+
+            {/* Connector Line */}
+            {index < steps.length - 1 && (
+              <FaChevronRight className="text-gray-300" />
+            )}
+          </div>
           );
         })}
       </div>
+      
       <hr className="mx-16"></hr>
 
-      <form className="px-24 mr-20" onSubmit={handleSubmit}>
+      <form className="flex w-full px-10 sm:px-14 md:px-20 lg:px-28" onSubmit={handleSubmit}>
         {currentStep === 1 && (
-          <div className="my-10">
-            <h1 className="font-bold text-black text-3xl mt-10">
+          <div className="my-10 w-full">
+            <h1 className="font-bold text-black text-2xl sm:text-3xl mt-10">
               Personal Details
             </h1>
             <h1 className="mt-5 text-[#202224]">
               Provide your basic information and location to get started.
             </h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-2 gap-6">
               {/* <div className="col-span-2 flex flex-col items-start mt-10">
                 <div className="">
                   <span className="text-[#202224] font-semibold text-sm">
@@ -220,7 +253,7 @@ const VisitorForm = () => {
                     />
                   ) : (
                     // Show the camera icon if no image is selected
-                    <div className="flex items-center justify-center w-full h-full bg-gray-100">
+                    <div className="flex items-center justify-center w-full h-full bg-gray-100 ">
                       <FaCamera className="text-gray-500" size={24} />
                     </div>
                   )}
@@ -236,7 +269,7 @@ const VisitorForm = () => {
                 />
               </div>
               {/* Full name */}
-              <div>
+              <div className="">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Full Name
                 </label>
@@ -250,7 +283,7 @@ const VisitorForm = () => {
                 />
               </div>
               {/* Date of birth */}
-              <div>
+              <div className="">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Date of Birth{" "}
                 </label>
@@ -366,19 +399,19 @@ const VisitorForm = () => {
         )}
 
         {currentStep === 2 && (
-          <div>
-            <h1 className="font-bold text-black text-3xl mt-10">
+          <div className="w-full">
+            <h1 className="font-bold text-black text-2xl sm:text-3xl mt-10">
               License and Vehicle Details
             </h1>
-            <h1 className="mt-5">
+            <h1 className="mt-5 text-[#202224]">
               Provide your basic information and location to get started.
             </h1>
             <form className="mt-5 ">
-              <h1 className="font-extrabold text-[#202224] text-xl">
+              <h1 className="font-extrabold text-[#202224] text-xl my-5">
                 License Information
               </h1>
 
-              <div className="flex mt-5 gap-5 w-full">
+              <div className="sm:grid sm:grid-cols-2 gap-6">
                 {/* license no */}
                 <div className="w-full">
                   <label className="block text-sm text-[#202224] font-semibold">
@@ -395,7 +428,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/* license issuing state */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     License Issuing State (Dropdown)
                   </label>
@@ -412,9 +445,9 @@ const VisitorForm = () => {
                 </div>
               </div>
 
-              <div className="flex mt-4 gap-5 w-full ">
+              <div className="sm:flex sm:mt-4 gap-5 w-full">
                 {/* expiry date */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     License Expiry Date
                   </label>
@@ -429,7 +462,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/* license type */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     License Type (Manual/Automatic/Both)
                   </label>
@@ -484,7 +517,7 @@ const VisitorForm = () => {
                 Vehicle 1 Details
               </h1>
 
-              <div className="flex mt-5 gap-5 w-full ">
+              <div className="sm:flex mt-5 gap-5 w-full">
                 {/*  Vehicle Make*/}
                 <div className="w-full">
                   <label className="block text-sm text-[#202224] font-semibold">
@@ -502,7 +535,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/* Vehicle Model */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     Vehicle Model
                   </label>
@@ -517,7 +550,7 @@ const VisitorForm = () => {
                 </div>
               </div>
 
-              <div className="flex mt-4 gap-5 w-full ">
+              <div className="sm:flex mt-3 gap-5 w-full ">
                 {/* Vehicle Year */}
                 <div className="w-full">
                   <label className="block text-sm text-[#202224] font-semibold">
@@ -534,7 +567,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/*  Vehicle Registration Number */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     Vehicle Registration Number
                   </label>
@@ -549,7 +582,7 @@ const VisitorForm = () => {
                 </div>
               </div>
 
-              <div className="flex mt-4 gap-5 w-full ">
+              <div className="sm:flex mt-3 gap-5 w-full ">
                 {/* Registration Documents */}
                 <div className="w-full">
                   <label
@@ -585,7 +618,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/* Insurance Documents */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label
                     className="block text-sm text-[#202224] font-semibold"
                     htmlFor="vehicleInsuranceDoc"
@@ -625,7 +658,7 @@ const VisitorForm = () => {
                 Vehicle 2 Details
               </h1>
 
-              <div className="flex mt-5 gap-5 w-full ">
+              <div className="sm:flex mt-5 gap-5 w-full ">
                 {/*  Vehicle Make*/}
                 <div className="w-full">
                   <label className="block text-sm text-[#202224] font-semibold">
@@ -635,7 +668,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/* Vehicle Model */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     Vehicle Model
                   </label>
@@ -643,7 +676,7 @@ const VisitorForm = () => {
                 </div>
               </div>
 
-              <div className="flex mt-4 gap-5 w-full ">
+              <div className="sm:flex mt-3 gap-5 w-full ">
                 {/* Vehicle Year */}
                 <div className="w-full">
                   <label className="block text-sm text-[#202224] font-semibold">
@@ -653,7 +686,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/*  Vehicle Registration Number */}
-                <div className="w-full">
+                <div className="w-full mt-3 sm:mt-0">
                   <label className="block text-sm text-[#202224] font-semibold">
                     Vehicle Registration Number
                   </label>
@@ -661,7 +694,7 @@ const VisitorForm = () => {
                 </div>
               </div>
 
-              <div className="flex mt-4 gap-5 w-full">
+              <div className="sm:flex mt-3 gap-5 w-full">
                 {/* Upload Vehicle Registration Documents */}
                 <div className="w-full">
                   <label
@@ -697,7 +730,7 @@ const VisitorForm = () => {
                 </div>
 
                 {/* Upload Vehicle Insurance Documents */}
-                 <div className="w-full">
+                 <div className="w-full mt-3 sm:mt-0">
                   <label
                     className="block text-sm text-[#202224] font-semibold"
                     htmlFor="vehicleInsuranceDoc"
@@ -758,14 +791,14 @@ const VisitorForm = () => {
 
         {currentStep === 3 && (
           // Experience & Availability
-          <div>
-            <h1 className="font-bold text-black text-3xl mt-10">
+          <div className="w-full">
+            <h1 className="font-bold text-black text-2xl sm:text-3xl mt-10">
               Experience & Availability
             </h1>
             <h1 className="mt-5">
               Share your teaching experience and availability schedule.
             </h1>
-            <div className="flex mt-10 gap-5 w-full ">
+            <div className="sm:flex mt-10 gap-5 w-full ">
               {/* Years of Experience*/}
               <div className="w-full">
                 <label className="block text-sm text-[#202224] font-semibold">
@@ -791,7 +824,7 @@ const VisitorForm = () => {
               </div>
 
               {/*  Available Days (Optional)*/}
-              <div className="w-full">
+              <div className="w-full mt-3 sm:mt-0">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Available Days (Optional)
                 </label>
@@ -828,15 +861,15 @@ const VisitorForm = () => {
         )}
 
         {currentStep === 4 && (
-          <div>
-            <h1 className="font-bold text-black text-3xl mt-10">
+          <div className="w-full">
+            <h1 className="font-bold text-black text-2xl sm:text-3xl mt-10">
               Additional Documents
             </h1>
             <h1 className="mt-5">
               Upload any necessary documents for further review.
             </h1>
 
-            <div className="grid grid-cols-2 gap-6 mt-10">
+            <div className="sm:grid sm:grid-cols-2 gap-6 mt-10">
               {/* National Police Check */}
 
               <div className="w-full">
@@ -870,7 +903,7 @@ const VisitorForm = () => {
               </div>
 
               {/* Working with Children Check */}
-              <div className="w-full">
+              <div className="w-full mt-3 sm:mt-0">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Working with Children Check{" "}
                 </label>
@@ -901,7 +934,7 @@ const VisitorForm = () => {
               </div>
 
               {/* Proof of Identity */}
-              <div className="w-full">
+              <div className="w-full mt-3 sm:mt-0">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Upload Proof of Identity
                 </label>
@@ -932,7 +965,7 @@ const VisitorForm = () => {
               </div>
 
               {/* Proof of Address */}
-              <div className="w-full">
+              <div className="w-full mt-3 sm:mt-0">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Upload Proof of Address
                 </label>
@@ -963,7 +996,7 @@ const VisitorForm = () => {
               </div>
 
               {/* Qualifications Certificate */}
-              <div className="w-full">
+              <div className="w-full mt-3 sm:mt-0">
                 <label className="block text-sm text-[#202224] font-semibold">
                   Upload Qualifications Certificate
                 </label>
@@ -1011,8 +1044,8 @@ const VisitorForm = () => {
         )}
 
         {currentStep === 5 && (
-          <div>
-            <h1 className="font-bold text-black text-2xl mt-10">
+          <div className="w-full">
+            <h1 className="font-bold text-black text-2xl sm:text-3xl mt-10">
               Describe Yourself
             </h1>
             <h1 className="mt-5">
