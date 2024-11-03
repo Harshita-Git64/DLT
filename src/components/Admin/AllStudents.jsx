@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactModal from "react-modal";
 import { FaBars, FaCaretDown, FaFilter, FaSearch, FaTh } from "react-icons/fa";
-import { RxReset } from "react-icons/rx";
 import { BiReset } from "react-icons/bi";
 import { FaAngleLeft } from "react-icons/fa6";
 import { FaAngleRight } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import { GoArrowLeft } from "react-icons/go";
-import { BookingCard } from "./AllBookings";
+import axios from "../../axios";
 
 ReactModal.setAppElement("#root");
 
@@ -153,7 +152,65 @@ const transactionData = [
   },
 ];
 
-export const StudentDetailModal = ({ setModalStudentDetailOpen }) => {
+export const BookingCard = ({ booking , learner}) => {
+  const{first_name,last_name,profileImg}=booking?.instructor?.user_id;
+  return (
+    <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100">
+      <div className="flex justify-center mb-4">
+        <img
+          className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
+          src={profileImg}
+          alt="Instructor Avatar"
+        />
+        <img
+          className="w-12 h-12 rounded-full border-2 border-white shadow-lg "
+          src={learner.profileImg}
+          alt="Learner Avatar"
+        />
+      </div>
+       <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
+      <div className="w-full">
+        <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
+          Instructor: <span className="font-normal text-black">{first_name} {last_name}</span>
+        </p>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Learner: <span className="font-normal text-black">{learner.first_name} {learner.last_name}</span>
+        </p>
+        <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
+          Date:{" "}
+          <span className="font-normal shrink-0 text-black">
+            {new Date(booking?.start_date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+        </p>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Package Type:{" "}
+          <span className="font-normal text-black">package type</span>
+        </p>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Session Fee: <span className="font-normal text-black">sessionFee</span>
+        </p>
+      </div>
+
+      <button
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
+      >
+        View Details
+      </button> 
+    </div>
+  );
+};
+
+export const StudentDetailModal = ({
+  setModalStudentDetailOpen,
+  selectedStudentDetails,
+}) => {
+  const { first_name, last_name, location, email, date_of_birth, phoneNumber, profileImg } =
+    selectedStudentDetails[0]?.user_id;
+  console.log("student modal", selectedStudentDetails);
   const [currentPage, setCurrentPage] = useState(1);
   const testimonialsPerPage = 3;
 
@@ -214,17 +271,19 @@ export const StudentDetailModal = ({ setModalStudentDetailOpen }) => {
         <div className="flex justify-between p-4">
           <div className="flex gap-4 items-start">
             <img
-              src="https://randomuser.me/api/portraits/men/8.jpg"
+              src={profileImg}
               className="w-16 h-16 rounded-full"
             ></img>
 
             <div>
-              <h1 className="font-bold text-2xl">John Doe</h1>
+              <h1 className="font-bold text-2xl">
+                {first_name} {last_name}
+              </h1>
               <div className="flex gap-1 mt-2">
                 <span>
                   <HiLocationMarker size={20} />
                 </span>
-                <span className="text-sm">Sydney</span>
+                <span className="text-sm">{location}</span>
               </div>
               <button className="px-6 rounded-full text-success-300 border border-success-300 mt-2 text-sm">
                 Active
@@ -241,26 +300,24 @@ export const StudentDetailModal = ({ setModalStudentDetailOpen }) => {
           <div className="border-r-2 border-neutral-100 p-4 text-sm">
             <div>
               <div className="font-bold">Date of Birth</div>
-              <div className="">02/04/1994</div>
+              <div className="">{date_of_birth}</div>
             </div>
             <div>
               <div className="font-bold mt-4">Phone Number</div>
-              <div>+61 400 123 455</div>
+              <div>{phoneNumber}</div>
             </div>
             <div>
               <div className="font-bold mt-4">Email Address</div>
-              <div>Instructor@example.com</div>
+              <div>{email}</div>
             </div>
 
             <div className="font-bold mt-4">Location</div>
-            <div>Sydney,xyz</div>
-            <div>Postcode,2000</div>
-            <div>Area,abc</div>
+            <div>{location}</div>
 
             <div className="font-bold mt-4">Date Joined</div>
-            <div>02/10/2024</div>
+            <div>{selectedStudentDetails[0]?.Joining_date}</div>
             <div className="font-bold mt-4">Last Active Date</div>
-            <div>02/10/2024</div>
+            <div>{selectedStudentDetails[0]?.Last_active_date}</div>
           </div>
 
           {/* transaction table */}
@@ -303,51 +360,19 @@ export const StudentDetailModal = ({ setModalStudentDetailOpen }) => {
           <div className="text-2xl font-bold text-secondary-500 my-2">
             Bookings
           </div>
-
+          {
+          selectedStudentDetails[0].booking.length !==0 ?  
           <div className="flex space-x-3 gap-3 my-5">
-            {currentBookings.map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
-            ))}
-          </div>
-
-          <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
-            <div className="flex justify-center space-x-2 ">
-              {[...Array(totalBookingPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentBookingPage(i + 1)}
-                  className={`h-7 w-7 text-gray-500  ${
-                    currentBookingPage === i + 1
-                      ? "bg-black text-white rounded-full"
-                      : ""
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-            {/* pagination buttons */}
-            <div>
-              <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
-                <FaAngleLeft
-                  onClick={prevBookingsPage}
-                  className={`${
-                    currentBookingPage === 1 ? "text-gray-500" : ""
-                  }`}
-                />
-              </button>
-              <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
-                <FaAngleRight
-                  onClick={nextBookingsPage}
-                  className={`${
-                    currentBookingPage === totalBookingPages
-                      ? "text-gray-500"
-                      : ""
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
+          {selectedStudentDetails[0].booking.map((booking) => (
+            <BookingCard key={booking.id} booking={booking} learner={selectedStudentDetails[0]?.user_id} />
+          ))}
+        </div>
+        :
+        <div className="text-gray-500 font-medium text-lg text-center">
+          No bookings yet
+        </div>
+        }
+         
         </div>
 
         <hr className="border-neutral-100"></hr>
@@ -414,7 +439,7 @@ export const StudentDetailModal = ({ setModalStudentDetailOpen }) => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full">
+      <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full z-20">
         <button className="bg-error-200 rounded-md px-8 py-2 text-white transition-colors duration-200 hover:bg-error-300">
           Ban Account
         </button>
@@ -436,160 +461,41 @@ const AllStudents = () => {
   const [lessonStatus, setLessonStatus] = useState("All");
   const [enrolledDate, setEnrolledDate] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [students, setStudents] = useState([
-    {
-      name: "John Doe",
-      phone: "123-456-7890",
-      lession_status: "Ongoing",
-      active_lessons: 5,
-      enrolledDate: "2023-08-10",
-      profil:
-        "https://wallpapers.com/images/hd/professional-profile-pictures-1500-x-2100-bvjgzg0cwa8r051t.jpg",
-    },
-    {
-      name: "Jane Smith",
-      phone: "987-654-3210",
-      lession_status: "Scheduled",
-      active_lessons: 3,
-      enrolledDate: "2023-07-01",
-      profil:
-        "https://imgcdn.stablediffusionweb.com/2024/4/16/16c82bf2-1f13-437d-9090-90759c843a26.jpg",
-    },
-    {
-      name: "Michael Johnson",
-      phone: "555-555-5555",
-      lession_status: "Ongoing",
-      active_lessons: 2,
-      enrolledDate: "2023-06-15",
-      profil: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      name: "Emily Davis",
-      phone: "444-444-4444",
-      lession_status: "Scheduled",
-      active_lessons: 4,
-      enrolledDate: "2023-09-05",
-      profil: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      name: "William Brown",
-      phone: "222-222-2222",
-      lession_status: "Ongoing",
-      active_lessons: 6,
-      enrolledDate: "2023-05-20",
-      profil: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      name: "Sophia Wilson",
-      phone: "333-333-3333",
-      lession_status: "Scheduled",
-      active_lessons: 1,
-      enrolledDate: "2023-10-01",
-      profil: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
-    {
-      name: "John Doe",
-      phone: "123-456-7890",
-      lession_status: "Ongoing",
-      active_lessons: 5,
-      enrolledDate: "2023-08-10",
-      profil:
-        "https://wallpapers.com/images/hd/professional-profile-pictures-1500-x-2100-bvjgzg0cwa8r051t.jpg",
-    },
-    {
-      name: "Jane Smith",
-      phone: "987-654-3210",
-      lession_status: "Scheduled",
-      active_lessons: 3,
-      enrolledDate: "2023-07-01",
-      profil:
-        "https://imgcdn.stablediffusionweb.com/2024/4/16/16c82bf2-1f13-437d-9090-90759c843a26.jpg",
-    },
-    {
-      name: "Michael Johnson",
-      phone: "555-555-5555",
-      lession_status: "Ongoing",
-      active_lessons: 2,
-      enrolledDate: "2023-06-15",
-      profil: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      name: "Emily Davis",
-      phone: "444-444-4444",
-      lession_status: "Scheduled",
-      active_lessons: 4,
-      enrolledDate: "2023-09-05",
-      profil: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      name: "William Brown",
-      phone: "222-222-2222",
-      lession_status: "Ongoing",
-      active_lessons: 6,
-      enrolledDate: "2023-05-20",
-      profil: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      name: "Sophia Wilson",
-      phone: "333-333-3333",
-      lession_status: "Scheduled",
-      active_lessons: 1,
-      enrolledDate: "2023-10-01",
-      profil: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
-    {
-      name: "John Doe",
-      phone: "123-456-7890",
-      lession_status: "Ongoing",
-      active_lessons: 5,
-      enrolledDate: "2023-08-10",
-      profil:
-        "https://wallpapers.com/images/hd/professional-profile-pictures-1500-x-2100-bvjgzg0cwa8r051t.jpg",
-    },
-    {
-      name: "Jane Smith",
-      phone: "987-654-3210",
-      lession_status: "Scheduled",
-      active_lessons: 3,
-      enrolledDate: "2023-07-01",
-      profil:
-        "https://imgcdn.stablediffusionweb.com/2024/4/16/16c82bf2-1f13-437d-9090-90759c843a26.jpg",
-    },
-    {
-      name: "Michael Johnson",
-      phone: "555-555-5555",
-      lession_status: "Ongoing",
-      active_lessons: 2,
-      enrolledDate: "2023-06-15",
-      profil: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      name: "Emily Davis",
-      phone: "444-444-4444",
-      lession_status: "Scheduled",
-      active_lessons: 4,
-      enrolledDate: "2023-09-05",
-      profil: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      name: "William Brown",
-      phone: "222-222-2222",
-      lession_status: "Ongoing",
-      active_lessons: 6,
-      enrolledDate: "2023-05-20",
-      profil: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      name: "Sophia Wilson",
-      phone: "333-333-3333",
-      lession_status: "Scheduled",
-      active_lessons: 1,
-      enrolledDate: "2023-10-01",
-      profil: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
-  ]);
-
   const [modalStudentDetailOpen, setModalStudentDetailOpen] = useState(false);
+  const [studentDetails, setStudentDetails] = useState([]);
+  const [selectedStudentDetails, setSelectedStudentDetails] = useState("");
+
+  const getAllStudents = async () => {
+    try {
+      //API for fetching all Students data
+      const response = await axios(
+        "items/Learner?fields=*,user_id.first_name,user_id.last_name,user_id.profileImg,user_id.phoneNumber,booking.lesson.Lesson_Status,booking.lesson.Pending_Lesson"
+      );
+      const studentsData = await response.data;
+      setStudentDetails(studentsData.data);
+    } catch (error) {
+      console.log("error in fetching data", error);
+    }
+  };
+  console.log("student detail", studentDetails);
+  useEffect(() => {
+    getAllStudents();
+  }, []);
+
+  const handleViewStudentprofile = async (studentId) => {
+    try {
+      //API for fetching student detail by Id
+      const response = await axios(
+        `items/Learner?fields=*,user_id.*,booking.*,booking.instructor.user_id.first_name,booking.instructor.user_id.last_name,booking.instructor.user_id.profileImg,booking.lesson.*,booking.lesson.title,booking.lesson.description,booking.lesson.Completed_Lessons,booking.lesson.Pending_Lesson,booking.lesson.Lesson_Notes,booking.lesson.Start_date,booking.lesson.End_Date,booking.lesson.Start_time,booking.lesson.End_time&filter[id]=${studentId}`
+      );
+      const Data = await response.data;
+      setSelectedStudentDetails(Data.data);
+      console.log("selectedstudentDetails", selectedStudentDetails);
+      setModalStudentDetailOpen(true);
+    } catch (error) {
+      console.log("error in fetching details", error.message);
+    }
+  };
 
   const handleResetFilters = () => {
     setLessonStatus("All");
@@ -597,7 +503,7 @@ const AllStudents = () => {
     setSearchTerm("");
   };
 
-  const filteredStudents = students.filter((student) => {
+  const filteredStudents = studentDetails.filter((student) => {
     const lessonFilter =
       lessonStatus === "All" || student.lession_status === lessonStatus;
 
@@ -606,7 +512,7 @@ const AllStudents = () => {
 
     const searchFilter =
       searchTerm === "" ||
-      student.name.toLowerCase().includes(searchTerm.toLowerCase());
+      student?.user_id?.first_name?.toLowerCase().includes(searchTerm.toLowerCase());
 
     return lessonFilter && enrolledDateFilter && searchFilter;
   });
@@ -664,49 +570,53 @@ const AllStudents = () => {
           </div>
 
           <button
-              onClick={handleResetFilters}
-              className="text-error-300 px-4 py-2 flex gap-1 items-center font-poppins text-desk-b-2"
-            >
-              <BiReset />
-              Reset Filters
-            </button>
+            onClick={handleResetFilters}
+            className="text-error-300 px-4 py-2 flex gap-1 items-center font-poppins text-desk-b-2"
+          >
+            <BiReset />
+            Reset Filters
+          </button>
         </div>
       </div>
       {viewMode === "grid" ? (
         <div className="mt-10 flex flex-wrap gap-2 min-h-fit max-h-fit gap-y-6">
-          {filteredStudents.map((item, index) => (
-            <div
-              key={index}
-              className="w-[240px] p-4 rounded-lg shadow-md border border-solid border-slate-200 flex flex-col"
-            >
-              <img
-                className="h-14 w-14 rounded-full shrink-0 object-cover self-center"
-                src={item.profil}
-                alt={item.name}
-              />
-              <div className="mt-3 font-semibold text-center font-poppins text-desk-b-2">
-                {item.name}
-              </div>
-              <div className="flex items-center justify-between mt-4 font-poppins text-desk-b-3 text-neutral-600">
-                <div className="font-semibold">Phone:</div>
-                <div>{item.phone}</div>
-              </div>
-              <div className="flex items-center justify-between mt-4 text-desk-b-3 text-neutral-600 font-poppins">
-                <div className="font-semibold">Lesson Status:</div>
-                <div>{item.lession_status}</div>
-              </div>
-              <div className="flex items-center justify-between mt-4 font-poppins text-desk-b-3 text-neutral-600">
-                <div className="font-semibold">Active Lessons:</div>
-                <div>{item.active_lessons}</div>
-              </div>
-              <button
-                className="bg-[#2B6BE7] cursor-pointer w-full text-white rounded-lg mt-5 py-2 font-poppins"
-                onClick={() => setModalStudentDetailOpen(true)}
+          {filteredStudents.map((item) => {
+            const { first_name, last_name, phoneNumber, profileImg } =
+              item.user_id;
+            return (
+              <div
+                key={item.id}
+                className="w-[240px] p-4 rounded-lg shadow-md border border-solid border-slate-200 flex flex-col"
               >
-                View Details
-              </button>
-            </div>
-          ))}
+                <img
+                  className="h-14 w-14 rounded-full shrink-0 object-cover self-center"
+                  src={profileImg}
+                  alt={first_name}
+                />
+                <div className="mt-3 font-semibold text-center font-poppins text-desk-b-2">
+                  {first_name} {last_name}
+                </div>
+                <div className="flex items-center justify-between mt-4 font-poppins text-desk-b-3 text-neutral-600">
+                  <div className="font-semibold">Phone:</div>
+                  <div>{phoneNumber}</div>
+                </div>
+                <div className="flex items-center justify-between mt-4 text-desk-b-3 text-neutral-600 font-poppins">
+                  <div className="font-semibold">Lesson Status:</div>
+                  <div>ongoing</div>
+                </div>
+                <div className="flex items-center justify-between mt-4 font-poppins text-desk-b-3 text-neutral-600">
+                  <div className="font-semibold">Active Lessons:</div>
+                  <div>3</div>
+                </div>
+                <button
+                  className="bg-[#2B6BE7] cursor-pointer w-full text-white rounded-lg mt-5 py-2 font-poppins"
+                  onClick={() => handleViewStudentprofile(item.id)}
+                >
+                  View Details
+                </button>
+              </div>
+            );
+          })}
         </div>
       ) : (
         <div className="p-4 mt-8">
@@ -758,7 +668,10 @@ const AllStudents = () => {
                     </td>
                     <td className="py-3 px-4">{student.active_lessons}</td>
                     <td className="py-3 px-4">
-                      <button className="bg-blue-500 text-white py-2 px-4 rounded-md" onClick={() => setModalStudentDetailOpen(true)}>
+                      <button
+                        className="bg-blue-500 text-white py-2 px-4 rounded-md"
+                        onClick={() => setModalStudentDetailOpen(true)}
+                      >
                         View Details
                       </button>
                     </td>
@@ -847,6 +760,7 @@ const AllStudents = () => {
       >
         <StudentDetailModal
           setModalStudentDetailOpen={setModalStudentDetailOpen}
+          selectedStudentDetails={selectedStudentDetails}
         />
       </ReactModal>
     </div>

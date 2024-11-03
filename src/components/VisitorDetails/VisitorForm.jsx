@@ -7,6 +7,7 @@ import { FaArrowRight } from "react-icons/fa6";
 import { FaChevronRight } from "react-icons/fa6";
 import { FiCamera } from "react-icons/fi";
 import { MdDone } from "react-icons/md";
+import axios from "../../axios";
 
 const VisitorForm = () => {
   
@@ -14,44 +15,52 @@ const VisitorForm = () => {
   const [personalDetails, setPersonalDetails] = useState({
     profileimg: null,
     fullname: "", // Full name of the user
-    mobileno: "", // Mobile number
+    phone_number: "", // Mobile number
     city: "", // City (dropdown)
     state: "", // State (dropdown)
-    dateofbirth: "", // Date of birth (calendar input)
+    date_of_birth: "", // Date of birth (calendar input)
     email: "", // Email address
     pincode: "", // Pincode (ZIP code)
     locality: "", // Locality or area of residence
   });
 
   const [vehicleDetails, setVehicleDetails] = useState({
-    licenseNumber: "", // Driver’s License Number
-    licenseState: "", // License Issuing State (Dropdown)
-    licenseExpiryDate: "", // License Expiry Date
-    licenseType: "", // License Type (Manual/Automatic/Both)
-    certificateIV: "", // Certificate IV in Training and Assessment (Yes/No)
-    vehicleMake: "", // Vehicle Make
-    vehicleModel: "", // Vehicle Model
-    vehicleYear: "", // Vehicle Year
-    vehicleRegNumber: "", // Vehicle Registration Number
-    vehicleRegDoc: null, // Vehicle Registration Document (File)
-    vehicleInsuranceDoc: null, // Vehicle Insurance Document (File)
+    license_number: "", // Driver’s License Number
+    license_issue_state: "", // License Issuing State (Dropdown)
+    license_expiry_date: "", // License Expiry Date
+    license_type: "", // License Type (Manual/Automatic/Both)
+    training_certificate: "", // Certificate IV in Training and Assessment (Yes/No)
+    vehicle_company: "", // Vehicle Make
+    vehicle_model: "", // Vehicle Model
+    vehicle_year: "", // Vehicle Year
+    vehicle_registration_no: "", // Vehicle Registration Number
+    vehicle_registration_document: null, // Vehicle Registration Document (File)
+    vehicle_insurance_document: null, // Vehicle Insurance Document (File)
   });
 
+
   const [documentDetails, setDocumentDetails] = useState({
-    policeCheck: null, // Upload National Police Check
-    childrenCheck: null, // Working with Children Check
-    proofOfIdentity: null, // Proof of Identity
-    proofOfAddress: null, // Proof of Address
-    qualificationCert: null, // Qualifications Certificate
+    police_check: null, // Upload National Police Check
+    children_check: null, // Working with Children Check
+    identity_proof: null, // Proof of Identity
+    address_proof: null, // Proof of Address
+    qualification_cert: null, // Qualifications Certificate
   });
 
   const [experienceDetails, setExperienceDetails] = useState({
-    yearsOfExperience: "", // Years of Experience (dropdown)
-    availableDays: "", // Available Days (optional - could be a multi-select or array of strings)
-    selfdescription: "", // Describe Yourself (text input)
+    experience: "", // Years of Experience (dropdown)
+    available_days: "", // Available Days (optional - could be a multi-select or array of strings)
+    description: "", // Describe Yourself (text input)
   });
+  
+  const formData = {
+    ...personalDetails,
+    ...vehicleDetails,
+    ...documentDetails,
+    ...experienceDetails
 
-  // Function to personal details for Step 1
+  }
+  // Function to handle personal details for Step 1
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPersonalDetails({
@@ -78,7 +87,6 @@ const VisitorForm = () => {
       [name]: file,
     });
   };
-
   // Function to handle file uploads for Step 4
   const handleDocumentFileChange = (e) => {
     const { name } = e.target;
@@ -99,9 +107,14 @@ const VisitorForm = () => {
     setCurrentStep(currentStep - 1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // console.log("Form Submitted:", formData);
+    try {
+      const response = await axios.post("items/queries", formData);
+      console.log('Data posted successfully:', response.data);
+    } catch (error) {
+      console.error('Error posting data:', error.message);
+    }
   };
 
   const [selectedFile, setSelectedFile] = useState(null);
@@ -122,6 +135,7 @@ const VisitorForm = () => {
       alert("Please upload a valid image file.");
     }
   };
+  console.log("image is:", selectedImage);
 
   const steps = [
     "Personal Details",
@@ -281,6 +295,7 @@ const VisitorForm = () => {
                   value={personalDetails.fullname}
                   onChange={handleInputChange}
                 />
+                <p className="text-sm text-red-500 hidden">full name</p>
               </div>
               {/* Date of birth */}
               <div className="">
@@ -290,8 +305,8 @@ const VisitorForm = () => {
                 <input
                   type="date"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                  name="dateofbirth"
-                  value={personalDetails.dateofbirth}
+                  name="date_of_birth"
+                  value={personalDetails.date_of_birth}
                   onChange={handleInputChange}
                 ></input>
               </div>
@@ -304,9 +319,12 @@ const VisitorForm = () => {
                   type="tel"
                   placeholder="Enter your phone number"
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                  name="mobileno"
-                  value={personalDetails.mobileno}
+                  name="phone_number"
+                  value={personalDetails.phone_number}
                   onChange={handleInputChange}
+                  pattern="[0-9]{10}"  
+                  maxlength="10"
+                  required
                 />
               </div>
               {/* Email */}
@@ -420,9 +438,9 @@ const VisitorForm = () => {
                   <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="licenseNumber"
+                    name="license_number"
                     placeholder="Driver’s License Number"
-                    value={vehicleDetails.licenseNumber}
+                    value={vehicleDetails.license_number}
                     onChange={handleVehicleInputChange}
                   />
                 </div>
@@ -434,8 +452,8 @@ const VisitorForm = () => {
                   </label>
                   <select
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="licenseState"
-                    value={vehicleDetails.licenseState}
+                    name="license_issue_state"
+                    value={vehicleDetails.license_issue_state}
                     onChange={handleVehicleInputChange}
                   >
                     <option value="">Select License Issuing State</option>
@@ -455,8 +473,8 @@ const VisitorForm = () => {
                     type="date"
                     placeholder="Date"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none "
-                    name="licenseExpiryDate"
-                    value={vehicleDetails.licenseExpiryDate}
+                    name="license_expiry_date"
+                    value={vehicleDetails.license_expiry_date}
                     onChange={handleVehicleInputChange}
                   />
                 </div>
@@ -468,8 +486,8 @@ const VisitorForm = () => {
                   </label>
                   <select
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="licenseType"
-                    value={vehicleDetails.licenseType}
+                    name="license_type"
+                    value={vehicleDetails.license_type}
                     onChange={handleVehicleInputChange}
                   >
                     <option value="">Select License Type</option>
@@ -489,9 +507,9 @@ const VisitorForm = () => {
                 <label className="flex items-center">
                   <input
                     type="radio"
-                    name="certificateIV"
+                    name="training_certificate"
                     value="Yes"
-                    checked={vehicleDetails.certificateIV === "Yes"}
+                    checked={vehicleDetails.training_certificate === "Yes"}
                     onChange={handleVehicleInputChange}
                     className="mr-2"
                   />
@@ -500,9 +518,9 @@ const VisitorForm = () => {
                 <label className="flex items-center">
                   <input
                     type="radio"
-                    name="certificateIV"
+                    name="training_certificate"
                     value="No"
-                    checked={vehicleDetails.certificateIV === "No"}
+                    checked={vehicleDetails.training_certificate === "No"}
                     onChange={handleVehicleInputChange}
                     className="mr-2"
                   />
@@ -527,9 +545,9 @@ const VisitorForm = () => {
                   <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="vehicleMake"
+                    name="vehicle_company"
                     placeholder=""
-                    value={vehicleDetails.vehicleMake}
+                    value={vehicleDetails.vehicle_company}
                     onChange={handleVehicleInputChange}
                   />
                 </div>
@@ -542,9 +560,9 @@ const VisitorForm = () => {
                    <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="vehicleModel"
+                    name="vehicle_model"
                     placeholder=""
-                    value={vehicleDetails.vehicleModel}
+                    value={vehicleDetails.vehicle_model}
                     onChange={handleVehicleInputChange}
                   />
                 </div>
@@ -559,9 +577,9 @@ const VisitorForm = () => {
                    <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="vehicleYear"
+                    name="vehicle_year"
                     placeholder=""
-                    value={vehicleDetails.vehicleYear}
+                    value={vehicleDetails.vehicle_year}
                     onChange={handleVehicleInputChange}
                   />
                 </div>
@@ -574,9 +592,9 @@ const VisitorForm = () => {
                    <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                    name="vehicleRegNumber"
+                    name="vehicle_registration_no"
                     placeholder=""
-                    value={vehicleDetails.vehicleRegNumber}
+                    value={vehicleDetails.vehicle_registration_no}
                     onChange={handleVehicleInputChange}
                   />
                 </div>
@@ -587,19 +605,19 @@ const VisitorForm = () => {
                 <div className="w-full">
                   <label
                     className="block text-sm text-[#202224] font-semibold"
-                    htmlFor="vehicleRegDoc"
+                    htmlFor="vehicle_registration_document"
                   >
                     Upload Vehicle Registration Documents
                   </label>
                   <div className="flex flex-col items-center justify-center mt-1 w-full">
                     {/* Custom Label acting as Button */}
                     <label
-                      htmlFor="vehicleRegDoc"
+                      htmlFor="vehicle_registration_document"
                       className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                     >
-                      {vehicleDetails.vehicleRegDoc ? (
+                      {vehicleDetails.vehicle_registration_document ? (
                         <p className="text-center text-sm text-gray-700">
-                          {vehicleDetails.vehicleRegDoc.name}
+                          {vehicleDetails.vehicle_registration_document.name}
                         </p>
                       ) : (
                         <span className="text-sm">Upload Image</span>
@@ -608,8 +626,8 @@ const VisitorForm = () => {
                     {/* Hidden File Input */}
                     <input
                       type="file"
-                      id="vehicleRegDoc"
-                      name="vehicleRegDoc"
+                      id="vehicle_registration_document"
+                      name="vehicle_registration_document"
                       accept="image/*,.pdf"
                       className="hidden"
                       onChange={handleVehicleFileChange}
@@ -621,19 +639,19 @@ const VisitorForm = () => {
                 <div className="w-full mt-3 sm:mt-0">
                   <label
                     className="block text-sm text-[#202224] font-semibold"
-                    htmlFor="vehicleInsuranceDoc"
+                    htmlFor="vehicle_insurance_document"
                   >
                     Upload Vehicle Insurance Documents
                   </label>
                   <div className="flex flex-col items-center justify-center mt-1 w-full">
                     {/* Custom Label acting as Button */}
                     <label
-                      htmlFor="vehicleInsuranceDoc"
+                      htmlFor="vehicle_insurance_document"
                       className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                     >
-                      {vehicleDetails.vehicleInsuranceDoc ? (
+                      {vehicleDetails.vehicle_insurance_document ? (
                         <p className="text-center text-sm text-gray-700">
-                          {vehicleDetails.vehicleInsuranceDoc.name}
+                          {vehicleDetails.vehicle_insurance_document.name}
                         </p>
                       ) : (
                         <span className="text-sm">Upload Image</span>
@@ -642,8 +660,8 @@ const VisitorForm = () => {
                     {/* Hidden File Input */}
                     <input
                       type="file"
-                      id="vehicleInsuranceDoc"
-                      name="vehicleInsuranceDoc"
+                      id="vehicle_insurance_document"
+                      name="vehicle_insurance_document"
                       accept="image/*,.pdf"
                       className="hidden"
                       onChange={handleVehicleFileChange}
@@ -699,19 +717,19 @@ const VisitorForm = () => {
                 <div className="w-full">
                   <label
                     className="block text-sm text-[#202224] font-semibold"
-                    htmlFor="vehicleRegDoc"
+                    htmlFor="vehicle_registration_document"
                   >
                     Upload Vehicle Registration Documents
                   </label>
                   <div className="flex flex-col items-center justify-center mt-1 w-full">
                     {/* Custom Label acting as Button */}
                     <label
-                      htmlFor="vehicleRegDoc"
+                      htmlFor="vehicle_registration_document"
                       className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                     >
-                      {vehicleDetails.vehicleRegDoc ? (
+                      {vehicleDetails.vehicle_registration_document ? (
                         <p className="text-center text-sm text-gray-700">
-                          {vehicleDetails.vehicleRegDoc.name}
+                          {vehicleDetails.vehicle_registration_document.name}
                         </p>
                       ) : (
                         <span className="text-sm">Upload Image</span>
@@ -720,8 +738,8 @@ const VisitorForm = () => {
                     {/* Hidden File Input */}
                     <input
                       type="file"
-                      id="vehicleRegDoc"
-                      name="vehicleRegDoc"
+                      id="vehicle_registration_document"
+                      name="vehicle_registration_document"
                       accept="image/*,.pdf"
                       className="hidden"
                       onChange={handleVehicleFileChange}
@@ -733,19 +751,19 @@ const VisitorForm = () => {
                  <div className="w-full mt-3 sm:mt-0">
                   <label
                     className="block text-sm text-[#202224] font-semibold"
-                    htmlFor="vehicleInsuranceDoc"
+                    htmlFor="vehicle_insurance_document"
                   >
                     Upload Vehicle Insurance Documents
                   </label>
                   <div className="flex flex-col items-center justify-center mt-1 w-full">
                     {/* Custom Label acting as Button */}
                     <label
-                      htmlFor="vehicleInsuranceDoc"
+                      htmlFor="vehicle_insurance_document"
                       className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                     >
-                      {vehicleDetails.vehicleInsuranceDoc ? (
+                      {vehicleDetails.vehicle_insurance_document ? (
                         <p className="text-center text-sm text-gray-700">
-                          {vehicleDetails.vehicleInsuranceDoc.name}
+                          {vehicleDetails.vehicle_insurance_document.name}
                         </p>
                       ) : (
                         <span className="text-sm">Upload Image</span>
@@ -754,8 +772,8 @@ const VisitorForm = () => {
                     {/* Hidden File Input */}
                     <input
                       type="file"
-                      id="vehicleInsuranceDoc"
-                      name="vehicleInsuranceDoc"
+                      id="vehicle_insurance_document"
+                      name="vehicle_insurance_document"
                       accept="image/*,.pdf"
                       className="hidden"
                       onChange={handleVehicleFileChange}
@@ -806,12 +824,12 @@ const VisitorForm = () => {
                 </label>
                 <select
                   className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                  name="yearsOfExperience"
-                  value={experienceDetails.yearsOfExperience}
+                  name="experience"
+                  value={experienceDetails.experience}
                   onChange={(e) =>
                     setExperienceDetails({
                       ...experienceDetails,
-                      yearsOfExperience: e.target.value,
+                      experience: e.target.value,
                     })
                   }
                 >
@@ -831,12 +849,12 @@ const VisitorForm = () => {
                 <input
                   type="text"
                   className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                  name="availableDays"
-                  value={experienceDetails.availableDays}
+                  name="available_days"
+                  value={experienceDetails.available_days}
                   onChange={(e) =>
                     setExperienceDetails({
                       ...experienceDetails,
-                      availableDays: e.target.value,
+                      available_days: e.target.value,
                     })
                   }
                 />
@@ -879,12 +897,12 @@ const VisitorForm = () => {
                 <div className="flex flex-col items-center justify-center mt-1 w-full">
                   {/* Custom Label acting as Button */}
                   <label
-                    htmlFor="policeCheck"
+                    htmlFor="police_check"
                     className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                   >
-                    {documentDetails.policeCheck ? (
+                    {documentDetails.police_check ? (
                       <p className="text-center text-sm text-gray-700">
-                        {documentDetails.policeCheck.name}
+                        {documentDetails.police_check.name}
                       </p>
                     ) : (
                       <span className="text-sm">Upload Image</span>
@@ -892,10 +910,10 @@ const VisitorForm = () => {
                   </label>
                   {/* Hidden File Input */}
                   <input
-                    id="policeCheck"
+                    id="police_check"
                     type="file"
                     className="hidden"
-                    name="policeCheck"
+                    name="police_check"
                     accept="image/*,.pdf"
                     onChange={handleDocumentFileChange}
                   />
@@ -910,12 +928,12 @@ const VisitorForm = () => {
                 <div className="flex flex-col items-center justify-center mt-1 w-full">
                   {/* Custom Label acting as Button */}
                   <label
-                    htmlFor="childrenCheck"
+                    htmlFor="children_check"
                     className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                   >
-                    {documentDetails.childrenCheck ? (
+                    {documentDetails.children_check ? (
                       <p className="text-center text-sm text-gray-700">
-                        {documentDetails.childrenCheck.name}
+                        {documentDetails.children_check.name}
                       </p>
                     ) : (
                       <span>Upload Image</span>
@@ -925,8 +943,8 @@ const VisitorForm = () => {
                   <input
                     type="file"
                     className="hidden"
-                    id="childrenCheck"
-                    name="childrenCheck"
+                    id="children_check"
+                    name="children_check"
                     accept="image/*,.pdf"
                     onChange={handleDocumentFileChange}
                   />
@@ -941,12 +959,12 @@ const VisitorForm = () => {
                 <div className="flex flex-col items-center justify-center mt-1 w-full">
                   {/* Custom Label acting as Button */}
                   <label
-                    htmlFor="proofOfIdentity"
+                    htmlFor="identity_proof"
                     className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                   >
-                    {documentDetails.proofOfIdentity ? (
+                    {documentDetails.identity_proof ? (
                       <p className="text-center text-sm text-gray-700">
-                        {documentDetails.proofOfIdentity.name}
+                        {documentDetails.identity_proof.name}
                       </p>
                     ) : (
                       <span>Upload Image</span>
@@ -954,10 +972,10 @@ const VisitorForm = () => {
                   </label>
                   {/* Hidden File Input */}
                   <input
-                    id="proofOfIdentity"
+                    id="identity_proof"
                     type="file"
                     className="hidden"
-                    name="proofOfIdentity"
+                    name="identity_proof"
                     accept="image/*,.pdf"
                     onChange={handleDocumentFileChange}
                   />
@@ -972,12 +990,12 @@ const VisitorForm = () => {
                 <div className="flex flex-col items-center justify-center mt-1 w-full">
                   {/* Custom Label acting as Button */}
                   <label
-                    htmlFor="proofOfAddress"
+                    htmlFor="address_proof"
                     className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                   >
-                    {documentDetails.proofOfAddress ? (
+                    {documentDetails.address_proof ? (
                       <p className="text-center text-sm text-gray-700">
-                        {documentDetails.proofOfAddress.name}
+                        {documentDetails.address_proof.name}
                       </p>
                     ) : (
                       <span className="text-sm">Upload Image</span>
@@ -985,10 +1003,10 @@ const VisitorForm = () => {
                   </label>
                   {/* Hidden File Input */}
                   <input
-                    id="proofOfAddress"
+                    id="address_proof"
                     type="file"
                     className="hidden"
-                    name="proofOfAddress"
+                    name="address_proof"
                     accept="image/*,.pdf"
                     onChange={handleDocumentFileChange}
                   />
@@ -1003,12 +1021,12 @@ const VisitorForm = () => {
                 <div className="flex flex-col items-center justify-center mt-1 w-full">
                   {/* Custom Label acting as Button */}
                   <label
-                    htmlFor="qualificationCert"
+                    htmlFor="qualification_cert"
                     className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
                   >
-                    {documentDetails.qualificationCert ? (
+                    {documentDetails.qualification_cert ? (
                       <p className="text-center text-sm text-gray-700">
-                        {documentDetails.qualificationCert.name}
+                        {documentDetails.qualification_cert.name}
                       </p>
                     ) : (
                       <span className="text-sm">Upload Image</span>
@@ -1016,10 +1034,10 @@ const VisitorForm = () => {
                   </label>
                   {/* Hidden File Input */}
                   <input
-                    id="qualificationCert"
+                    id="qualification_cert"
                     type="file"
                     className="hidden"
-                    name="proofOfAddress"
+                    name="address_proof"
                     accept="image/*,.pdf"
                     onChange={handleDocumentFileChange}
                   />
@@ -1060,13 +1078,13 @@ const VisitorForm = () => {
               </label>
               <textarea
                 id="description"
-                name="selfdescription"
+                name="description"
                 rows="8"
-                value={experienceDetails.selfdescription}
+                value={experienceDetails.description}
                 onChange={(e) =>
                   setExperienceDetails({
                     ...experienceDetails,
-                    selfdescription: e.target.value,
+                    description: e.target.value,
                   })
                 }
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"

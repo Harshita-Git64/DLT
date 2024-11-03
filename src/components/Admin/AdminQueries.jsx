@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch, FaTh, FaBars, FaFilter, FaCaretDown } from "react-icons/fa";
 import { RxReset } from "react-icons/rx";
 import { BiReset } from "react-icons/bi";
-
 import { GoArrowLeft } from "react-icons/go";
 import { FaPlus } from "react-icons/fa6";
 import ReactModal from "react-modal";
+import axios from "../../axios";
 
 const mockData = [
   {
@@ -116,6 +116,45 @@ const QueriesComponent = () => {
   const [modalDateOpen, setModalDateOpen] = useState(false);
   const [modalFullDetailOpen, setModalFullDetailOpen] = useState(false);
   const [modalRejectApplicationOpen, setModalRejectApplicationOpen] =useState(false);
+  const [allQueryDetails, setAllQueryDetails] = useState([]);
+  const [selectedQueryId, setSelectedQueryId] = useState("");
+  const [selectedQuerytDetails, setSelectedQueryDetails] = useState("");
+
+  const getAllQueries = async () => {
+    try {
+      //API for fetching all Queries
+      const response = await axios(
+        "items/queries?fields=id,avatar,fullname,phone_number,city,status"
+      );
+      const allQueriesData = await response.data;
+      setAllQueryDetails(allQueriesData.data);
+     
+    } catch (error) {
+      console.log("error in fetching data", error);
+    }
+  };
+  useEffect(()=>{
+    getAllQueries();
+  },[])
+
+  const handleViewQueryProfile = async (queryId) => {
+    try {
+      //API for fetching query detail by Id  
+     // setSelectedQueryId(queryId)
+      console.log("Selected id",queryId)
+      const response = await axios(
+        `items/queries/${queryId}`
+      );
+      const Data = await response.data;
+      setSelectedQueryDetails(Data.data);
+      setModalFullDetailOpen(true);
+    } catch (error) {
+      console.log("error in fetching details",error.message)
+    }
+  };
+
+  console.log("allQueryDetails",allQueryDetails)
+  console.log("selectedqueryDetails",selectedQuerytDetails)
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -136,15 +175,13 @@ const QueriesComponent = () => {
     setDateFilter("");
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredData = allQueryDetails.filter((item) => {
     return (
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      item.fullname.toLowerCase().includes(searchQuery.toLowerCase()) &&
       (statusFilter === "All" || item.status === statusFilter) &&
       (dateFilter ? item.date === dateFilter : true)
     );
   });
-  console.log("filtered query is",filteredData)
-
 
   return (
     <div className="p-6">
@@ -228,66 +265,76 @@ const QueriesComponent = () => {
 
       {viewMode === "grid" ? (
         <div className="py-6">
-          <div className="w-full flex flex-wrap justify-between space-3 gap-y-4">
-            {filteredData.map((query) => (
-              <div
-                key={query.id}
-                className="relative w-[240px] border p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 bg-white"
-              >
-                <div className="flex items-center justify-center mb-4">
-                  <div className="">
-                    <img
-                      src={`https://i.pravatar.cc/150?u=${query.id}`}
-                      alt={query.name}
-                      className="w-10 h-10 rounded-full mr-4"
-                    />
-                    <span
-                      className={`absolute top-2 right-3 h-3 w-3 rounded-full ${
-                        query.status === "Accepted"
-                          ? "bg-green-400 text-green-800"
-                          : query.status === "Pending"
-                          ? "bg-yellow-400 text-yellow-800"
-                          : "bg-red-400 text-red-800"
-                      }`}
-                    ></span>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h2 className="font-bold text-lg mb-2">{query.name}</h2>
-                  <div className="text-sm text-gray-600">
-                    <p className="flex w-full justify-between mb-2">
-                      <strong>Query ID:</strong> <p>Q20241015</p>
-                    </p>
-                    <p className="flex w-full justify-between mb-2">
-                      <strong>Phone:</strong> {query.phone}
-                    </p>
-                    <p className="flex w-full justify-between mb-2">
-                      <strong>Location:</strong> {query.location}
-                    </p>
-                    <p className="flex w-full justify-between mb-2">
-                      <strong>Status:</strong>{" "}
-                      <span
-                        className={`${
-                          query.status === "Accepted"
-                            ? " text-green-800"
-                            : query.status === "Pending"
-                            ? " text-yellow-800"
-                            : " text-red-800"
-                        }`}
-                      >
-                        {query.status}
-                      </span>
-                    </p>
-                  </div>
-                  <button
-                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition-colors duration-200"
-                    onClick={() => setModalFullDetailOpen(true)}
+          <div className="w-full flex flex-wrap space-3 gap-x-1 gap-y-4">
+            {filteredData.map((query) => {
+               const {
+                id,
+                fullname,
+                city,
+                status,
+                phone_number,
+                avatar
+              } = query;
+              return(
+                <div
+                    key={id}
+                    className="relative w-[240px] border p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 bg-white"
                   >
-                    View Details
-                  </button>
-                </div>
+                    <div className="flex items-center justify-center mb-4">
+                      <div className="">
+                        <img
+                          src={`https://i.pravatar.cc/150?u=${id}`}
+                          alt={fullname}
+                          className="w-10 h-10 rounded-full mr-4"
+                        />
+                        <span
+                          className={`absolute top-2 right-3 h-3 w-3 rounded-full ${
+                            query.status === "Accepted"
+                              ? "bg-green-400 text-green-800"
+                              : query.status === "Pending"
+                              ? "bg-yellow-400 text-yellow-800"
+                              : "bg-red-400 text-red-800"
+                          }`}
+                        ></span>
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <h2 className="font-bold text-lg mb-2">{fullname}</h2>
+                      <div className="text-sm text-gray-600">
+                        <p className="flex w-full justify-between mb-2">
+                          <strong>Query ID:</strong> <p>{id}</p>
+                        </p>
+                        <p className="flex w-full justify-between mb-2">
+                          <strong>Phone:</strong> {phone_number}
+                        </p>
+                        <p className="flex w-full justify-between mb-2">
+                          <strong>Location:</strong> {city}
+                        </p>
+                         <p className="flex w-full justify-between mb-2">
+                           <strong>Status:</strong>{" "}
+                           <span
+                             className={`${
+                               query.status === "Accepted"
+                                 ? " text-green-800"
+                                 : query.status === "Pending"
+                                 ? " text-yellow-800"
+                                 : " text-red-800"
+                             }`}
+                           >
+                             {status}
+                           </span>
+                         </p>
+                       </div>
+                       <button
+                         className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg w-full hover:bg-blue-600 transition-colors duration-200"
+                         onClick={() => handleViewQueryProfile(id)}
+                       >
+                         View Details
+                       </button>
+                     </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       ) : (
@@ -511,7 +558,7 @@ const QueriesComponent = () => {
 
           {/* Profile Photo */}
           <div className="">
-            <img src="https://randomuser.me/api/portraits/women/1.jpg" className="h-20 w-20 rounded-full mt-5 ml-2"></img>
+            <img  src={`https://i.pravatar.cc/150?u=${selectedQuerytDetails.id}`} className="h-20 w-20 rounded-full mt-5 ml-2"></img>
           </div>
           <p className="text-sm text-blue-500">Profile Photo</p>
 
@@ -524,8 +571,9 @@ const QueriesComponent = () => {
               <input
                 type="text"
                 name="fullname"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
                 placeholder="Enter your name"
+                value={selectedQuerytDetails.fullname}
                 disabled
               />
             </div>
@@ -535,9 +583,10 @@ const QueriesComponent = () => {
                 Date of Birth{" "}
               </label>
               <input
-                type="date"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                // type="date"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-neutral-700"
                 name="dateofbirth"
+                value={selectedQuerytDetails.date_of_birth}
                 disabled
               ></input>
             </div>
@@ -549,8 +598,9 @@ const QueriesComponent = () => {
               <input
                 type="tel"
                 placeholder="Enter your phone number"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
                 name="mobileno"
+                value={selectedQuerytDetails.phone_number}
                 disabled
               />
             </div>
@@ -562,8 +612,9 @@ const QueriesComponent = () => {
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
                 name="email"
+                value={selectedQuerytDetails.email}
                 disabled
               />
             </div>
@@ -576,15 +627,13 @@ const QueriesComponent = () => {
               <label className="block text-sm text-[#202224] font-semibold">
                 City
               </label>
-              <select
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                name="city"
+               <input
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+                placeholder="Enter your name"
+                value={selectedQuerytDetails.city}
                 disabled
-              >
-                <option value="">Select City</option>
-                <option value="City1">City1</option>
-                <option value="City2">City2</option>
-              </select>
+              />
+              
             </div>
             {/* pin code */}
             <div className="mt-3 sm:mt-0">
@@ -592,9 +641,8 @@ const QueriesComponent = () => {
                 Pin code
               </label>
               <input
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-                name="pincode"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  text-neutral-700"
+                value={selectedQuerytDetails.pincode}
                 placeholder="Pincode"
                 disabled
               />
@@ -604,15 +652,11 @@ const QueriesComponent = () => {
               <label className="block text-sm text-[#202224] font-semibold">
                 State
               </label>
-              <select
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-                name="state"
+              <input
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.state}
                 disabled
-              >
-                <option value="">Select State</option>
-                <option value="State1">State1</option>
-                <option value="State2">State2</option>
-              </select>
+              />
             </div>
             {/* Locality */}
             <div className="mt-3">
@@ -620,10 +664,8 @@ const QueriesComponent = () => {
                 Locality (Optional)
               </label>
               <input
-                type="text"
-                placeholder=""
-                name="locality"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.locality}
                 disabled
               />
             </div>
@@ -640,9 +682,9 @@ const QueriesComponent = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
                 name="licenseNumber"
-                placeholder="Driver’s License Number"
+                value={selectedQuerytDetails.license_number}
                 disabled
               />
             </div>
@@ -651,15 +693,12 @@ const QueriesComponent = () => {
               <label className="block text-sm text-[#202224] font-semibold">
                 License Issuing State (Dropdown)
               </label>
-              <select
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="licenseState"
+              <input
+                type="text"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.license_issue_state}
                 disabled
-              >
-                <option value="">Select License Issuing State</option>
-                <option value="State1">State1</option>
-                <option value="State2">State2</option>
-              </select>
+              />
             </div>
             {/* expiry date */}
             <div className="mt-3">
@@ -667,10 +706,9 @@ const QueriesComponent = () => {
                 License Expiry Date
               </label>
               <input
-                type="date"
-                placeholder="Date"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none "
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
                 name="licenseExpiryDate"
+                value={selectedQuerytDetails.license_expiry_date}
                 disabled
               />
             </div>
@@ -679,16 +717,12 @@ const QueriesComponent = () => {
               <label className="block text-sm text-[#202224] font-semibold">
                 License Type (Manual/Automatic/Both)
               </label>
-              <select
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="licenseType"
+              <input
+                type="text"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.license_type}
                 disabled
-              >
-                <option value="">Select License Type</option>
-                <option value="Manual">Manual</option>
-                <option value="Automatic">Automatic</option>
-                <option value="Both">Both</option>
-              </select>
+              />
             </div>
 
             {/* checkboxes */}
@@ -702,8 +736,10 @@ const QueriesComponent = () => {
                   <input
                     type="radio"
                     name="certificateIV"
-                    value="Yes"
-                    className="mr-2"
+                    value="yes"
+                    className="mr-2 text-red-600 focus:ring-red-500"
+                    checked={selectedQuerytDetails.training_certificate === "yes"} 
+                    disabled
                   />
                   Yes
                 </label>
@@ -711,8 +747,10 @@ const QueriesComponent = () => {
                   <input
                     type="radio"
                     name="certificateIV"
-                    value="No"
-                    className="mr-2"
+                    disabled
+                    className="mr-2 text-blue-500"
+                    value="no"
+                    checked={selectedQuerytDetails.training_certificate === "no"} 
                   />
                   No
                 </label>
@@ -730,16 +768,11 @@ const QueriesComponent = () => {
               <label className="block text-sm text-[#202224] font-semibold">
                 Years of Experience
               </label>
-              <select
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="yearsOfExperience"
-              >
-                <option value="">Select Experience</option>
-                <option value="1-2">1-2 years</option>
-                <option value="3-5">3-5 years</option>
-                <option value="6-10">6-10 years</option>
-                <option value="10+">10+ years</option>
-              </select>
+              <input
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.experience}
+                disabled
+              />
             </div>
             {/*  Available Days (Optional)*/}
             <div className="mt-3 sm:mt-0">
@@ -748,8 +781,9 @@ const QueriesComponent = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
                 name="availableDays"
+                value={selectedQuerytDetails.available_days}
                 disabled
               />
             </div>
@@ -765,9 +799,8 @@ const QueriesComponent = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="vehicleMake"
-                placeholder=""
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.vehicle_company}
                 disabled
               />
             </div>
@@ -779,9 +812,8 @@ const QueriesComponent = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="vehicleModel"
-                placeholder=""
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.vehicle_model}
                 disabled
               />
             </div>
@@ -792,9 +824,8 @@ const QueriesComponent = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="vehicleYear"
-                placeholder=""
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.vehicle_year}
                 disabled
               />
             </div>
@@ -806,9 +837,8 @@ const QueriesComponent = () => {
               </label>
               <input
                 type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
-                name="vehicleRegNumber"
-                placeholder=""
+                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+                value={selectedQuerytDetails.vehicle_registration_no}
                 disabled
               />
             </div>
@@ -881,13 +911,7 @@ const QueriesComponent = () => {
                 />
               </div>
             </div>
-            {/* Add vehicle button */}
-            <button className="px-3 py-2 flex items-center gap-3 rounded-md bg-slate-200 mt-6 border border-gray-50">
-              <span className="text-gray-500">
-                <FaPlus />
-              </span>
-              <span>Add New Vehicle</span>
-            </button>
+          
           </div>
 
           <hr className="my-10"></hr>
@@ -1073,8 +1097,8 @@ const QueriesComponent = () => {
               id="description"
               name="selfdescription"
               rows="10"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
-              placeholder="I am an experienced driving instructor with a passion for teaching and..."
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
+              value={selectedQuerytDetails.description}
               disabled
             />
           </div>

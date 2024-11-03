@@ -7,7 +7,6 @@ import { FaAngleRight } from "react-icons/fa6";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import { GoArrowLeft } from "react-icons/go";
-import { BookingCard } from "./AllBookings";
 import axios from "../../axios";
 
 const testimonialsData = [
@@ -76,60 +75,72 @@ const testimonialsData = [
       "Amazing guidance and instruction. Passed the test on my first attempt!",
   },
 ];
-const bookingData = [
-  {
-    id: "#AU-BK-2024-00123",
-    instructor: "Robert Fox",
-    learner: "Leslie Alexander",
-    bookingDate: "2024-10-02",
-    packageType: "Standard",
-    sessionFee: "$550",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/1.jpg",
-    learnerAvatar: "https://randomuser.me/api/portraits/women/1.jpg",
-  },
-  {
-    id: "#AU-BK-2024-00124",
-    instructor: "Jacob Jones",
-    learner: "Courtney Henry",
-    bookingDate: "2024-09-15",
-    packageType: "Premium",
-    sessionFee: "$750",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/2.jpg",
-    learnerAvatar: "https://randomuser.me/api/portraits/women/2.jpg",
-  },
-  {
-    id: "#AU-BK-2024-00125",
-    instructor: "Wade Warren",
-    learner: "Jane Cooper",
-    bookingDate: "2024-09-30",
-    packageType: "Basic",
-    sessionFee: "$450",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/3.jpg",
-    learnerAvatar: "https://randomuser.me/api/portraits/women/3.jpg",
-  },
-  {
-    id: "#AU-BK-2024-00126",
-    instructor: "Albert Flores",
-    learner: "Theresa Webb",
-    bookingDate: "2024-08-21",
-    packageType: "Standard",
-    sessionFee: "$500",
-    instructorAvatar: "https://randomuser.me/api/portraits/men/4.jpg",
-    learnerAvatar: "https://randomuser.me/api/portraits/women/4.jpg",
-  },
-];
+
+export const BookingCard = ({ booking , instructor}) => {
+  const{first_name,last_name,profileImg}=booking?.learner?.user_id;
+  return (
+    <div className="bg-white shadow-lg rounded-lg p-4  flex flex-col justify-between items-center border border-solid border-neutral-100">
+      <div className="flex justify-center mb-4">
+        <img
+          className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
+          src={instructor.profileImg}
+          alt="Instructor Avatar"
+        />
+        <img
+          className="w-12 h-12 rounded-full border-2 border-white shadow-lg "
+          src={profileImg}
+          alt="Learner Avatar"
+        />
+      </div>
+       <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
+      <div className="w-full">
+        <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
+          Instructor: <span className="font-normal text-black">{instructor.first_name} {instructor.last_name}</span>
+        </p>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Learner: <span className="font-normal text-black">{first_name} {last_name}</span>
+        </p>
+        <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
+          Date:{" "}
+          <span className="font-normal shrink-0 text-black">
+            {new Date(booking?.start_date).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </span>
+        </p>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Package Type:{" "}
+          <span className="font-normal text-black">package type</span>
+        </p>
+        <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+          Session Fee: <span className="font-normal text-black">sessionFee</span>
+        </p>
+      </div>
+
+      <button
+        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
+      >
+        View Details
+      </button> 
+    </div>
+  );
+};
 
 export const InstructorDetailModal = ({
   setModalInstructorDetailOpen,
   selectedInstructorDetails,
 }) => {
-  const { first_name, last_name, phoneNumber, email, location, date_of_birth } =
+  const { first_name, last_name, phoneNumber, email, location, date_of_birth,profileImg } =
     selectedInstructorDetails[0]?.user_id;
 
   const [currentPage, setCurrentPage] = useState(1);
   const testimonialsPerPage = 3;
 
-  const totalPages = Math.ceil(testimonialsData.length / testimonialsPerPage);
+  const totalPages = Math.ceil(
+    selectedInstructorDetails[0].ratings.length / testimonialsPerPage
+  );
   const startIndex = (currentPage - 1) * testimonialsPerPage;
 
   const currentTestimonials = testimonialsData.slice(
@@ -137,7 +148,6 @@ export const InstructorDetailModal = ({
     startIndex + testimonialsPerPage
   );
 
-  // Handle the next and previous page toggles
   const nextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -147,30 +157,6 @@ export const InstructorDetailModal = ({
   const prevPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const [currentBookingPage, setCurrentBookingPage] = useState(1);
-  const bookingsPerPage = 3;
-
-  const totalBookingPages = Math.ceil(bookingData.length / bookingsPerPage);
-  const bookingCardstartIndex = (currentBookingPage - 1) * bookingsPerPage;
-
-  const currentBookings = bookingData.slice(
-    bookingCardstartIndex,
-    bookingCardstartIndex + bookingsPerPage
-  );
-
-  // Handle the next and previous page toggles
-  const nextBookingsPage = () => {
-    if (currentBookingPage < totalBookingPages) {
-      setCurrentBookingPage(currentBookingPage + 1);
-    }
-  };
-
-  const prevBookingsPage = () => {
-    if (currentBookingPage > 1) {
-      setCurrentBookingPage(currentBookingPage - 1);
     }
   };
 
@@ -186,7 +172,7 @@ export const InstructorDetailModal = ({
         <div className="flex justify-between p-4">
           <div className="flex gap-4 items-start">
             <img
-              src="https://randomuser.me/api/portraits/men/8.jpg"
+              src={profileImg}
               className="w-16 h-16 rounded-full"
             ></img>
 
@@ -225,13 +211,11 @@ export const InstructorDetailModal = ({
               <div className="font-bold mt-4">Years of Experience</div>
               <div className="">3 years</div>
               <div className="font-bold mt-4">Last Active Date</div>
-              <div>02/10/2024</div>
+              <div>{selectedInstructorDetails[0]?.Last_active_date}</div>
               <div className="font-bold mt-4">Location</div>
-              <div>Sydney,xyz</div>
-              <div>Postcode,2000</div>
-              <div>Area,abc</div>
+              <div>{location}</div>
               <div className="font-bold mt-4">Date Joined</div>
-              <div>02/10/2024</div>
+              <div>{selectedInstructorDetails[0]?.Joining_date}</div>
             </div>
             <hr className="border-neutral-100"></hr>
 
@@ -292,7 +276,7 @@ export const InstructorDetailModal = ({
                     <div className="font-bold mt-4">Vehicle Year</div>
                     <div>{vehicleInfo.Year}</div>
                     <div className="font-bold mt-4">
-                      Vehicle Registration Numbe{" "}
+                      Vehicle Registration Number{" "}
                     </div>
                     <div>{vehicleInfo.Registration_number}</div>
                     <div className="flex mt-4 gap-3">
@@ -428,14 +412,21 @@ export const InstructorDetailModal = ({
           <div className="text-2xl font-bold text-secondary-500 my-2">
             Bookings
           </div>
-
-          <div className="flex space-x-3 gap-3 my-5">
-            {currentBookings.map((booking) => (
-              <BookingCard key={booking.id} booking={booking} />
+          {
+            selectedInstructorDetails[0].booking.length!==0?
+            <div className="flex space-x-3 gap-3 my-5">
+            {selectedInstructorDetails[0].booking.map((booking) => (
+              <BookingCard key={booking.id} booking={booking} instructor={selectedInstructorDetails[0].user_id} />
             ))}
           </div>
+          :
+          <div className="text-gray-500 font-medium text-lg text-center">
+          No bookings yet
+          </div>
+          }
+         
 
-          <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+          {/* <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
             <div className="flex justify-center space-x-2 ">
               {[...Array(totalBookingPages)].map((_, i) => (
                 <button
@@ -451,7 +442,7 @@ export const InstructorDetailModal = ({
                 </button>
               ))}
             </div>
-            {/* pagination buttons */}
+           
             <div>
               <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
                 <FaAngleLeft
@@ -472,7 +463,7 @@ export const InstructorDetailModal = ({
                 />
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
         <hr className="border-neutral-100"></hr>
         {/* Stastistics details */}
@@ -488,80 +479,88 @@ export const InstructorDetailModal = ({
           <div className="text-2xl font-bold text-secondary-500">
             Testimonials
           </div>
-
+          {
+          selectedInstructorDetails[0].ratings.length!==0?
           <div>
-            {selectedInstructorDetails[0].ratings.map((data) => {
-              const formattedDate = new Date(
-                data.date_updated
-              ).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              });
-              return (
-                data.Reviews && (
-                  <div
-                    key={data.id}
-                    className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
-                  >
-                    <div className="text-neutral-800">{data.Reviews}</div>
-                    <div className="flex gap-3 items-center mt-3">
-                      <img
-                        src={data.avatar}
-                        className="w-12 h-12 rounded-full"
-                      ></img>
-                      <div>
-                        <div className="font-semibold text-sm">
-                          {data.Given_by.user_id.first_name}{" "}
-                          {data.Given_by.user_id.last_name}
-                        </div>
-                        <div className="text-xs">{formattedDate}</div>
+          <div>
+          {selectedInstructorDetails[0].ratings.map((data) => {
+            const formattedDate = new Date(
+              data.date_updated
+            ).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            });
+            return (
+              data.Reviews && (
+                <div
+                  key={data.id}
+                  className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
+                >
+                  <div className="text-neutral-800">{data.Reviews}</div>
+                  <div className="flex gap-3 items-center mt-3">
+                    <img
+                      src={data.avatar}
+                      className="w-12 h-12 rounded-full"
+                    ></img>
+                    <div>
+                      <div className="font-semibold text-sm">
+                        {data.Given_by.user_id.first_name}{" "}
+                        {data.Given_by.user_id.last_name}
                       </div>
+                      <div className="text-xs">{formattedDate}</div>
                     </div>
                   </div>
-                )
-              );
-            })}
-          </div>
-          {/* pagination buttons */}
-          <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
-            <div className="flex justify-center space-x-2 ">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`h-7 w-7 text-gray-500  ${
-                    currentPage === i + 1
-                      ? "bg-black text-white rounded-full"
-                      : ""
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-            <div>
-              <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
-                <FaAngleLeft
-                  onClick={prevPage}
-                  className={`${currentPage === 1 ? "text-gray-500" : ""}`}
-                />
+                </div>
+              )
+            );
+          })}
+        </div>
+        {/* pagination buttons */}
+        <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+          <div className="flex justify-center space-x-2 ">
+            {[...Array(totalPages)].map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentPage(i + 1)}
+                className={`h-7 w-7 text-gray-500  ${
+                  currentPage === i + 1
+                    ? "bg-black text-white rounded-full"
+                    : ""
+                }`}
+              >
+                {i + 1}
               </button>
-              <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
-                <FaAngleRight
-                  onClick={nextPage}
-                  className={`${
-                    currentPage === totalPages ? "text-gray-500" : ""
-                  }`}
-                />
-              </button>
-            </div>
+            ))}
           </div>
+          <div>
+            <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
+              <FaAngleLeft
+                onClick={prevPage}
+                className={`${currentPage === 1 ? "text-gray-500" : ""}`}
+              />
+            </button>
+            <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
+              <FaAngleRight
+                onClick={nextPage}
+                className={`${
+                  currentPage === totalPages ? "text-gray-500" : ""
+                }`}
+              />
+            </button>
+          </div>
+        </div>
+        </div>
+        :<div className="text-gray-500 font-medium text-lg text-center">
+          No Reviews
+        </div>
+          }
+         
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full">
+      <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full z-20">
         <button className="bg-error-200 rounded-md px-8 py-2 text-white transition-colors duration-200 hover:bg-error-300">
           Ban Account
         </button>
@@ -585,7 +584,6 @@ const AllInstructors = () => {
   const [modalInstructorDetailOpen, setModalInstructorDetailOpen] =
     useState(false);
   const [instructorDetails, setInstructorDetails] = useState([]);
-  const [selectedInstructorId, setSelectedInstructorId] = useState(null);
   const [selectedInstructorDetails, setSelectedInstructorDetails] =
     useState(null);
 
@@ -601,151 +599,28 @@ const AllInstructors = () => {
       console.log("error in fetching data", error);
     }
   };
-  //
+
   const handleViewprofile = async (instructorId) => {
     try {
       //API for fetching instructor detail by Id
-      setSelectedInstructorId(instructorId);
       const response = await axios(
-        `items/Instructor?fields=*,user_id.*,booking.*,booking.learner.user_id.first_name,booking.learner.user_id.last_name,vehicle.*,ratings.*,ratings.Given_by.user_id.first_name,ratings.Given_by.user_id.last_name,ratings.Given_by.user_id.profileImg,vehicle.*&filter[id]=${instructorId}`
+        `items/Instructor?fields=*,user_id.*,booking.*,booking.learner.user_id.first_name,booking.learner.user_id.last_name,booking.learner.user_id.profileImg,vehicle.*,ratings.*,ratings.Given_by.user_id.first_name,ratings.Given_by.user_id.last_name,ratings.Given_by.user_id.profileImg,vehicle.*&filter[id]=${instructorId}`
       );
-      const instructorData = response.data;
+      const instructorData = await response.data;
       setSelectedInstructorDetails(instructorData.data);
-      console.log("instructorData", selectedInstructorDetails);
       setModalInstructorDetailOpen(true);
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
+  console.log("instructorData", selectedInstructorDetails);
 
   useEffect(() => {
     getInstructors();
   }, []);
 
-  useEffect(() => {
-    if (selectedInstructorId) {
-    }
-  }, [selectedInstructorId]);
-
-  const instructors = [
-    {
-      id: 1,
-      name: "Rakesh Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Active",
-      experience: "3-5 years",
-      profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: 2,
-      name: "Ishika Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "onLeave",
-      experience: "1-3 years",
-      profileImage: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 3,
-      name: "Kunal Sharma",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Inactive",
-      experience: "Less than 1 year",
-      profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      id: 4,
-      name: "Rakesh Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Active",
-      experience: "3-5 years",
-      profileImage: "https://randomuser.me/api/portraits/men/4.jpg",
-    },
-    {
-      id: 5,
-      name: "Ishika Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "onLeave",
-      experience: "1-3 years",
-      profileImage: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 6,
-      name: "Kunal Sharma",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Inactive",
-      experience: "Less than 1 year",
-      profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      id: 7,
-      name: "Rakesh Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Active",
-      experience: "3-5 years",
-      profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: 8,
-      name: "Ishika Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "onLeave",
-      experience: "1-3 years",
-      profileImage: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 9,
-      name: "Kunal Sharma",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Inactive",
-      experience: "Less than 1 year",
-      profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    {
-      id: 10,
-      name: "Rakesh Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Active",
-      experience: "3-5 years",
-      profileImage: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      id: 11,
-      name: "Ishika Mehta",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "onLeave",
-      experience: "1-3 years",
-      profileImage: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    {
-      id: 12,
-      name: "Kunal Sharma",
-      phone: "9876543210",
-      location: "Mumbai",
-      availability: "Inactive",
-      experience: "Less than 1 year",
-      profileImage: "https://randomuser.me/api/portraits/men/3.jpg",
-    },
-    // Add more instructors here
-  ];
-
   // Filter instructors based on search term, experience, and availability
   const filteredInstructors = instructorDetails.filter((instructor) => {
-    //const {first_name,last_name,location,phoneNumber,email } = instructor.userid;
-    // return (
-    //   instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    //   (!selectedExperience || instructor.experience === selectedExperience) &&
-    //   (!selectedAvailability ||
-    //     instructor.availability === selectedAvailability)
-    // );
     return (
       instructor?.user_id?.first_name
         .toLowerCase()
@@ -843,9 +718,8 @@ const AllInstructors = () => {
                 last_name,
                 location,
                 phoneNumber,
-                profileImg,
-                email,
-              } = instructor.user_id;
+                profileImg
+              } = instructor?.user_id;
 
               return (
                 <div
