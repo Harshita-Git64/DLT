@@ -235,7 +235,7 @@ const QueriesComponent = () => {
             <FaCaretDown />
           </button>
 
-          <button
+          {/* <button
             onClick={() => setModalStatusOpen(true)}
             className={`p-3 rounded-lg font-semibold font-poppins text-desk-b-3 text-neutral-600 ${
               statusFilter === "Pending"
@@ -246,6 +246,15 @@ const QueriesComponent = () => {
                 ? "text-red-700 bg-red-100"
                 : "text-gray-700 bg-gray-100"
             } flex gap-1 items-center bg-white `}
+          >
+            {" "}
+            Status: {statusFilter}
+            <FaCaretDown />
+          </button> */}
+   
+           <button
+            onClick={() => setModalStatusOpen(true)}
+            className=" p-3 rounded-lg font-semibold font-poppins text-desk-b-3 text-neutral-600 flex gap-1 items-center bg-white "
           >
             {" "}
             Status: {statusFilter}
@@ -359,38 +368,38 @@ const QueriesComponent = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((instructor) => (
-                  <tr key={instructor.id} className="border-t border-gray-200">
-                    <td className="py-3 px-4 flex items-center">
+                {filteredData.map((query) => (
+                  <tr key={query.id} className="border-t border-gray-200">
+                    <td className="py-3 px-4  flex items-center ">
                       {/* Replace the following with profileImage if available */}
                       <img
-                        src={`https://i.pravatar.cc/150?u=${instructor.id}`}
-                        alt={instructor.name}
-                        className="w-10 h-10 rounded-full mr-8"
+                        src={`https://i.pravatar.cc/150?u=${query.id}`}
+                        alt={query.fullname}
+                        className="w-10 h-10 rounded-full mr-20"
                       />
-                      <span className="font-medium text-blue-600">
-                        {instructor.name}
-                      </span>
+                      <div className="font-medium text-blue-600">
+                        {query.fullname}
+                      </div>
                     </td>
-                    <td className="py-3 px-4">{instructor.phone}</td>
-                    <td className="py-3 px-4">{instructor.location}</td>
+                    <td className="py-3 px-4">{query.phone_number}</td>
+                    <td className="py-3 px-4">{query.city}</td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-3 py-1 rounded-md text-sm ${
-                          instructor.status === "Accepted"
+                          query.status === "Accepted"
                             ? "bg-green-100 text-green-800"
-                            : instructor.status === "Pending"
+                            : query.status === "Pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {instructor.status}
+                        {query.status}
                       </span>
                     </td>
                     <td className="py-3 px-4">
                       <button
                         className="text-white focus:outline-none bg-secondary-400 py-2 px-4 rounded-md transition-colors duration-200"
-                        onClick={() => setModalFullDetailOpen(true)}
+                        onClick={() =>  handleViewQueryProfile(query.id)}
                       >
                         View Details
                       </button>

@@ -8,6 +8,21 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import { GoArrowLeft } from "react-icons/go";
 import axios from "../../axios";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend,
+  BarChart,
+  Bar,
+} from "recharts";
 
 const testimonialsData = [
   {
@@ -76,8 +91,8 @@ const testimonialsData = [
   },
 ];
 
-export const BookingCard = ({ booking , instructor}) => {
-  const{first_name,last_name,profileImg}=booking?.learner?.user_id;
+export const BookingCard = ({ booking, instructor }) => {
+  const { first_name, last_name, profileImg } = booking?.learner?.user_id;
   return (
     <div className="bg-white shadow-lg rounded-lg p-4  flex flex-col justify-between items-center border border-solid border-neutral-100">
       <div className="flex justify-center mb-4">
@@ -92,13 +107,19 @@ export const BookingCard = ({ booking , instructor}) => {
           alt="Learner Avatar"
         />
       </div>
-       <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
+      <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
       <div className="w-full">
         <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
-          Instructor: <span className="font-normal text-black">{instructor.first_name} {instructor.last_name}</span>
+          Instructor:{" "}
+          <span className="font-normal text-black">
+            {instructor.first_name} {instructor.last_name}
+          </span>
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-          Learner: <span className="font-normal text-black">{first_name} {last_name}</span>
+          Learner:{" "}
+          <span className="font-normal text-black">
+            {first_name} {last_name}
+          </span>
         </p>
         <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
           Date:{" "}
@@ -115,15 +136,14 @@ export const BookingCard = ({ booking , instructor}) => {
           <span className="font-normal text-black">package type</span>
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-          Session Fee: <span className="font-normal text-black">sessionFee</span>
+          Session Fee:{" "}
+          <span className="font-normal text-black">sessionFee</span>
         </p>
       </div>
 
-      <button
-        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
-      >
+      <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full">
         View Details
-      </button> 
+      </button>
     </div>
   );
 };
@@ -132,8 +152,15 @@ export const InstructorDetailModal = ({
   setModalInstructorDetailOpen,
   selectedInstructorDetails,
 }) => {
-  const { first_name, last_name, phoneNumber, email, location, date_of_birth,profileImg } =
-    selectedInstructorDetails[0]?.user_id;
+  const {
+    first_name,
+    last_name,
+    phoneNumber,
+    email,
+    location,
+    date_of_birth,
+    profileImg,
+  } = selectedInstructorDetails[0]?.user_id;
 
   const [currentPage, setCurrentPage] = useState(1);
   const testimonialsPerPage = 3;
@@ -160,6 +187,258 @@ export const InstructorDetailModal = ({
     }
   };
 
+  //booking toggles
+  // const [currentBookingPage, setCurrentBookingPage] = useState(1);
+  // const bookingsPerPage = 3;
+
+  // const totalBookingPages = Math.ceil(bookingData.length / bookingsPerPage);
+  // const bookingCardstartIndex = (currentBookingPage - 1) * bookingsPerPage;
+
+  // const currentBookings = bookingData.slice(
+  //   bookingCardstartIndex,
+  //   bookingCardstartIndex + bookingsPerPage
+  // );
+
+  // // Handle the next and previous page toggles
+  // const nextBookingsPage = () => {
+  //   if (currentBookingPage < totalBookingPages) {
+  //     setCurrentBookingPage(currentBookingPage + 1);
+  //   }
+  // };
+
+  // const prevBookingsPage = () => {
+  //   if (currentBookingPage > 1) {
+  //     setCurrentBookingPage(currentBookingPage - 1);
+  //   }
+  // };
+
+  // revenew graph data.....................
+  const dataForYearRevenew = [
+    { name: "Jan", totalRevenue: 20, netProfit: -10 },
+    { name: "Feb", totalRevenue: 15, netProfit: -5 },
+    { name: "Mar", totalRevenue: 22, netProfit: 0 },
+    { name: "Apr", totalRevenue: 30, netProfit: 5 },
+    { name: "May", totalRevenue: 40, netProfit: 10 },
+    { name: "Jun", totalRevenue: 35, netProfit: 8 },
+    { name: "Jul", totalRevenue: 50, netProfit: 20 },
+    { name: "Aug", totalRevenue: 45, netProfit: 15 },
+    { name: "Sep", totalRevenue: 55, netProfit: 22 },
+    { name: "Oct", totalRevenue: 60, netProfit: 25 },
+    { name: "Nov", totalRevenue: 58, netProfit: 24 },
+    { name: "Dec", totalRevenue: 65, netProfit: 30 },
+  ];
+
+  const dataForMonthRevenew = [
+    { name: "Week 1", totalRevenue: 10, netProfit: -5 },
+    { name: "Week 2", totalRevenue: 15, netProfit: 0 },
+    { name: "Week 3", totalRevenue: 18, netProfit: 3 },
+    { name: "Week 4", totalRevenue: 22, netProfit: 5 },
+  ];
+
+  const dataForWeekRevenew = [
+    { name: "Mon", totalRevenue: 2, netProfit: -1 },
+    { name: "Tue", totalRevenue: 3, netProfit: 0 },
+    { name: "Wed", totalRevenue: 5, netProfit: 1 },
+    { name: "Thu", totalRevenue: 7, netProfit: 2 },
+    { name: "Fri", totalRevenue: 10, netProfit: 5 },
+    { name: "Sat", totalRevenue: 8, netProfit: 4 },
+    { name: "Sun", totalRevenue: 9, netProfit: 4 },
+  ];
+
+  const overallDataRevenew = [
+    { name: "2021", totalRevenue: 500, netProfit: 200 },
+    { name: "2022", totalRevenue: 600, netProfit: 250 },
+    { name: "2023", totalRevenue: 700, netProfit: 300 },
+    { name: "2024", totalRevenue: 800, netProfit: 350 },
+  ];
+  const [selectedDataRevenew, setselectedDataRevenew] =
+    useState(dataForYearRevenew);
+  const [activeTimeframe, setActiveTimeframe] = useState("thisYear");
+
+  const handleTimeframeChange = (event) => {
+    const selectedTimeframe = event.target.value;
+    setActiveTimeframe(selectedTimeframe);
+    switch (selectedTimeframe) {
+      case "thisWeek":
+        setselectedDataRevenew(dataForWeekRevenew);
+        break;
+      case "thisMonth":
+        setselectedDataRevenew(dataForMonthRevenew);
+        break;
+      case "thisYear":
+        setselectedDataRevenew(dataForYearRevenew);
+        break;
+      case "overall":
+        setselectedDataRevenew(overallDataRevenew);
+        break;
+      default:
+        setselectedDataRevenew(dataForYearRevenew);
+    }
+  };
+
+   // diversity graph-------------------------------
+
+   const dataForYearForDiversity = [
+    { name: "Jan", male: 30, female: 20 },
+    { name: "Feb", male: 25, female: 15 },
+    { name: "Mar", male: 35, female: 25 },
+    { name: "Apr", male: 40, female: 30 },
+    { name: "May", male: 28, female: 20 },
+    { name: "Jun", male: 33, female: 22 },
+    { name: "Jul", male: 40, female: 30 },
+    { name: "Aug", male: 38, female: 28 },
+    { name: "Sep", male: 42, female: 32 },
+    { name: "Oct", male: 50, female: 35 },
+    { name: "Nov", male: 55, female: 38 },
+    { name: "Dec", male: 60, female: 40 },
+  ];
+
+  const dataForMonthForDiversity = [
+    { name: "Week 1", male: 10, female: 5 },
+    { name: "Week 2", male: 15, female: 7 },
+    { name: "Week 3", male: 18, female: 9 },
+    { name: "Week 4", male: 20, female: 10 },
+  ];
+
+  const dataForWeekForDiversity = [
+    { name: "Mon", male: 3, female: 2 },
+    { name: "Tue", male: 4, female: 3 },
+    { name: "Wed", male: 5, female: 4 },
+    { name: "Thu", male: 6, female: 5 },
+    { name: "Fri", male: 7, female: 5 },
+    { name: "Sat", male: 8, female: 6 },
+    { name: "Sun", male: 9, female: 6 },
+  ];
+
+  const overallDataForDiversity = [
+    { name: "2019", male: 400, female: 300 },
+    { name: "2020", male: 450, female: 350 },
+    { name: "2021", male: 500, female: 400 },
+    { name: "2022", male: 550, female: 450 },
+    { name: "2023", male: 600, female: 500 },
+  ];
+
+  const [selectedDataForDiversity, setSelectedDataForDiversity] = useState(
+    dataForYearForDiversity
+  );
+  const [timeframeForDiversity, setTimeframeForDiversity] =
+    useState("This Year");
+  const handleTimeframeChangeForDiversity = (event) => {
+    const selectedTimeframe = event.target.value;
+    setTimeframeForDiversity(selectedTimeframe);
+
+    switch (selectedTimeframe) {
+      case "This Week":
+        setSelectedDataForDiversity(dataForWeekForDiversity);
+        break;
+      case "This Month":
+        setSelectedDataForDiversity(dataForMonthForDiversity);
+        break;
+      case "This Year":
+        setSelectedDataForDiversity(dataForYearForDiversity);
+        break;
+      case "Overall":
+        setSelectedDataForDiversity(overallDataForDiversity);
+        break;
+      default:
+        setSelectedDataForDiversity(dataForYearForDiversity);
+    }
+  };
+
+ // States for each card's time filter
+ const [websiteVisitsFilter, setWebsiteVisitsFilter] = useState("This Month");
+ const [sessionDurationFilter, setSessionDurationFilter] =
+   useState("This Month");
+
+ // Data for each filter (replace with your actual data)
+ const websiteVisitsData = {
+   "This Week": 15000,
+   "This Month": 50000,
+   "This Year": 600000,
+   Overall: 3000000,
+ };
+
+ const sessionDurationData = {
+   "This Week": 5000,
+   "This Month": 15000,
+   "This Year": 180000,
+   Overall: 900000,
+ };
+
+ // Handler for changing website visits filter
+ const handleWebsiteVisitsFilterChange = (e) => {
+   setWebsiteVisitsFilter(e.target.value);
+ };
+
+ // Handler for changing session duration filter
+ const handleSessionDurationFilterChange = (e) => {
+   setSessionDurationFilter(e.target.value);
+ };
+ // Sample data for each time filter
+ const dataByWeek = [
+  { name: "Sunday", rate: 45 },
+  { name: "Monday", rate: 50 },
+  { name: "Tuesday", rate: 55 },
+  { name: "Wednesday", rate: 60 },
+  { name: "Thursday", rate: 62 },
+  { name: "Friday", rate: 65 },
+  { name: "Saturday", rate: 70 },
+];
+
+const dataByMonth = [
+  { name: "Week 1", rate: 50 },
+  { name: "Week 2", rate: 55 },
+  { name: "Week 3", rate: 60 },
+  { name: "Week 4", rate: 65 },
+];
+
+const dataByYear = [
+  { name: "January", rate: 45 },
+  { name: "February", rate: 50 },
+  { name: "March", rate: 55 },
+  { name: "April", rate: 60 },
+  { name: "May", rate: 62 },
+  { name: "June", rate: 65 },
+  { name: "July", rate: 67 },
+  { name: "August", rate: 70 },
+  { name: "September", rate: 72 },
+  { name: "October", rate: 75 },
+  { name: "November", rate: 78 },
+  { name: "December", rate: 80 },
+];
+
+const dataOverall = [
+  { name: "2019", rate: 40 },
+  { name: "2020", rate: 45 },
+  { name: "2021", rate: 50 },
+  { name: "2022", rate: 55 },
+  { name: "2023", rate: 60 },
+];
+
+// State to manage selected time filter and the corresponding data
+const [timeFilter, setTimeFilter] = useState("Year");
+const [chartData, setChartData] = useState(dataByYear);
+
+// Handler to update chart data based on the selected filter
+const handleTimeFilterChange = (e) => {
+  const selectedFilter = e.target.value;
+  setTimeFilter(selectedFilter);
+
+  switch (selectedFilter) {
+    case "Month":
+      setChartData(dataByMonth);
+      break;
+    case "Year":
+      setChartData(dataByYear);
+      break;
+    case "Overall":
+      setChartData(dataOverall);
+      break;
+    default:
+      setChartData(dataByWeek);
+      break;
+  }
+};
   return (
     <div>
       <GoArrowLeft
@@ -171,10 +450,7 @@ export const InstructorDetailModal = ({
         {/* profile section */}
         <div className="flex justify-between p-4">
           <div className="flex gap-4 items-start">
-            <img
-              src={profileImg}
-              className="w-16 h-16 rounded-full"
-            ></img>
+            <img src={profileImg} className="w-16 h-16 rounded-full"></img>
 
             <div>
               <h1 className="font-bold text-2xl">
@@ -197,7 +473,7 @@ export const InstructorDetailModal = ({
         <hr className="border-neutral-100"></hr>
 
         <div className="flex">
-          <div className="border-r-2 border-neutral-100 ">
+          <div className="border-r-2 border-neutral-100">
             {/* Personal details */}
             <div className="p-4 text-sm">
               <div className="font-bold mt-4">Phone Number</div>
@@ -412,21 +688,19 @@ export const InstructorDetailModal = ({
           <div className="text-2xl font-bold text-secondary-500 my-2">
             Bookings
           </div>
-          {
-            selectedInstructorDetails[0].booking.length!==0?
-            <div className="flex space-x-3 gap-3 my-5">
-            {selectedInstructorDetails[0].booking.map((booking) => (
-              <BookingCard key={booking.id} booking={booking} instructor={selectedInstructorDetails[0].user_id} />
-            ))}
-          </div>
-          :
-          <div className="text-gray-500 font-medium text-lg text-center">
-          No bookings yet
-          </div>
-          }
-         
+          {selectedInstructorDetails[0].booking.length !== 0 ? (
+            <div>
+              <div className="flex space-x-3 gap-3 my-5">
+                {selectedInstructorDetails[0].booking.map((booking) => (
+                  <BookingCard
+                    key={booking.id}
+                    booking={booking}
+                    instructor={selectedInstructorDetails[0].user_id}
+                  />
+                ))}
+              </div>
 
-          {/* <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+              {/* <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
             <div className="flex justify-center space-x-2 ">
               {[...Array(totalBookingPages)].map((_, i) => (
                 <button
@@ -463,13 +737,189 @@ export const InstructorDetailModal = ({
                 />
               </button>
             </div>
-          </div> */}
+          </div>  */}
+            </div>
+          ) : (
+            <div className="text-gray-500 font-medium text-lg text-center">
+              No bookings yet
+            </div>
+          )}
         </div>
         <hr className="border-neutral-100"></hr>
         {/* Stastistics details */}
         <div className="p-4">
           <div className="text-2xl font-bold text-secondary-500 my-2">
             Stastistics
+          </div>
+          <div>
+          <div className="p-4 ">
+            <div className="flex justify-between">
+            <h3 className="text-2xl font-semibold">Revenue</h3>
+            <div>
+                {/* Dropdown for selecting timeframe */}
+                <select
+                  className="border border-gray-300 p-2 rounded-md shadow-sm focus:outline-none"
+                  value={activeTimeframe}
+                  onChange={handleTimeframeChange}
+                >
+                  <option value="thisWeek">This Week</option>
+                  <option value="thisMonth">This Month</option>
+                  <option value="thisYear">This Year</option>
+                  <option value="overall">Overall</option>
+                </select>
+            </div>
+            </div>
+         
+          <div className="text-blue-600 text-4xl font-bold my-2">$50,000</div>
+          <div className="text-gray-500 mb-10">1500 Bookings</div>
+
+          {/* Line Chart */}
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={selectedDataRevenew}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="totalRevenue"
+                stroke="#007bff"
+                activeDot={{ r: 8 }}
+              />
+              <Line type="monotone" dataKey="netProfit" stroke="#ffc107" />
+            </LineChart>
+          </ResponsiveContainer>
+          </div>
+          <hr className="border-neutral-100"></hr>
+          <div className="flex">
+            {/* first column */}
+           <div className="border-r-2 border-neutral-100">
+              {/* Card 1 - Total Website Visits */}
+      <div className="bg-white p-6 h-[50%]">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Total Website Visits</h2>
+          <select
+            value={websiteVisitsFilter}
+            onChange={handleWebsiteVisitsFilterChange}
+            className="text-gray-500 focus:outline-none bg-transparent"
+          >
+            <option>This Week</option>
+            <option>This Month</option>
+            <option>This Year</option>
+            <option>Overall</option>
+          </select>
+        </div>
+        <div className="flex items-end">
+          <h1 className="text-5xl font-bold text-blue-600">
+            {websiteVisitsData[websiteVisitsFilter].toLocaleString()}
+          </h1>
+        </div>
+      </div>
+      <hr className="border-neutral-100"></hr>
+        {/* Card 2 - Total Session Duration */}
+        <div className="p-6 h-[50%]">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold">Total Session Duration:</h2>
+          <select
+            value={sessionDurationFilter}
+            onChange={handleSessionDurationFilterChange}
+            className="text-gray-500 focus:outline-none bg-transparent"
+          >
+            <option>This Week</option>
+            <option>This Month</option>
+            <option>This Year</option>
+            <option>Overall</option>
+          </select>
+        </div>
+        <div className="flex items-end">
+          <h1 className="text-5xl font-bold text-yellow-500">
+            {sessionDurationData[sessionDurationFilter].toLocaleString()}
+          </h1>
+          <span className="text-lg ml-2">minutes</span>
+        </div>
+      </div>
+      
+           </div>
+           <hr className="border-neutral-300"></hr>
+ {/* second column */}
+         <div className="w-[65%] p-6">
+            <div className="flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold">Student Enrollment</h2>
+                <div className="text-blue-600 text-4xl font-bold mt-2">
+                  5000 Students
+                </div>
+              </div>
+              <div>
+                {/* Dropdown for selecting timeframe */}
+                <select
+                  className="border border-gray-300 p-2 rounded-md shadow-sm"
+                  value={timeframeForDiversity}
+                  onChange={handleTimeframeChangeForDiversity}
+                >
+                  <option value="This Week">This Week</option>
+                  <option value="This Month">This Month</option>
+                  <option value="This Year">This Year</option>
+                  <option value="Overall">Overall</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Bar Chart */}
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={selectedDataForDiversity}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="male" stackId="a" fill="#007bff" />
+                <Bar dataKey="female" stackId="a" fill="#ffc107" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          </div>
+          <hr className="border-neutral-100"></hr>
+          {/* success rate of instructor */}
+          <div className="bg-white p-6">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-xl font-bold">
+          Average Success Rate of Instructors
+        </h2>
+        <select
+          value={timeFilter}
+          onChange={handleTimeFilterChange}
+          className="p-2 border rounded-lg shadow-sm focus:outline-none"
+        >
+          <option value="Week">This Week</option>
+          <option value="Month">This Month</option>
+          <option value="Year">This Year</option>
+          <option value="Overall">Overall (Past 5 Years)</option>
+        </select>
+      </div>
+
+      <div className="flex items-center">
+        <h1 className="text-5xl font-bold text-blue-600 mr-2">755</h1>
+        <span className="text-xl">Instructors</span>
+      </div>
+
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis domain={[20, 80]} />
+          <Tooltip />
+          <Line
+            type="monotone"
+            dataKey="rate"
+            stroke="#F6AD55"
+            strokeWidth={2}
+            dot
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
           </div>
         </div>
 
@@ -479,83 +929,82 @@ export const InstructorDetailModal = ({
           <div className="text-2xl font-bold text-secondary-500">
             Testimonials
           </div>
-          {
-          selectedInstructorDetails[0].ratings.length!==0?
-          <div>
-          <div>
-          {selectedInstructorDetails[0].ratings.map((data) => {
-            const formattedDate = new Date(
-              data.date_updated
-            ).toLocaleDateString("en-GB", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            });
-            return (
-              data.Reviews && (
-                <div
-                  key={data.id}
-                  className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
-                >
-                  <div className="text-neutral-800">{data.Reviews}</div>
-                  <div className="flex gap-3 items-center mt-3">
-                    <img
-                      src={data.avatar}
-                      className="w-12 h-12 rounded-full"
-                    ></img>
-                    <div>
-                      <div className="font-semibold text-sm">
-                        {data.Given_by.user_id.first_name}{" "}
-                        {data.Given_by.user_id.last_name}
+          {selectedInstructorDetails[0].ratings.length !== 0 ? (
+            <div>
+              <div>
+                {selectedInstructorDetails[0].ratings.map((data) => {
+                  const formattedDate = new Date(
+                    data.date_updated
+                  ).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  });
+                  return (
+                    data.Reviews && (
+                      <div
+                        key={data.id}
+                        className="rounded-md border border-gray-300 p-3 my-4 shadow-sm"
+                      >
+                        <div className="text-neutral-800">{data.Reviews}</div>
+                        <div className="flex gap-3 items-center mt-3">
+                          <img
+                            src={data.Given_by.user_id.profileImg}
+                            className="w-12 h-12 rounded-full"
+                          ></img>
+                          <div>
+                            <div className="font-semibold text-sm">
+                              {data.Given_by.user_id.first_name}{" "}
+                              {data.Given_by.user_id.last_name}
+                            </div>
+                            <div className="text-xs">{formattedDate}</div>
+                          </div>
+                        </div>
                       </div>
-                      <div className="text-xs">{formattedDate}</div>
-                    </div>
-                  </div>
+                    )
+                  );
+                })}
+              </div>
+              {/* pagination buttons */}
+              <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+                <div className="flex justify-center space-x-2 ">
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`h-7 w-7 text-gray-500  ${
+                        currentPage === i + 1
+                          ? "bg-black text-white rounded-full"
+                          : ""
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
                 </div>
-              )
-            );
-          })}
-        </div>
-        {/* pagination buttons */}
-        <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
-          <div className="flex justify-center space-x-2 ">
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`h-7 w-7 text-gray-500  ${
-                  currentPage === i + 1
-                    ? "bg-black text-white rounded-full"
-                    : ""
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-          </div>
-          <div>
-            <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
-              <FaAngleLeft
-                onClick={prevPage}
-                className={`${currentPage === 1 ? "text-gray-500" : ""}`}
-              />
-            </button>
-            <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
-              <FaAngleRight
-                onClick={nextPage}
-                className={`${
-                  currentPage === totalPages ? "text-gray-500" : ""
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-        </div>
-        :<div className="text-gray-500 font-medium text-lg text-center">
-          No Reviews
-        </div>
-          }
-         
+                <div>
+                  <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
+                    <FaAngleLeft
+                      onClick={prevPage}
+                      className={`${currentPage === 1 ? "text-gray-500" : ""}`}
+                    />
+                  </button>
+                  <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
+                    <FaAngleRight
+                      onClick={nextPage}
+                      className={`${
+                        currentPage === totalPages ? "text-gray-500" : ""
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-gray-500 font-medium text-lg text-center">
+              No Reviews
+            </div>
+          )}
         </div>
       </div>
 
@@ -589,7 +1038,7 @@ const AllInstructors = () => {
 
   const getInstructors = async () => {
     try {
-      //API for fetching all instructors
+      //API for fetching all instructor details
       const response = await axios(
         "items/Instructor?fields=id,Availibility,Experience,is_ban,user_id.id,user_id.first_name,user_id.last_name,user_id.email,user_id.phoneNumber,user_id.location,user_id.profileImg,user_id.status"
       );
@@ -718,7 +1167,7 @@ const AllInstructors = () => {
                 last_name,
                 location,
                 phoneNumber,
-                profileImg
+                profileImg,
               } = instructor?.user_id;
 
               return (
@@ -794,33 +1243,38 @@ const AllInstructors = () => {
                   <tr key={instructor.id} className="border-t border-gray-200">
                     <td className="py-3 px-4 flex items-center">
                       <img
-                        src={instructor.profileImage}
-                        alt={instructor.name}
+                        src={instructor?.user_id?.profileImg}
+                        alt={instructor?.user_id?.first_name}
                         className="w-10 h-10 rounded-full mr-8"
                       />
                       <span className="font-medium text-blue-600">
-                        {instructor.name}
+                        {instructor?.user_id?.first_name}{" "}
+                        {instructor?.user_id?.last_name}
                       </span>
                     </td>
-                    <td className="py-3 px-4">{instructor.phone}</td>
-                    <td className="py-3 px-4">{instructor.location}</td>
+                    <td className="py-3 px-4">
+                      {instructor?.user_id?.phoneNumber}
+                    </td>
+                    <td className="py-3 px-4">
+                      {instructor?.user_id?.location}
+                    </td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-3 py-1 rounded-md text-sm  ${
-                          instructor.availability === "Active"
+                          instructor.Availibility === "Active"
                             ? "bg-green-100 text-green-800"
-                            : instructor.availability === "onLeave"
+                            : instructor.Availibility === "onLeave"
                             ? "bg-yellow-100 text-red-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
-                        {instructor.availability}
+                        {instructor.Availibility}
                       </span>
                     </td>
                     <td className="py-3 px-4">
                       <button
                         className="bg-blue-500 text-white py-2 px-6 rounded-md"
-                        onClick={() => setModalInstructorDetailOpen(true)}
+                        onClick={() => handleViewprofile(instructor.id)}
                       >
                         View Profile
                       </button>
@@ -845,7 +1299,8 @@ const AllInstructors = () => {
             "Less than 1 year",
             "1-3 years",
             "3-5 years",
-            "More than 5 years",
+            "5-10 years",
+            "10+ years",
           ].map((experience) => (
             <button
               key={experience}

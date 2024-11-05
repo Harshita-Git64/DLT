@@ -10,7 +10,6 @@ import { MdDone } from "react-icons/md";
 import axios from "../../axios";
 
 const VisitorForm = () => {
-  
   const [currentStep, setCurrentStep] = useState(1);
   const [personalDetails, setPersonalDetails] = useState({
     profileimg: null,
@@ -23,6 +22,96 @@ const VisitorForm = () => {
     pincode: "", // Pincode (ZIP code)
     locality: "", // Locality or area of residence
   });
+
+
+  const [errors, setErrors] = useState({});
+    const validate = () => {
+      let formErrors = {};
+      if(currentStep===1){
+
+    // Full name validation
+    if (!personalDetails.fullname.trim()) {
+      formErrors.fullname = "Full name is required";
+    }
+
+    // Phone number validation (basic example for 10 digits)
+    const phonePattern = /^[0-9]{10}$/;
+    if (!phonePattern.test(personalDetails.phone_number)) {
+      formErrors.phone_number = "Phone number must be 10 digits";
+    }
+
+    // State validation
+    if (personalDetails.state==="Select a state" ||!personalDetails.state) {
+      formErrors.state = "Please select a state";
+    }
+    if (personalDetails.city==="Select a City" || !personalDetails.city) {
+      formErrors.city = "Please select a city";
+    }
+
+    // Date of birth validation
+    if (!personalDetails.date_of_birth) {
+      formErrors.date_of_birth = "Date of birth is required";
+    }
+
+    // Email validation (basic)
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!personalDetails.email) {
+      formErrors.email = "Please enter your email address";
+    }
+    else if (!emailPattern.test(personalDetails.email)) {
+      formErrors.email = "Invalid email address";
+    }
+
+    // Pincode validation (5 to 6 digits as an example)
+    const pincodePattern = /^[0-9]{5,6}$/;
+    if (!pincodePattern.test(personalDetails.pincode)) {
+      formErrors.pincode = "Pincode must be 5 or 6 digits";
+    }
+
+  }
+  else if(currentStep===2){
+    // License number validation
+    if (!vehicleDetails.license_number.trim()) {
+      formErrors.license_number = "License number is required";
+    }
+    // License issuing state validation
+    if (!vehicleDetails.license_issue_state || vehicleDetails.license_issue_state === "Select a state") {
+      formErrors.license_issue_state = "Please select a license issue state";
+    }
+    // License expiry date validation
+    if (!vehicleDetails.license_expiry_date) {
+      formErrors.license_expiry_date = "License expiry date is required";
+    }
+    // License type validation
+    if (!vehicleDetails.license_type) {
+      formErrors.license_type = "Please select the license type";
+    }
+     // Vehicle company validation
+    if (!vehicleDetails.vehicle_company.trim()) {
+      formErrors.vehicle_company = "Vehicle company is required";
+    }
+    // Vehicle model validation
+    if (!vehicleDetails.vehicle_model.trim()) {
+      formErrors.vehicle_model = "Vehicle model is required";
+    }
+    // Vehicle registration number validation
+    if (!vehicleDetails.vehicle_registration_no.trim()) {
+      formErrors.vehicle_registration_no = "Vehicle registration number is required";
+    }
+
+  }
+
+  else if(currentStep===3){
+    // validation for experience
+      if (experienceDetails.experience==="Select Experience" || !experienceDetails.experience) {
+      formErrors.experience = "Please select experience level";
+    }
+  }
+  setErrors(formErrors);
+  return Object.keys(formErrors).length === 0;
+  };
+
+  console.log("errors are",errors)
 
   const [vehicleDetails, setVehicleDetails] = useState({
     license_number: "", // Driver’s License Number
@@ -61,7 +150,7 @@ const VisitorForm = () => {
 
   }
   // Function to handle personal details for Step 1
-  const handleInputChange = (e) => {
+  const handlePersonalDetailChange = (e) => {
     const { name, value } = e.target;
     setPersonalDetails({
       ...personalDetails,
@@ -97,9 +186,15 @@ const VisitorForm = () => {
     });
   };
 
-// Move to the previous step
+// Move to the next step
   const nextStep = () => {
-    setCurrentStep(currentStep + 1);
+    if (validate()) {
+      setCurrentStep(currentStep + 1);
+      console.log("Form submitted");
+    }
+    else{
+      console.log("form not submitted")
+    }
   };
 
   // Move to the previous step
@@ -135,7 +230,7 @@ const VisitorForm = () => {
       alert("Please upload a valid image file.");
     }
   };
-  console.log("image is:", selectedImage);
+  //console.log("image is:", selectedImage);
 
   const steps = [
     "Personal Details",
@@ -293,9 +388,9 @@ const VisitorForm = () => {
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none"
                   placeholder="Enter your name"
                   value={personalDetails.fullname}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                 />
-                <p className="text-sm text-red-500 hidden">full name</p>
+                {errors.fullname &&  <p className="text-sm text-red-500 ml-1">{errors.fullname}</p>}
               </div>
               {/* Date of birth */}
               <div className="">
@@ -304,11 +399,12 @@ const VisitorForm = () => {
                 </label>
                 <input
                   type="date"
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   name="date_of_birth"
                   value={personalDetails.date_of_birth}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                 ></input>
+                 {errors.date_of_birth &&  <p className="text-sm text-red-500 ml-1">{errors.date_of_birth}</p>}
               </div>
               {/* Mobile Number */}
               <div>
@@ -321,11 +417,11 @@ const VisitorForm = () => {
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   name="phone_number"
                   value={personalDetails.phone_number}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                   pattern="[0-9]{10}"  
-                  maxlength="10"
-                  required
+                  maxLength="10"
                 />
+                 {errors.phone_number &&  <p className="text-sm text-red-500 ml-1">{errors.phone_number}</p>}
               </div>
               {/* Email */}
               <div>
@@ -338,24 +434,27 @@ const VisitorForm = () => {
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   name="email"
                   value={personalDetails.email}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                 />
+                 {errors.email &&  <p className="text-sm text-red-500 ml-1">{errors.email}</p>}
               </div>
+             
               {/* city */}
               <div>
                 <label className="block text-sm text-[#202224] font-semibold">
                   City
                 </label>
                 <select
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   name="city"
                   value={personalDetails.city}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                 >
-                  <option value="">Select City</option>
+                  <option value="">Select a City</option>
                   <option value="City1">City1</option>
                   <option value="City2">City2</option>
                 </select>
+                {errors.city &&  <p className="text-sm text-red-500 ml-1">{errors.city}</p>}
               </div>
               {/* pin code */}
               <div>
@@ -368,8 +467,9 @@ const VisitorForm = () => {
                   name="pincode"
                   placeholder="Pincode"
                   value={personalDetails.pincode}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                 />
+                 {errors.pincode &&  <p className="text-sm text-red-500 ml-1">{errors.pincode}</p>}
               </div>
               {/* state */}
               <div>
@@ -377,15 +477,16 @@ const VisitorForm = () => {
                   State
                 </label>
                 <select
-                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                   name="state"
                   value={personalDetails.state}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                 >
-                  <option value="">Select State</option>
+                  <option value="">Select a state</option>
                   <option value="State1">State1</option>
                   <option value="State2">State2</option>
                 </select>
+                {errors.state &&  <p className="text-sm text-red-500 ml-1">{errors.state}</p>}
               </div>
               {/* Locality */}
               <div>
@@ -397,7 +498,7 @@ const VisitorForm = () => {
                   placeholder=""
                   name="locality"
                   value={personalDetails.locality}
-                  onChange={handleInputChange}
+                  onChange={handlePersonalDetailChange}
                   className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none"
                 />
               </div>
@@ -443,6 +544,7 @@ const VisitorForm = () => {
                     value={vehicleDetails.license_number}
                     onChange={handleVehicleInputChange}
                   />
+                   {errors.license_number &&  <p className="text-sm text-red-500 ml-1">{errors.license_number}</p>}
                 </div>
 
                 {/* license issuing state */}
@@ -456,10 +558,11 @@ const VisitorForm = () => {
                     value={vehicleDetails.license_issue_state}
                     onChange={handleVehicleInputChange}
                   >
-                    <option value="">Select License Issuing State</option>
+                    <option value="">Select a state</option>
                     <option value="State1">State1</option>
                     <option value="State2">State2</option>
                   </select>
+                  {errors.license_issue_state &&  <p className="text-sm text-red-500 ml-1">{errors.license_issue_state}</p>}
                 </div>
               </div>
 
@@ -477,6 +580,7 @@ const VisitorForm = () => {
                     value={vehicleDetails.license_expiry_date}
                     onChange={handleVehicleInputChange}
                   />
+                    {errors.license_expiry_date &&  <p className="text-sm text-red-500 ml-1">{errors.license_expiry_date}</p>}
                 </div>
 
                 {/* license type */}
@@ -495,6 +599,7 @@ const VisitorForm = () => {
                     <option value="Automatic">Automatic</option>
                     <option value="Both">Both</option>
                   </select>
+                  {errors.license_type &&  <p className="text-sm text-red-500 ml-1">{errors.license_type}</p>}
                 </div>
               </div>
               {/* checkboxes */}
@@ -541,7 +646,6 @@ const VisitorForm = () => {
                   <label className="block text-sm text-[#202224] font-semibold">
                     Vehicle Make
                   </label>
-                 
                   <input
                     type="text"
                     className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none"
@@ -550,6 +654,7 @@ const VisitorForm = () => {
                     value={vehicleDetails.vehicle_company}
                     onChange={handleVehicleInputChange}
                   />
+                   {errors.vehicle_company &&  <p className="text-sm text-red-500 ml-1">{errors.vehicle_company}</p>}
                 </div>
 
                 {/* Vehicle Model */}
@@ -565,6 +670,7 @@ const VisitorForm = () => {
                     value={vehicleDetails.vehicle_model}
                     onChange={handleVehicleInputChange}
                   />
+                   {errors.vehicle_model &&  <p className="text-sm text-red-500 ml-1">{errors.vehicle_model}</p>}
                 </div>
               </div>
 
@@ -597,6 +703,7 @@ const VisitorForm = () => {
                     value={vehicleDetails.vehicle_registration_no}
                     onChange={handleVehicleInputChange}
                   />
+                  {errors.vehicle_registration_no &&  <p className="text-sm text-red-500 ml-1">{errors.vehicle_registration_no}</p>}
                 </div>
               </div>
 
@@ -834,11 +941,13 @@ const VisitorForm = () => {
                   }
                 >
                   <option value="">Select Experience</option>
-                  <option value="1-2">1-2 years</option>
-                  <option value="3-5">3-5 years</option>
-                  <option value="6-10">6-10 years</option>
-                  <option value="10+">10+ years</option>
+                  <option value="Less than 1 year">less than 1 year</option>
+                  <option value="1-3 years">1-3 years</option>
+                  <option value="3-5 years">3-5 years</option>
+                  <option value="5-10 years">5-10 years</option>
+                  <option value="10+ years">10+ years</option>
                 </select>
+                 {errors.experience &&  <p className="text-sm text-red-500 ml-1">{errors.experience}</p>}
               </div>
 
               {/*  Available Days (Optional)*/}

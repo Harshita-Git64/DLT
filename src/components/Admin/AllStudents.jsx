@@ -504,15 +504,19 @@ const AllStudents = () => {
   };
 
   const filteredStudents = studentDetails.filter((student) => {
+    const fullName = `${student?.user_id?.first_name || ''} ${student?.user_id?.last_name || ''}`.trim();
+
+
     const lessonFilter =
       lessonStatus === "All" || student.lession_status === lessonStatus;
 
     const enrolledDateFilter =
-      !enrolledDate || new Date(student.enrolledDate) >= new Date(enrolledDate);
+      !enrolledDate || new Date(student.Joining_date) >= new Date(enrolledDate);
 
     const searchFilter =
       searchTerm === "" ||
-      student?.user_id?.first_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      // student?.user_id?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) || student?.user_id?.last_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      fullName.toLowerCase().includes(searchTerm.toLowerCase())
 
     return lessonFilter && enrolledDateFilter && searchFilter;
   });
@@ -582,7 +586,7 @@ const AllStudents = () => {
         <div className="mt-10 flex flex-wrap gap-2 min-h-fit max-h-fit gap-y-6">
           {filteredStudents.map((item) => {
             const { first_name, last_name, phoneNumber, profileImg } =
-              item.user_id;
+              item?.user_id;
             return (
               <div
                 key={item.id}
@@ -641,18 +645,18 @@ const AllStudents = () => {
               </thead>
               <tbody>
                 {filteredStudents.map((student, index) => (
-                  <tr key={index} className="border-t border-gray-200">
+                  <tr key={student.id} className="border-t border-gray-200">
                     <td className="py-3 px-4 flex items-center">
                       <img
-                        src={student.profil}
-                        alt={student.name}
+                        src={student?.user_id?.profileImg}
+                        alt={student?.user_id?.first_name}
                         className="w-10 h-10 rounded-full mr-8"
                       />
                       <span className="font-medium text-blue-600">
-                        {student.name}
+                      {student?.user_id?.first_name} {student?.user_id?.last_name}
                       </span>
                     </td>
-                    <td className="py-3 px-4">{student.phone}</td>
+                    <td className="py-3 px-4">{student?.user_id?.phoneNumber}</td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-3 py-1 rounded-md text-sm  ${
@@ -670,7 +674,7 @@ const AllStudents = () => {
                     <td className="py-3 px-4">
                       <button
                         className="bg-blue-500 text-white py-2 px-4 rounded-md"
-                        onClick={() => setModalStudentDetailOpen(true)}
+                        onClick={() => handleViewStudentprofile(student.id)}
                       >
                         View Details
                       </button>

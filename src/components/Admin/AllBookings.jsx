@@ -88,11 +88,11 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Package Type
               </h3>
-              <p className="font-poppins text-[#202224]">Standard Package</p>
+              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.package.name}</p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Number of Lessons
               </h3>
-              <p className="font-poppins text-[#202224]">10</p>
+              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.package.total_lessons}</p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Lessons Taken
               </h3>
@@ -100,7 +100,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               <h3 className="font-semibold  font-poppins text-[#000000] mt-4">
                 Duration (length of each lesson)
               </h3>
-              <p className="font-poppins text-[#202224]">1 hour</p>
+              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.package.lesson_duration} hour</p>
             </div>
           </div>
 
@@ -114,7 +114,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
                 <div className="font-bold mt-4 font-poppins">Package Type</div>
                 <div>Standard Package</div>
                 <div className="font-bold mt-4">Package Price</div>
-                <div>$550</div>
+                <div>${selectedBookingDetails[0]?.package.price}</div>
                 <div className="font-bold mt-4">Payment Status</div>
                 <div>Paid</div>
                 <div className="font-bold mt-4">Payment Method</div>
@@ -191,7 +191,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
     try {
       //API for fetching all Students data
       const response = await axios(
-        "items/Booking?fields=id,instructor.user_id.profileImg,instructor.user_id.first_name,instructor.user_id.last_name,learner.user_id.profileImg,learner.user_id.first_name,learner.user_id.last_name,start_date");
+        "items/Booking?fields=id,instructor.user_id.profileImg,instructor.user_id.first_name,instructor.user_id.last_name,learner.user_id.profileImg,learner.user_id.first_name,learner.user_id.last_name,start_date,package.*");
       const bookingsData =await response.data.data;
       setAllBookingDetails(bookingsData);
       setFilteredData(bookingsData);
@@ -199,12 +199,12 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
       console.log("error in fetching data", error);
     }
   };
-
+  console.log("allBookingDetails",allBookingDetails)
   const viewBookingProfile = async (bookingId) => {
     try {
       //API for fetching student detail by Id  
       const response = await axios(
-        `items/Booking?fields=id,start_date,status,instructor.user_id.* ,learner.user_id.*&filter[id]=${bookingId}`
+        `items/Booking?fields=id,start_date,status,instructor.user_id.* ,learner.user_id.*,package.*&filter[id]=${bookingId}`
       );
       const Data = await response.data;
       setSelectedBookingDetails(Data.data);
@@ -220,19 +220,16 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
  
   console.log("modal details are", selectedBookingDetails)
   
-
   // Date Filter
   const handleDateFilter = (date) => {
     setSelectedDate(date);
-    setIsDateModalOpen(false);
   };
 
   // Package Filter
   const handlePackageFilter = (packageType) => {
     setSelectedPackage(packageType);
-    setIsPackageModalOpen(false);
   };
-
+console.log("selectedPackage : ",selectedPackage)
   // Search Filter Function
   const handleSearch = (event) => {
     const searchTerm = event.target.value.toLowerCase();
@@ -248,22 +245,26 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
   // Apply both date and package filters
   const applyFilters = () => {
     const filtered = allBookingDetails.filter((booking) => {
+    
       const dateCondition = selectedDate
-        ? new Date(booking.bookingDate) >= new Date(selectedDate)
+        ? new Date(booking.start_date) >= new Date(selectedDate)
         : true;
       const packageCondition = selectedPackage
-        ? booking.packageType === selectedPackage
+        ? booking?.package?.name === selectedPackage
         : true;
+      
       return dateCondition && packageCondition;
     });
     setFilteredData(filtered);
+    setIsDateModalOpen(false);
+    setIsPackageModalOpen(false);
   };
-  
 
   const clearFilters = () => {
-    setSelectedDate("");
+    handleDateFilter("")
     setSelectedPackage("");
     setSearchTerm("");
+    setFilteredData(allBookingDetails);
   };
 
   return (
@@ -353,7 +354,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               Cancel
             </button>
             <button
-              // onClick={applyFilters}
+              onClick={applyFilters}
               className="bg-blue-500 text-white px-4 py-2 rounded-full"
             >
               Apply Date Filter
@@ -392,7 +393,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               Cancel
             </button>
             <button
-              // onClick={applyFilters}
+              onClick={applyFilters}
               className="bg-blue-500 text-white px-4 py-2 rounded-full"
             >
               Apply Package Filter
@@ -416,7 +417,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
         {/* Booking Cards */}
        
         {viewMode === "grid" && filteredData.length > 0 ? (
-          <div className="flex gap-5 gap-y-6 flex-wrap">
+          <div className="flex gap-3 gap-y-6 flex-wrap">
             {filteredData.map((booking) => (
               // <BookingCard
               //   key={booking.id}
@@ -425,7 +426,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               //   setSelectedBookingDetails = {setSelectedBookingDetails}
               // />
 
-              <div  key={booking.id} className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100">
+              <div  key={booking.id} className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100 w-[235px]">
               <div className="flex justify-center mb-4">
                 <img
                   className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
@@ -458,10 +459,10 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
                 </p>
                 <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
                   Package Type:{" "}
-                  <span className="font-normal text-black">package type</span>
+                  <span className="font-normal text-black">{booking?.package?.name}</span>
                 </p>
                 <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-                  Session Fee: <span className="font-normal text-black">sessionFee</span>
+                  Session Fee: <span className="font-normal text-black">${booking?.package?.price}</span>
                 </p>
               </div>
         
@@ -531,8 +532,8 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
                           }
                         )}
                       </td>
-                      <td className="py-3 px-4">{booking.packageType}</td>
-                      <td className="py-3 px-4">{booking.sessionFee}</td>
+                      <td className="py-3 px-4">{booking?.package?.name}</td>
+                      <td className="py-3 px-4">${booking?.package?.price}</td>
                       <td className="py-3 px-4">
                         <button
                           className="bg-blue-500 text-white py-2 px-4 rounded-md"
