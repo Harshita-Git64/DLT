@@ -7,6 +7,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import Modal from "react-modal";
 import axios from "../../axios";
+import { useLocation } from "react-router-dom";
 
 // Modal Custom Styles
 const customStyles = {
@@ -26,6 +27,9 @@ export const BookingDetailModal = ({
 }) => {
   const { first_name, last_name, profileImg, phoneNumber, email } =
     selectedBookingDetails[0]?.instructor?.user_id;
+
+  //get the locations
+  const location = useLocation();
   return (
     <div>
       <GoArrowLeft
@@ -39,7 +43,9 @@ export const BookingDetailModal = ({
           <div className="flex gap-4 items-start">
             <div className="flex">
               <img
-                className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
+                className={`w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10 ${
+                  location.pathname === "/instructordashboard" ? "hidden" : ""
+                }`}
                 src={profileImg}
                 alt="Instructor Avatar"
               ></img>
@@ -213,6 +219,7 @@ const AllBookings = () => {
   const [allBookingDetails, setAllBookingDetails] = useState([]);
   const [selectedBookingDetails, setSelectedBookingDetails] = useState([]);
 
+  const location = useLocation();
   const getAllBookings = async () => {
     try {
       //API for fetching all Students data
@@ -453,20 +460,17 @@ const AllBookings = () => {
         {viewMode === "grid" && filteredData.length > 0 ? (
           <div className="flex gap-3 gap-y-6 flex-wrap">
             {filteredData.map((booking) => (
-              // <BookingCard
-              //   key={booking.id}
-              //   booking={booking}
-              //   setBookingDetailModalOpen = {setBookingDetailModalOpen}
-              //   setSelectedBookingDetails = {setSelectedBookingDetails}
-              // />
-
               <div
                 key={booking.id}
                 className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100 w-[235px]"
               >
                 <div className="flex justify-center mb-4">
                   <img
-                    className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
+                    className={`w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10 ${
+                      location.pathname === "/instructordashboard"
+                        ? "hidden"
+                        : ""
+                    }`}
                     src={booking?.instructor?.user_id?.profileImg}
                     alt="Instructor Avatar"
                   />
@@ -534,7 +538,13 @@ const AllBookings = () => {
               <table className="min-w-full bg-white">
                 <thead className="bg-slate-50">
                   <tr>
-                    <th className="text-center py-5 px-4 uppercase font-semibold text-sm ">
+                    <th
+                      className={`text-center py-5 px-4 uppercase font-semibold text-sm  ${
+                        location.pathname === "/instructordashboard"
+                          ? "hidden"
+                          : ""
+                      }`}
+                    >
                       Instructor
                     </th>
                     <th className="text-center py-5 px-4 uppercase font-semibold text-sm">
@@ -555,7 +565,13 @@ const AllBookings = () => {
                 <tbody>
                   {filteredData.map((booking) => (
                     <tr key={booking.id} className="border-t border-gray-200">
-                      <td className="py-3 px-4 flex items-center">
+                      <td
+                        className={`py-3 px-4 flex items-center ${
+                          location.pathname === "/instructordashboard"
+                            ? "hidden"
+                            : ""
+                        }`}
+                      >
                         <img
                           src={booking.instructor.user_id.profileImg}
                           alt="Instructor Avatar"

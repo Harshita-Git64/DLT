@@ -9,8 +9,8 @@ import { PiNotebookBold } from "react-icons/pi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { BiLogOut } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
-import AllStudents from "./Allstudents"
-
+import AllStudents from "../Admin/AllStudents";
+import AllBookings from "../Admin/AllBookings";
 
 const InstructorDashboard = () => {
   // State management
@@ -31,15 +31,7 @@ const InstructorDashboard = () => {
               <SiClockify className="w-5 h-5" />
               <span className="hidden md:block">Dashboard</span>
             </button>
-            <button
-              onClick={() => setActiveTab("Instructors")}
-              className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "Instructors" ? "bg-secondary-400 text-white" : ""
-              }`}
-            >
-              <LuLayoutDashboard className="w-5 h-5" />
-              <span className="hidden md:block">Instructors</span>
-            </button>
+
             <button
               onClick={() => setActiveTab("Students")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
@@ -113,7 +105,8 @@ const InstructorDashboard = () => {
 
       {/* Main Content */}
       <div className="w-[75%] overflow-y-scroll mb-10">
-        <AllStudents />
+        {activeTab === "Students" && <AllStudents />}
+        {activeTab === "Bookings" && <AllBookings />}
       </div>
     </div>
   );
