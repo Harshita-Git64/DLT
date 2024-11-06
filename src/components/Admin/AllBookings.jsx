@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { BiReset } from "react-icons/bi";
 import { FaBars, FaCaretDown, FaFilter, FaSearch, FaTh } from "react-icons/fa";
 import ReactModal from "react-modal";
-import Modal from "react-modal";
 const bookingData = [
   {
     id: "#AU-BK-2024-00123",
