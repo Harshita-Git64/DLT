@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { AiFillDashboard } from "react-icons/ai";
+import { FaDollarSign } from "react-icons/fa";
 import { SiClockify } from "react-icons/si";
-import { LuLayoutDashboard } from "react-icons/lu";
 import { PiListBulletsBold } from "react-icons/pi";
 import { FaListCheck } from "react-icons/fa6";
 import { HiOutlineChatAlt2 } from "react-icons/hi";
@@ -11,6 +10,8 @@ import { BiLogOut } from "react-icons/bi";
 import { FaRegHeart } from "react-icons/fa";
 import AllStudents from "../Admin/AllStudents";
 import AllBookings from "../Admin/AllBookings";
+import Earnings from "./Earning";
+import Schedule from "./Schedule";
 
 const InstructorDashboard = () => {
   // State management
@@ -19,7 +20,7 @@ const InstructorDashboard = () => {
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Sidebar */}
-      <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4 flex md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100">
+      <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4  md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100 hidden md:flex">
         <div>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around border-b border-solid border-neutral-100 pb-4">
             <button
@@ -51,6 +52,15 @@ const InstructorDashboard = () => {
               <span className="hidden md:block">Bookings</span>
             </button>
             <button
+              onClick={() => setActiveTab("Schedule")}
+              className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
+                activeTab === "Schedule" ? "bg-secondary-400 text-white" : ""
+              }`}
+            >
+              <PiNotebookBold className="w-5 h-5" />
+              <span className="hidden md:block">Schedule</span>
+            </button>
+            <button
               onClick={() => setActiveTab("Inbox")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
                 activeTab === "Inbox" ? "bg-secondary-400 text-white" : ""
@@ -59,25 +69,16 @@ const InstructorDashboard = () => {
               <HiOutlineChatAlt2 className="w-5 h-5" />
               <span className="hidden md:block">Inbox</span>
             </button>
-            <button
-              onClick={() => setActiveTab("queries")}
-              className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "queries" ? "bg-secondary-400 text-white" : ""
-              }`}
-            >
-              <PiNotebookBold className="w-5 h-5" />
-              <span className="hidden md:block">Queries</span>
-            </button>
           </div>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around border-b border-solid border-neutral-100 py-6">
             <button
-              onClick={() => setActiveTab("Staff")}
+              onClick={() => setActiveTab("Earning")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "Staff" ? "bg-secondary-400 text-white" : ""
+                activeTab === "Earning" ? "bg-secondary-400 text-white" : ""
               }`}
             >
-              <FaListCheck className="w-5 h-5" />
-              <span className="hidden md:block">Staff & Roles</span>
+              <FaDollarSign className="w-5 h-5" />
+              <span className="hidden md:block">Earnings</span>
             </button>
           </div>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around py-4">
@@ -104,9 +105,11 @@ const InstructorDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-[75%] overflow-y-scroll mb-10">
+      <div className="md:w-[75%] overflow-y-scroll mb-10">
         {activeTab === "Students" && <AllStudents />}
         {activeTab === "Bookings" && <AllBookings />}
+        {activeTab === "Earning" && <Earnings />}
+        {activeTab === "Schedule" && <Schedule />}
       </div>
     </div>
   );
