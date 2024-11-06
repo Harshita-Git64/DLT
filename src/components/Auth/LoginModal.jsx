@@ -4,13 +4,69 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { MdFacebook } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "../../axios";
 
 const LoginModal = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({
+    email: "", // Error for email
+    password: "", // Error for password
+    login: "", // Error for login
+  });
+  const navigate = useNavigate();
 
+  //email validation
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({ email: "", password: "", login: "" });
+
+    if (!validateEmail(email)) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address.",
+      }));
+      return;
+    }
+    try {
+      const loginResponse = await axios.post("auth/login", { email, password });
+      const { access_token } = loginResponse.data.data;
+      const userResponse = await axios.get("users/me", {
+        headers: {
+          Authorization: `Bearer ${access_token}`, // Pass the token in the Authorization header
+        },
+      });
+      const user = userResponse.data.data; // Get user details
+      console.log("user",user)
+      if (user.isInstructor) {
+        navigate("/instructordashboard"); // Navigate to instructor dashboard
+      } else if (user.isAdmin) {
+        navigate("/admindashboard"); // Navigate to admin dashboard
+      } else {
+        console.log("User is neither an admin nor an instructor");
+      }
+    } catch (error) {
+      //console.error('Error posting data:', error.message);
+      if (error.response && error.response.status === 401) {
+        setErrors((prev) => ({
+          ...prev,
+          login: "Invalid email or password!!",
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          login: "An unexpected error occurred. Please try again.",
+        }));
+      }
+    }
+  };
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -31,8 +87,13 @@ const LoginModal = () => {
         <h2 className="text-xl font-semibold text-center text-[#333333] mb-4 mt-10 sm:mt-4">
           Log in
         </h2>
-        <form className="xs:px-5 sm:px-14">
+        <form className="xs:px-5 sm:px-14" onSubmit={handleSubmit}>
           {/* Email field */}
+          {errors.login && (
+            <p className="font-medium text-red-600 text-center mb-3">
+              {errors.login}
+            </p>
+          )}
           <div className="">
             <label className="block text-sm font-Poppins  text-[#666666]">
               Your email
@@ -42,8 +103,11 @@ const LoginModal = () => {
               placeholder="Enter your email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 p-2 w-full border border-[#66666659] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-2 w-full border border-[#66666659] rounded-lg focus:outline-none"
             />
+            {errors.email && (
+              <p className="text-sm text-red-400 ml-1">{errors.email}</p>
+            )}
           </div>
 
           {/* Password field*/}
@@ -63,7 +127,7 @@ const LoginModal = () => {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 p-2 w-full border border-[#66666659] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 p-2 w-full border border-[#66666659] rounded-md focus:outline-none"
             />
           </div>
           {/* forgot password */}

@@ -8,7 +8,8 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import { GoArrowLeft } from "react-icons/go";
 import { GrPieChart } from "react-icons/gr";
-// import { BookingCard } from "./AllBookings";
+import { FiTrendingUp } from "react-icons/fi";
+import { MdOutlinePersonAddAlt } from "react-icons/md";
 import axios from "./axios";
 import { subDays, subMonths, startOfWeek, startOfMonth, startOfYear, isWithinInterval } from 'date-fns';
 import {
@@ -276,6 +277,160 @@ const Test = () => {
     fetchData();
   }, []);
 
+   // total instructor data----------------
+    // State variables specific to instructor stats
+  const [instructorFilter, setInstructorFilter] = useState("In Total");
+  const [instructorData, setInstructorData] = useState([]);
+  const [activeInstructorData, setActiveInstructorData] = useState([]);
+  const [totalInstructors, setTotalInstructors] = useState(0);
+  const [activeInstructors, setActiveInstructors] = useState(0);
+  const [percentageChange, setPercentageChange] = useState(0);
+
+  // Function to fetch instructor data from API based on selected filter
+  const fetchInstructorData = async (filter) => {
+    const endpoint = `http://13.202.242.185:8055/items/Instructor`;
+    try {
+      const response = await axios.get(endpoint);
+      const data = response.data.data;
+
+      let filteredData;
+      const currentDate = new Date();
+
+      switch (filter) {
+        case "This Week":
+          filteredData = data.filter((instructor) => {
+            const createdDate = new Date(instructor.date_created);
+            return createdDate >= new Date(currentDate.setDate(currentDate.getDate() - 7));
+          });
+          break;
+        case "This Month":
+          filteredData = data.filter((instructor) => {
+            const createdDate = new Date(instructor.date_created);
+            return createdDate.getMonth() === currentDate.getMonth() && createdDate.getFullYear() === currentDate.getFullYear();
+          });
+          break;
+        case "This Year":
+          filteredData = data.filter((instructor) => {
+            const createdDate = new Date(instructor.date_created);
+            return createdDate.getFullYear() === currentDate.getFullYear();
+          });
+          break;
+        case "In Total":
+        default:
+          filteredData = data;
+          break;
+      }
+
+      return filteredData;
+    } catch (error) {
+      console.error("Error fetching instructor data:", error);
+      return [];
+    }
+  };
+
+  const handleInstructorFilterChange = async (e) => {
+    const filter = e.target.value;
+    setInstructorFilter(filter);
+
+    // Fetch filtered instructor data based on the selected filter
+    const data = await fetchInstructorData(filter);
+    setInstructorData(data);
+
+    // Filter active instructors
+    const active = data.filter((instructor) => instructor.Availibility === "Active");
+    setActiveInstructorData(active);
+
+    // Update total and active instructor counts
+    setTotalInstructors(data.length);
+    setActiveInstructors(active.length);
+
+    // Calculate percentage change in active instructors (if applicable)
+    const previousActiveCount = 1128; // Placeholder for previous period active count
+    setPercentageChange(((active.length - previousActiveCount) / previousActiveCount) * 100);
+  };
+
+  useEffect(() => {
+    // Fetch instructor data on mount with default filter (In Total)
+    const fetchData = async () => {
+      const data = await fetchInstructorData("In Total");
+      setInstructorData(data);
+      const active = data.filter((instructor) => instructor.Availibility === "Active");
+      setActiveInstructorData(active);
+      setTotalInstructors(data.length);
+      setActiveInstructors(active.length);
+    };
+
+    fetchData();
+  }, []);
+
+  //total booking data-------------
+
+  const [bookingFilter, setBookingFilter] = useState("In Total");
+  const [bookingData, setBookingData] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState({ pending: 0, completed: 0, total: 0 });
+
+  // Fetch booking data when the component mounts
+  useEffect(() => {
+    const fetchBookingData = async () => {
+      try {
+        const response = await axios.get("http://13.202.242.185:8055/items/Booking");
+        const data = response.data.data;
+        setBookingData(data);
+        calculateBookings(data, bookingFilter);
+      } catch (error) {
+        console.error("Error fetching booking data:", error);
+      }
+    };
+    fetchBookingData();
+  }, []);
+
+  // Recalculate bookings whenever the filter changes
+  useEffect(() => {
+    if (bookingData.length > 0) {
+      calculateBookings(bookingData, bookingFilter);
+    }
+  }, [bookingFilter, bookingData]);
+
+  // Function to calculate bookings based on the selected filter (week, month, year, or total)
+  const calculateBookings = (data, filter) => {
+    const currentDate = new Date();
+    let bookingsCount = { pending: 0, completed: 0, total: 0 };
+
+    // Helper function to check if the booking falls within the selected time range
+    const isInTimeRange = (date) => {
+      const bookingDate = new Date(date);
+      switch (filter) {
+        case "This Week":
+          return bookingDate >= new Date(currentDate.setDate(currentDate.getDate() - currentDate.getDay())) && bookingDate <= new Date();
+        case "This Month":
+          return bookingDate.getMonth() === currentDate.getMonth() && bookingDate.getFullYear() === currentDate.getFullYear();
+        case "This Year":
+          return bookingDate.getFullYear() === currentDate.getFullYear();
+        default:
+          return true; // "In Total"
+      }
+    };
+
+    // Count the bookings based on their status and time range
+    data.forEach((booking) => {
+      if (isInTimeRange(booking.date_created)) {
+        bookingsCount.total += 1;
+        if (booking.status === "Pending") {
+          bookingsCount.pending += 1;
+        } else if (booking.status === "Completed") {
+          bookingsCount.completed += 1;
+        }
+      }
+    });
+
+    setFilteredBookings(bookingsCount);
+  };
+
+  // Handle the filter change
+  const handleBookingFilterChange = (e) => {
+    setBookingFilter(e.target.value);
+  };
+
   return (
     <div>
       {/* total session duration */}
@@ -359,6 +514,84 @@ const Test = () => {
           <div className="flex gap-2">
             <div className="text-2xl font-bold">{newUsers}</div>
             <span className="text-green-600 flex items-center">+2.06%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+     {/* total instructor data */}
+     <div className="w-[30%] bg-white shadow-lg rounded-lg p-6 relative border border-solid border-neutral-100">
+      <div className="flex justify-between items-start mb-4">
+        <div className="p-2 bg-pink-100 rounded-md">
+          <MdOutlinePersonAddAlt className="text-pink-500 text-xl" />
+        </div>
+        <select 
+          className="bg-transparent text-gray-500 focus:outline-none"
+          onChange={handleInstructorFilterChange}
+          value={instructorFilter}
+        >
+          {["In Total", "This Week", "This Month", "This Year"].map((option, index) => (
+            <option key={index} value={option} className="text-black">
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex w-full justify-between">
+        <div>
+          <div className="text-gray-500">Instructors</div>
+          <div className="text-2xl font-bold">{totalInstructors}</div>
+        </div>
+        <div className="flex gap-4">
+          <div>
+            <div className="text-gray-500">Active</div>
+            <div className="text-2xl font-bold">{activeInstructors}</div>
+          </div>
+          <div className={`text-${percentageChange >= 0 ? 'green' : 'red'}-600 flex items-end`}>
+            {percentageChange >= 0 ? `+${percentageChange.toFixed(2)}%` : `${percentageChange.toFixed(2)}%`}
+          </div>
+        </div>
+      </div>
+    </div>
+
+{/* total booking data */}
+
+ <div className="w-[40%] bg-white shadow-lg rounded-lg p-6 relative border border-solid border-neutral-100">
+      <div className="flex justify-between items-start mb-4">
+        <div className="p-2 bg-error-100 rounded-md">
+          <FiTrendingUp className="text-red-500 text-xl" />
+        </div>
+        <select
+          className="bg-transparent text-gray-500 focus:outline-none"
+          onChange={handleBookingFilterChange}
+          value={bookingFilter}
+        >
+          {["In Total", "This Week", "This Month", "This Year"].map((option, index) => (
+            <option key={index} value={option} className="text-black">
+              {option}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="flex w-full justify-between">
+        <div>
+          <div className="text-gray-500">All Bookings</div>
+          <div className="text-2xl font-bold">{filteredBookings.total}</div>
+        </div>
+        <div>
+          <div className="text-gray-500">Pending</div>
+          <div className="text-2xl font-bold">{filteredBookings.pending}</div>
+        </div>
+        <div>
+          <div className="text-gray-500">Completed</div>
+          <div className="flex gap-2">
+            <div className="text-2xl font-bold">{filteredBookings.completed}</div>
+            {filteredBookings.completed > 0 && (
+              <div className="text-green-600 flex items-center">
+                +10.03%
+              </div>
+            )}
           </div>
         </div>
       </div>
