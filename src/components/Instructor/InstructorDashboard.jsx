@@ -12,6 +12,7 @@ import AllStudents from "../Admin/AllStudents";
 import AllBookings from "../Admin/AllBookings";
 import Earnings from "./Earning";
 import Schedule from "./Schedule";
+import Dashboard from "./Dashboard";
 
 const InstructorDashboard = () => {
   // State management
@@ -106,6 +107,7 @@ const InstructorDashboard = () => {
 
       {/* Main Content */}
       <div className="md:w-[75%] overflow-y-scroll mb-10">
+        {activeTab === "Dashboard" && <Dashboard />}
         {activeTab === "Students" && <AllStudents />}
         {activeTab === "Bookings" && <AllBookings />}
         {activeTab === "Earning" && <Earnings />}
