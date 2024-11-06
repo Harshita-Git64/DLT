@@ -152,8 +152,8 @@ const transactionData = [
   },
 ];
 
-export const BookingCard = ({ booking , learner}) => {
-  const{first_name,last_name,profileImg}=booking?.instructor?.user_id;
+export const BookingCard = ({ booking, learner }) => {
+  const { first_name, last_name, profileImg } = booking?.instructor?.user_id;
   return (
     <div className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100">
       <div className="flex justify-center mb-4">
@@ -168,13 +168,19 @@ export const BookingCard = ({ booking , learner}) => {
           alt="Learner Avatar"
         />
       </div>
-       <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
+      <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
       <div className="w-full">
         <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
-          Instructor: <span className="font-normal text-black">{first_name} {last_name}</span>
+          Instructor:{" "}
+          <span className="font-normal text-black">
+            {first_name} {last_name}
+          </span>
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-          Learner: <span className="font-normal text-black">{learner.first_name} {learner.last_name}</span>
+          Learner:{" "}
+          <span className="font-normal text-black">
+            {learner.first_name} {learner.last_name}
+          </span>
         </p>
         <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
           Date:{" "}
@@ -191,15 +197,14 @@ export const BookingCard = ({ booking , learner}) => {
           <span className="font-normal text-black">package type</span>
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-          Session Fee: <span className="font-normal text-black">sessionFee</span>
+          Session Fee:{" "}
+          <span className="font-normal text-black">sessionFee</span>
         </p>
       </div>
 
-      <button
-        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
-      >
+      <button className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full">
         View Details
-      </button> 
+      </button>
     </div>
   );
 };
@@ -208,8 +213,15 @@ export const StudentDetailModal = ({
   setModalStudentDetailOpen,
   selectedStudentDetails,
 }) => {
-  const { first_name, last_name, location, email, date_of_birth, phoneNumber, profileImg } =
-    selectedStudentDetails[0]?.user_id;
+  const {
+    first_name,
+    last_name,
+    location,
+    email,
+    date_of_birth,
+    phoneNumber,
+    profileImg,
+  } = selectedStudentDetails[0]?.user_id;
   console.log("student modal", selectedStudentDetails);
   const [currentPage, setCurrentPage] = useState(1);
   const testimonialsPerPage = 3;
@@ -270,10 +282,7 @@ export const StudentDetailModal = ({
         {/* profile section */}
         <div className="flex justify-between p-4">
           <div className="flex gap-4 items-start">
-            <img
-              src={profileImg}
-              className="w-16 h-16 rounded-full"
-            ></img>
+            <img src={profileImg} className="w-16 h-16 rounded-full"></img>
 
             <div>
               <h1 className="font-bold text-2xl">
@@ -360,19 +369,21 @@ export const StudentDetailModal = ({
           <div className="text-2xl font-bold text-secondary-500 my-2">
             Bookings
           </div>
-          {
-          selectedStudentDetails[0].booking.length !==0 ?  
-          <div className="flex space-x-3 gap-3 my-5">
-          {selectedStudentDetails[0].booking.map((booking) => (
-            <BookingCard key={booking.id} booking={booking} learner={selectedStudentDetails[0]?.user_id} />
-          ))}
-        </div>
-        :
-        <div className="text-gray-500 font-medium text-lg text-center">
-          No bookings yet
-        </div>
-        }
-         
+          {selectedStudentDetails[0].booking.length !== 0 ? (
+            <div className="flex space-x-3 gap-3 my-5">
+              {selectedStudentDetails[0].booking.map((booking) => (
+                <BookingCard
+                  key={booking.id}
+                  booking={booking}
+                  learner={selectedStudentDetails[0]?.user_id}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-gray-500 font-medium text-lg text-center">
+              No bookings yet
+            </div>
+          )}
         </div>
 
         <hr className="border-neutral-100"></hr>
@@ -504,8 +515,9 @@ const AllStudents = () => {
   };
 
   const filteredStudents = studentDetails.filter((student) => {
-    const fullName = `${student?.user_id?.first_name || ''} ${student?.user_id?.last_name || ''}`.trim();
-
+    const fullName = `${student?.user_id?.first_name || ""} ${
+      student?.user_id?.last_name || ""
+    }`.trim();
 
     const lessonFilter =
       lessonStatus === "All" || student.lession_status === lessonStatus;
@@ -516,7 +528,7 @@ const AllStudents = () => {
     const searchFilter =
       searchTerm === "" ||
       // student?.user_id?.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) || student?.user_id?.last_name?.toLowerCase().includes(searchTerm.toLowerCase());
-      fullName.toLowerCase().includes(searchTerm.toLowerCase())
+      fullName.toLowerCase().includes(searchTerm.toLowerCase());
 
     return lessonFilter && enrolledDateFilter && searchFilter;
   });
@@ -583,7 +595,7 @@ const AllStudents = () => {
         </div>
       </div>
       {viewMode === "grid" ? (
-        <div className="mt-10 flex flex-wrap gap-2 min-h-fit max-h-fit gap-y-6">
+        <div className="mt-10 flex justify-between flex-wrap gap-2 min-h-fit max-h-fit gap-y-6 ">
           {filteredStudents.map((item) => {
             const { first_name, last_name, phoneNumber, profileImg } =
               item?.user_id;
@@ -653,10 +665,13 @@ const AllStudents = () => {
                         className="w-10 h-10 rounded-full mr-8"
                       />
                       <span className="font-medium text-blue-600">
-                      {student?.user_id?.first_name} {student?.user_id?.last_name}
+                        {student?.user_id?.first_name}{" "}
+                        {student?.user_id?.last_name}
                       </span>
                     </td>
-                    <td className="py-3 px-4">{student?.user_id?.phoneNumber}</td>
+                    <td className="py-3 px-4">
+                      {student?.user_id?.phoneNumber}
+                    </td>
                     <td className="py-3 px-4">
                       <span
                         className={`px-3 py-1 rounded-md text-sm  ${

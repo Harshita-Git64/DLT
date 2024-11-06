@@ -7,6 +7,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { HiLocationMarker } from "react-icons/hi";
 import Modal from "react-modal";
 import axios from "../../axios";
+import { useLocation } from "react-router-dom";
 
 // Modal Custom Styles
 const customStyles = {
@@ -20,8 +21,15 @@ const customStyles = {
   },
 };
 
-export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDetails }) => {
-  const{first_name,last_name,profileImg,phoneNumber,email} = selectedBookingDetails[0]?.instructor?.user_id;
+export const BookingDetailModal = ({
+  setBookingDetailModalOpen,
+  selectedBookingDetails,
+}) => {
+  const { first_name, last_name, profileImg, phoneNumber, email } =
+    selectedBookingDetails[0]?.instructor?.user_id;
+
+  //get the locations
+  const location = useLocation();
   return (
     <div>
       <GoArrowLeft
@@ -35,7 +43,9 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
           <div className="flex gap-4 items-start">
             <div className="flex">
               <img
-                className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
+                className={`w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10 ${
+                  location.pathname === "/instructordashboard" ? "hidden" : ""
+                }`}
                 src={profileImg}
                 alt="Instructor Avatar"
               ></img>
@@ -49,14 +59,19 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
             <div>
               <div className="flex gap-1 ">
                 <span className="font-semibold">Instructor:</span>
-                <span className="">{first_name} {last_name}</span>
+                <span className="">
+                  {first_name} {last_name}
+                </span>
               </div>
               <div className="flex gap-1 mt-1">
                 <span className="font-semibold">Learner:</span>
-                <span className="">{selectedBookingDetails[0]?.learner?.user_id.first_name} {selectedBookingDetails[0]?.learner?.user_id.last_name}</span>
+                <span className="">
+                  {selectedBookingDetails[0]?.learner?.user_id.first_name}{" "}
+                  {selectedBookingDetails[0]?.learner?.user_id.last_name}
+                </span>
               </div>
               <button className="px-6 rounded-full text-success-300 border border-success-300 mt-2 text-sm">
-              {selectedBookingDetails[0].status}
+                {selectedBookingDetails[0].status}
               </button>
             </div>
           </div>
@@ -72,27 +87,40 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Booking ID
               </h3>
-              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0].id}</p>
+              <p className="font-poppins text-[#202224]">
+                {selectedBookingDetails[0].id}
+              </p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Instructor Name
               </h3>
-              <p className="font-poppins text-[#202224]">{first_name} {last_name}</p>
+              <p className="font-poppins text-[#202224]">
+                {first_name} {last_name}
+              </p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Learner Name
               </h3>
-              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.learner?.user_id.first_name} {selectedBookingDetails[0]?.learner?.user_id.last_name}</p>
+              <p className="font-poppins text-[#202224]">
+                {selectedBookingDetails[0]?.learner?.user_id.first_name}{" "}
+                {selectedBookingDetails[0]?.learner?.user_id.last_name}
+              </p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Date of Booking
               </h3>
-              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.start_date}</p>
+              <p className="font-poppins text-[#202224]">
+                {selectedBookingDetails[0]?.start_date}
+              </p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Package Type
               </h3>
-              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.package.name}</p>
+              <p className="font-poppins text-[#202224]">
+                {selectedBookingDetails[0]?.package.name}
+              </p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Number of Lessons
               </h3>
-              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.package.total_lessons}</p>
+              <p className="font-poppins text-[#202224]">
+                {selectedBookingDetails[0]?.package.total_lessons}
+              </p>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Lessons Taken
               </h3>
@@ -100,7 +128,9 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
               <h3 className="font-semibold  font-poppins text-[#000000] mt-4">
                 Duration (length of each lesson)
               </h3>
-              <p className="font-poppins text-[#202224]">{selectedBookingDetails[0]?.package.lesson_duration} hour</p>
+              <p className="font-poppins text-[#202224]">
+                {selectedBookingDetails[0]?.package.lesson_duration} hour
+              </p>
             </div>
           </div>
 
@@ -135,7 +165,9 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
                 <div className="font-bold mt-4">Instructor Email</div>
                 <div>{email}</div>
                 <div className="font-bold mt-4">Learner Contact</div>
-                <div>{selectedBookingDetails[0]?.learner?.user_id.phoneNumber}</div>
+                <div>
+                  {selectedBookingDetails[0]?.learner?.user_id.phoneNumber}
+                </div>
                 <div className="font-bold mt-4">Learner Email</div>
                 <div>{selectedBookingDetails[0]?.learner?.user_id.email}</div>
               </div>
@@ -175,7 +207,7 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
   );
 };
 
-  const AllBookings = () => {
+const AllBookings = () => {
   const [viewMode, setViewMode] = useState("grid");
   const [searchTerm, setSearchTerm] = useState("");
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
@@ -185,41 +217,43 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
   const [selectedPackage, setSelectedPackage] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [allBookingDetails, setAllBookingDetails] = useState([]);
-  const [selectedBookingDetails,setSelectedBookingDetails]= useState([])
+  const [selectedBookingDetails, setSelectedBookingDetails] = useState([]);
 
+  const location = useLocation();
   const getAllBookings = async () => {
     try {
       //API for fetching all Students data
       const response = await axios(
-        "items/Booking?fields=id,instructor.user_id.profileImg,instructor.user_id.first_name,instructor.user_id.last_name,learner.user_id.profileImg,learner.user_id.first_name,learner.user_id.last_name,start_date,package.*");
-      const bookingsData =await response.data.data;
+        "items/Booking?fields=id,instructor.user_id.profileImg,instructor.user_id.first_name,instructor.user_id.last_name,learner.user_id.profileImg,learner.user_id.first_name,learner.user_id.last_name,start_date,package.*"
+      );
+      const bookingsData = await response.data.data;
       setAllBookingDetails(bookingsData);
       setFilteredData(bookingsData);
     } catch (error) {
       console.log("error in fetching data", error);
     }
   };
-  console.log("allBookingDetails",allBookingDetails)
+  console.log("allBookingDetails", allBookingDetails);
   const viewBookingProfile = async (bookingId) => {
     try {
-      //API for fetching student detail by Id  
+      //API for fetching student detail by Id
       const response = await axios(
         `items/Booking?fields=id,start_date,status,instructor.user_id.* ,learner.user_id.*,package.*&filter[id]=${bookingId}`
       );
       const Data = await response.data;
       setSelectedBookingDetails(Data.data);
       setBookingDetailModalOpen(true);
-      console.log("bookingId is",bookingId)
+      console.log("bookingId is", bookingId);
     } catch (error) {
-      console.log("error in fetching details",error.message)
+      console.log("error in fetching details", error.message);
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     getAllBookings();
-  },[])
- 
-  console.log("modal details are", selectedBookingDetails)
-  
+  }, []);
+
+  console.log("modal details are", selectedBookingDetails);
+
   // Date Filter
   const handleDateFilter = (date) => {
     setSelectedDate(date);
@@ -229,15 +263,23 @@ export const BookingDetailModal = ({ setBookingDetailModalOpen,selectedBookingDe
   const handlePackageFilter = (packageType) => {
     setSelectedPackage(packageType);
   };
-console.log("selectedPackage : ",selectedPackage)
+  console.log("selectedPackage : ", selectedPackage);
   // Search Filter Function
   const handleSearch = (event) => {
     const searchTerm = event.target.value.toLowerCase();
     setSearchTerm(searchTerm);
     const filtered = allBookingDetails.filter(
       (booking) =>
-      booking?.instructor?.user_id?.first_name.toLowerCase().includes(searchTerm) ||  booking?.instructor?.user_id?.last_name.toLowerCase().includes(searchTerm) ||
-      booking?.learner?.user_id?.first_name.toLowerCase().includes(searchTerm) ||  booking?.learner?.user_id?.last_name.toLowerCase().includes(searchTerm)
+        booking?.instructor?.user_id?.first_name
+          .toLowerCase()
+          .includes(searchTerm) ||
+        booking?.instructor?.user_id?.last_name
+          .toLowerCase()
+          .includes(searchTerm) ||
+        booking?.learner?.user_id?.first_name
+          .toLowerCase()
+          .includes(searchTerm) ||
+        booking?.learner?.user_id?.last_name.toLowerCase().includes(searchTerm)
     );
     setFilteredData(filtered);
   };
@@ -245,14 +287,13 @@ console.log("selectedPackage : ",selectedPackage)
   // Apply both date and package filters
   const applyFilters = () => {
     const filtered = allBookingDetails.filter((booking) => {
-    
       const dateCondition = selectedDate
         ? new Date(booking.start_date) >= new Date(selectedDate)
         : true;
       const packageCondition = selectedPackage
         ? booking?.package?.name === selectedPackage
         : true;
-      
+
       return dateCondition && packageCondition;
     });
     setFilteredData(filtered);
@@ -261,7 +302,7 @@ console.log("selectedPackage : ",selectedPackage)
   };
 
   const clearFilters = () => {
-    handleDateFilter("")
+    handleDateFilter("");
     setSelectedPackage("");
     setSearchTerm("");
     setFilteredData(allBookingDetails);
@@ -409,70 +450,86 @@ console.log("selectedPackage : ",selectedPackage)
           overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-end z-20"
         >
           <BookingDetailModal
-            setBookingDetailModalOpen = {setBookingDetailModalOpen}
-            selectedBookingDetails = {selectedBookingDetails}
+            setBookingDetailModalOpen={setBookingDetailModalOpen}
+            selectedBookingDetails={selectedBookingDetails}
           />
         </ReactModal>
 
         {/* Booking Cards */}
-       
+
         {viewMode === "grid" && filteredData.length > 0 ? (
           <div className="flex gap-3 gap-y-6 flex-wrap">
             {filteredData.map((booking) => (
-              // <BookingCard
-              //   key={booking.id}
-              //   booking={booking}
-              //   setBookingDetailModalOpen = {setBookingDetailModalOpen}
-              //   setSelectedBookingDetails = {setSelectedBookingDetails}
-              // />
-
-              <div  key={booking.id} className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100 w-[235px]">
-              <div className="flex justify-center mb-4">
-                <img
-                  className="w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10"
-                  src={booking?.instructor?.user_id?.profileImg}
-                  alt="Instructor Avatar"
-                />
-                <img
-                  className="w-12 h-12 rounded-full border-2 border-white shadow-lg "
-                  src={booking?.learner?.user_id?.profileImg}
-                  alt="Learner Avatar"
-                />
-              </div>
-               <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
-              <div className="w-full">
-                <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
-                  Instructor: <span className="font-normal text-black">{booking?.instructor?.user_id?.first_name} {booking?.instructor?.user_id?.last_name}</span>
-                </p>
-                <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-                  Learner: <span className="font-normal text-black">{booking?.learner?.user_id?.first_name} {booking?.learner?.user_id?.last_name}</span>
-                </p>
-                <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
-                  Date:{" "}
-                  <span className="font-normal shrink-0 text-black">
-                    {new Date(booking?.start_date).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
-                </p>
-                <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-                  Package Type:{" "}
-                  <span className="font-normal text-black">{booking?.package?.name}</span>
-                </p>
-                <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
-                  Session Fee: <span className="font-normal text-black">${booking?.package?.price}</span>
-                </p>
-              </div>
-        
-              <button
-                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
-                onClick={() => viewBookingProfile(booking.id)}
+              <div
+                key={booking.id}
+                className="bg-white shadow-lg rounded-lg p-4 flex flex-col justify-between items-center border border-solid border-neutral-100 w-[235px]"
               >
-                View Details
-              </button> 
-            </div>
+                <div className="flex justify-center mb-4">
+                  <img
+                    className={`w-12 h-12 rounded-full border-2 border-white shadow-lg -mr-4 z-10 ${
+                      location.pathname === "/instructordashboard"
+                        ? "hidden"
+                        : ""
+                    }`}
+                    src={booking?.instructor?.user_id?.profileImg}
+                    alt="Instructor Avatar"
+                  />
+                  <img
+                    className="w-12 h-12 rounded-full border-2 border-white shadow-lg "
+                    src={booking?.learner?.user_id?.profileImg}
+                    alt="Learner Avatar"
+                  />
+                </div>
+                <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
+                <div className="w-full">
+                  <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
+                    Instructor:{" "}
+                    <span className="font-normal text-black">
+                      {booking?.instructor?.user_id?.first_name}{" "}
+                      {booking?.instructor?.user_id?.last_name}
+                    </span>
+                  </p>
+                  <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+                    Learner:{" "}
+                    <span className="font-normal text-black">
+                      {booking?.learner?.user_id?.first_name}{" "}
+                      {booking?.learner?.user_id?.last_name}
+                    </span>
+                  </p>
+                  <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
+                    Date:{" "}
+                    <span className="font-normal shrink-0 text-black">
+                      {new Date(booking?.start_date).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
+                    </span>
+                  </p>
+                  <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+                    Package Type:{" "}
+                    <span className="font-normal text-black">
+                      {booking?.package?.name}
+                    </span>
+                  </p>
+                  <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
+                    Session Fee:{" "}
+                    <span className="font-normal text-black">
+                      ${booking?.package?.price}
+                    </span>
+                  </p>
+                </div>
+
+                <button
+                  className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 w-full"
+                  onClick={() => viewBookingProfile(booking.id)}
+                >
+                  View Details
+                </button>
+              </div>
             ))}
           </div>
         ) : (
@@ -481,7 +538,13 @@ console.log("selectedPackage : ",selectedPackage)
               <table className="min-w-full bg-white">
                 <thead className="bg-slate-50">
                   <tr>
-                    <th className="text-center py-5 px-4 uppercase font-semibold text-sm ">
+                    <th
+                      className={`text-center py-5 px-4 uppercase font-semibold text-sm  ${
+                        location.pathname === "/instructordashboard"
+                          ? "hidden"
+                          : ""
+                      }`}
+                    >
                       Instructor
                     </th>
                     <th className="text-center py-5 px-4 uppercase font-semibold text-sm">
@@ -502,25 +565,33 @@ console.log("selectedPackage : ",selectedPackage)
                 <tbody>
                   {filteredData.map((booking) => (
                     <tr key={booking.id} className="border-t border-gray-200">
-                      <td className="py-3 px-4 flex items-center">
+                      <td
+                        className={`py-3 px-4 flex items-center ${
+                          location.pathname === "/instructordashboard"
+                            ? "hidden"
+                            : ""
+                        }`}
+                      >
                         <img
-                           src={booking.instructor.user_id.profileImg}
-                           alt="Instructor Avatar"
+                          src={booking.instructor.user_id.profileImg}
+                          alt="Instructor Avatar"
                           className="w-10 h-10 rounded-full mr-8"
                         />
                         <span className="font-medium text-blue-600">
-                        {booking.instructor.user_id.first_name} {booking.instructor.user_id.last_name}
+                          {booking.instructor.user_id.first_name}{" "}
+                          {booking.instructor.user_id.last_name}
                         </span>
                       </td>
                       <td className="py-3 px-4 ">
                         <img
-                         src={booking.learner.user_id.profileImg}
-                         alt="Learner Avatar"
-                         className="w-10 h-10 rounded-full mr-4"
+                          src={booking.learner.user_id.profileImg}
+                          alt="Learner Avatar"
+                          className="w-10 h-10 rounded-full mr-4"
                         />
                         <span className="font-medium text-blue-600">
-                       {booking.learner.user_id.first_name} {booking.learner.user_id.last_name}
-                       </span>
+                          {booking.learner.user_id.first_name}{" "}
+                          {booking.learner.user_id.last_name}
+                        </span>
                       </td>
                       <td className="py-3 px-4">
                         {new Date(booking.start_date).toLocaleDateString(
@@ -547,7 +618,6 @@ console.log("selectedPackage : ",selectedPackage)
                 </tbody>
               </table>
             </div>
-            
           </div>
         )}
       </div>

@@ -8,7 +8,10 @@ import AdminNavBar from "./AdminNavBar";
 function NavBar() {
   const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
-  if (location.pathname === "/admindashboard") {
+  if (
+    location.pathname === "/admindashboard" ||
+    location.pathname === "/instructordashboard"
+  ) {
     return <AdminNavBar />;
   }
 
