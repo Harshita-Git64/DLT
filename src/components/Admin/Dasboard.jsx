@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   FiUsers,
   FiDollarSign,
@@ -7,6 +7,7 @@ import {
 } from "react-icons/fi"; // React icons
 import { MdQueryStats } from "react-icons/md"; // React icons for queries
 import { GrPieChart } from "react-icons/gr";
+import axios from "../../axios";
 import { MdOutlinePersonAddAlt } from "react-icons/md";
 import {
   PieChart,
@@ -214,11 +215,13 @@ const WebsiteStats = () => {
 };
 
 const Dashboard = () => {
-  const dropdownOptions = ["This Week", "This Month", "This Year", "In Total"];
-
-  const Dropdown = () => (
-    <select className="bg-transparent text-gray-500 focus:outline-none">
-      {dropdownOptions.map((option, index) => (
+  const Dropdown = ({ onChange }) => (
+    <select
+      className="bg-transparent text-gray-500 focus:outline-none"
+      onChange={onChange}
+      value={selectedFilter}
+    >
+      {["In Total", "This Week", "This Month", "This Year"].map((option, index) => (
         <option key={index} value={option} className="text-black">
           {option}
         </option>
@@ -226,6 +229,70 @@ const Dashboard = () => {
     </select>
   );
 
+ // Handle dropdown change
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [newUsers, setNewUsers] = useState(0);
+  const [selectedFilter, setSelectedFilter] = useState("In Total"); // Default to Overall
+  const [allUsers, setAllUsers] = useState([]);
+
+  // Function to fetch and calculate the total number of users
+  const fetchData = async () => {
+    try {
+      const instructorRes = await axios.get("http://13.202.242.185:8055/items/Instructor");
+      const learnerRes = await axios.get("http://13.202.242.185:8055/items/Learner");
+
+      const instructors = instructorRes.data.data;
+      const learners = learnerRes.data.data;
+
+      const combinedUsers = [...instructors, ...learners];
+
+      setAllUsers(combinedUsers); // Store all users for later filtering
+      calculateUsers("In Total", combinedUsers); // Initial calculation for Overall
+
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const calculateUsers = (filter, users) => {
+    const currentDate = new Date();
+
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(currentDate.getDate() - 7);
+
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(currentDate.getMonth() - 1);
+
+    const oneYearAgo = new Date();
+    oneYearAgo.setFullYear(currentDate.getFullYear() - 1);
+
+    let filteredUsers = users;
+
+    if (filter === "This Week") {
+      filteredUsers = users.filter((user) => new Date(user.date_created) > oneWeekAgo);
+    } else if (filter === "This Month") {
+      filteredUsers = users.filter((user) => new Date(user.date_created) > oneMonthAgo);
+    } else if (filter === "This Year") {
+      filteredUsers = users.filter((user) => new Date(user.date_created) > oneYearAgo);
+    }
+
+    // Update total users count based on the filter
+    setTotalUsers(filteredUsers.length);
+
+    // Example for new users (adjust as necessary, this assumes we're showing weekly new users as an example)
+    setNewUsers(filteredUsers.length); // You can refine this for different calculations
+  };
+
+  // Handle dropdown change
+  const handleDropdownChangeForUsers = (e) => {
+    const selectedOption = e.target.value;
+    setSelectedFilter(selectedOption); // Update selected filter
+    calculateUsers(selectedOption, allUsers); // Recalculate users based on selection
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
   // booking conversion data
   const conversionDataOptions = {
     "This Week": [
@@ -501,17 +568,27 @@ const Dashboard = () => {
               <div className="p-2 bg-secondary-100 rounded-md">
                 <GrPieChart className="text-blue-500 text-xl" />
               </div>
-              <Dropdown />
+              <select
+          className="bg-transparent text-gray-500 focus:outline-none"
+          onChange={handleDropdownChangeForUsers}
+          value={selectedFilter}
+        >
+          {["In Total", "This Week", "This Month", "This Year"].map((option, index) => (
+            <option key={index} value={option} className="text-black">
+              {option}
+            </option>
+          ))}
+        </select>
             </div>
             <div className="flex justify-between w-full gap-4">
               <div className="shrink-0">
                 <div className="text-gray-500 shrink-0">Total Users</div>
-                <div className="text-2xl font-bold">15,000</div>
+                <div className="text-2xl font-bold">{totalUsers}</div>
               </div>
               <div>
                 <div className="text-gray-500 shrink-0">New Users</div>
                 <div className="flex gap-2">
-                  <div className="text-2xl font-bold">525</div>{" "}
+                  <div className="text-2xl font-bold">{newUsers}</div>{" "}
                   <span className="text-green-600 flex items-center">
                     +2.06%
                   </span>
@@ -519,6 +596,7 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+          
           <div className="w-[30%] bg-white shadow-lg rounded-lg p-6 relative border border-solid border-neutral-100">
             <div className="flex justify-between items-start mb-4">
               <div className="p-2 bg-pink-100 rounded-md">

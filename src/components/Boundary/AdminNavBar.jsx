@@ -21,7 +21,7 @@ function AdminNavBar() {
               placeholder="Search"
               // value={searchTerm}
               // onChange={(e) => setSearchTerm(e.target.value)}
-              className="ml-2 bg-transparent focus:outline-none text-neutral-600"
+              className="ml-2 bg-transparent focus:outline-none text-neutral-600 w-full"
             />
           </div>
 
