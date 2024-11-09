@@ -1,6 +1,224 @@
 import React, { useState, useEffect } from "react";
 import { FaChartPie, FaClock, FaListAlt } from "react-icons/fa";
 import { MdExpandMore } from "react-icons/md";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Legend,
+  BarChart,
+  Bar,
+} from "recharts";
+
+const UpcomingLessons = () => {
+  const lessons = [
+    {
+      city: "Sydney",
+      date: "14 Oct 2024",
+      name: "Wade Warren",
+      status: "Pending",
+      image: "https://randomuser.me/api/portraits/men/1.jpg",
+    },
+    {
+      city: "Melbourne",
+      date: "13 Oct 2024",
+      name: "Esther Howard",
+      status: "Accepted",
+      image: "https://randomuser.me/api/portraits/women/2.jpg",
+    },
+    {
+      city: "Brisbane",
+      date: "9 Oct 2024",
+      name: "Brooklyn Simmons",
+      status: "Rejected",
+      image: "https://randomuser.me/api/portraits/men/3.jpg",
+    },
+    {
+      city: "Adelaide",
+      date: "9 Oct 2024",
+      name: "Guy Hawkins",
+      status: "Accepted",
+      image: "https://randomuser.me/api/portraits/men/4.jpg",
+    },
+    {
+      city: "Perth",
+      date: "8 Oct 2024",
+      name: "Adelaide Richardson",
+      status: "Pending",
+      image: "https://randomuser.me/api/portraits/women/5.jpg",
+    },
+    {
+      city: "Perth",
+      date: "8 Oct 2024",
+      name: "Adelaide Richardson",
+      status: "Pending",
+      image: "https://randomuser.me/api/portraits/women/5.jpg",
+    },
+    {
+      city: "Perth",
+      date: "8 Oct 2024",
+      name: "Adelaide Richardson",
+      status: "Pending",
+      image: "https://randomuser.me/api/portraits/women/5.jpg",
+    },
+  ];
+
+  const statusStyles = {
+    Pending: "bg-yellow-100 text-yellow-600",
+    Accepted: "bg-green-100 text-green-600",
+    Rejected: "bg-red-100 text-red-600",
+  };
+  return (
+    <div className="w-[42%] p-4 bg-white rounded-lg shadow-lg border border-solid border-slate-200">
+      <h2 className="text-xl font-bold text-gray-800 mb-4">Upcoming Lessons</h2>
+      <div className="space-t-4 overflow-y-auto max-h-[340px] scrollbar-thin scrollbar-thumb-gray-300">
+        {lessons.map((lesson, index) => (
+          <div
+            key={index}
+            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg shadow-sm"
+          >
+            <div className="flex items-center">
+              <img
+                src={lesson.image}
+                alt={lesson.name}
+                className="w-10 h-10 rounded-full mr-3"
+              />
+              <div>
+                <h3 className="text-sm font-semibold text-gray-800">
+                  {lesson.city}
+                </h3>
+                <p className="text-sm text-gray-600">{lesson.name}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-gray-500">{lesson.date}</p>
+              <span
+                className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  statusStyles[lesson.status]
+                }`}
+              >
+                {lesson.status}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+const LessonBooking = () => {
+  const dataForYearForDiversity = [
+    { name: "Jan", male: 30, female: 20 },
+    { name: "Feb", male: 25, female: 15 },
+    { name: "Mar", male: 35, female: 25 },
+    { name: "Apr", male: 40, female: 30 },
+    { name: "May", male: 28, female: 20 },
+    { name: "Jun", male: 33, female: 22 },
+    { name: "Jul", male: 40, female: 30 },
+    { name: "Aug", male: 38, female: 28 },
+    { name: "Sep", male: 42, female: 32 },
+    { name: "Oct", male: 50, female: 35 },
+    { name: "Nov", male: 55, female: 38 },
+    { name: "Dec", male: 60, female: 40 },
+  ];
+
+  const dataForMonthForDiversity = [
+    { name: "Week 1", male: 10, female: 5 },
+    { name: "Week 2", male: 15, female: 7 },
+    { name: "Week 3", male: 18, female: 9 },
+    { name: "Week 4", male: 20, female: 10 },
+  ];
+
+  const dataForWeekForDiversity = [
+    { name: "Mon", male: 3, female: 2 },
+    { name: "Tue", male: 4, female: 3 },
+    { name: "Wed", male: 5, female: 4 },
+    { name: "Thu", male: 6, female: 5 },
+    { name: "Fri", male: 7, female: 5 },
+    { name: "Sat", male: 8, female: 6 },
+    { name: "Sun", male: 9, female: 6 },
+  ];
+
+  const overallDataForDiversity = [
+    { name: "2019", male: 400, female: 300 },
+    { name: "2020", male: 450, female: 350 },
+    { name: "2021", male: 500, female: 400 },
+    { name: "2022", male: 550, female: 450 },
+    { name: "2023", male: 600, female: 500 },
+  ];
+
+  const [selectedDataForDiversity, setSelectedDataForDiversity] = useState(
+    dataForYearForDiversity
+  );
+  const [timeframeForDiversity, setTimeframeForDiversity] =
+    useState("This Year");
+  const handleTimeframeChangeForDiversity = (event) => {
+    const selectedTimeframe = event.target.value;
+    setTimeframeForDiversity(selectedTimeframe);
+
+    switch (selectedTimeframe) {
+      case "This Week":
+        setSelectedDataForDiversity(dataForWeekForDiversity);
+        break;
+      case "This Month":
+        setSelectedDataForDiversity(dataForMonthForDiversity);
+        break;
+      case "This Year":
+        setSelectedDataForDiversity(dataForYearForDiversity);
+        break;
+      case "Overall":
+        setSelectedDataForDiversity(overallDataForDiversity);
+        break;
+      default:
+        setSelectedDataForDiversity(dataForYearForDiversity);
+    }
+  };
+  return (
+    <div className="w-[56%] p-6 px-4 lg:px-6 bg-white shadow-md rounded-lg border border-solid border-neutral-100">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold">Student Enrollment</h2>
+          <div className="text-blue-600 text-2xl lg:text-3xl font-bold mt-2 mb-4">
+            5000 Students
+          </div>
+        </div>
+        <div>
+          {/* Dropdown for selecting timeframe */}
+          <select
+            className="border border-gray-300 p-2 rounded-md shadow-sm"
+            value={timeframeForDiversity}
+            onChange={handleTimeframeChangeForDiversity}
+          >
+            <option value="This Week">This Week</option>
+            <option value="This Month">This Month</option>
+            <option value="This Year">This Year</option>
+            <option value="Overall">Overall</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Bar Chart */}
+      <ResponsiveContainer width="107%" height={300} className={"-ml-[2.5vw]"}>
+        <BarChart data={selectedDataForDiversity}>
+          <CartesianGrid strokeDasharray="5 5" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="male" stackId="a" fill="#007bff" />
+          <Bar dataKey="female" stackId="a" fill="#ffc107" />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 
 const Dashboard = () => {
   const [timeframe, setTimeframe] = useState("This Week");
@@ -166,6 +384,11 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
+      </div>
+      {/* --------------2nd row --------------- */}
+      <div className="flex justify-between mt-6">
+        <UpcomingLessons />
+        <LessonBooking />
       </div>
     </div>
   );
