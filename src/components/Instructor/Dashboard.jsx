@@ -223,6 +223,146 @@ const LessonBooking = () => {
     </div>
   );
 };
+const RevenueGraph = () => {
+  const dataForYearRevenew = [
+    { name: "Jan", totalRevenue: 20, netProfit: -10 },
+    { name: "Feb", totalRevenue: 15, netProfit: -5 },
+    { name: "Mar", totalRevenue: 22, netProfit: 0 },
+    { name: "Apr", totalRevenue: 30, netProfit: 5 },
+    { name: "May", totalRevenue: 40, netProfit: 10 },
+    { name: "Jun", totalRevenue: 35, netProfit: 8 },
+    { name: "Jul", totalRevenue: 50, netProfit: 20 },
+    { name: "Aug", totalRevenue: 45, netProfit: 15 },
+    { name: "Sep", totalRevenue: 55, netProfit: 22 },
+    { name: "Oct", totalRevenue: 60, netProfit: 25 },
+    { name: "Nov", totalRevenue: 58, netProfit: 24 },
+    { name: "Dec", totalRevenue: 65, netProfit: 30 },
+  ];
+
+  const dataForMonthRevenew = [
+    { name: "Week 1", totalRevenue: 10, netProfit: -5 },
+    { name: "Week 2", totalRevenue: 15, netProfit: 0 },
+    { name: "Week 3", totalRevenue: 18, netProfit: 3 },
+    { name: "Week 4", totalRevenue: 22, netProfit: 5 },
+  ];
+
+  const dataForWeekRevenew = [
+    { name: "Mon", totalRevenue: 2, netProfit: -1 },
+    { name: "Tue", totalRevenue: 3, netProfit: 0 },
+    { name: "Wed", totalRevenue: 5, netProfit: 1 },
+    { name: "Thu", totalRevenue: 7, netProfit: 2 },
+    { name: "Fri", totalRevenue: 10, netProfit: 5 },
+    { name: "Sat", totalRevenue: 8, netProfit: 4 },
+    { name: "Sun", totalRevenue: 9, netProfit: 4 },
+  ];
+
+  const overallDataRevenew = [
+    { name: "2021", totalRevenue: 500, netProfit: 200 },
+    { name: "2022", totalRevenue: 600, netProfit: 250 },
+    { name: "2023", totalRevenue: 700, netProfit: 300 },
+    { name: "2024", totalRevenue: 800, netProfit: 350 },
+  ];
+  const [selectedDataRevenew, setselectedDataRevenew] =
+    useState(dataForYearRevenew);
+  const [activeTimeframe, setActiveTimeframe] = useState("thisYear");
+
+  const handleTimeframeChange = (timeframe) => {
+    setActiveTimeframe(timeframe);
+    switch (timeframe) {
+      case "thisWeek":
+        setselectedDataRevenew(dataForWeekRevenew);
+        break;
+      case "thisMonth":
+        setselectedDataRevenew(dataForMonthRevenew);
+        break;
+      case "thisYear":
+        setselectedDataRevenew(dataForYearRevenew);
+        break;
+      case "overall":
+        setselectedDataRevenew(overallDataRevenew);
+        break;
+      default:
+        setselectedDataRevenew(dataForYearRevenew);
+    }
+  };
+  return (
+    <div className="p-4 bg-white shadow-lg rounded-lg border border-solid border-neutral-100 mt-8">
+      <h3 className="text-2xl font-semibold">Revenue</h3>
+      <div className="text-blue-600 text-4xl font-bold mt-2">$50,000</div>
+      <div className="text-gray-500">1500 Bookings</div>
+
+      {/* Timeframe buttons */}
+      <div className="flex justify-end space-x-4 mt-4">
+        <button
+          onClick={() => handleTimeframeChange("thisWeek")}
+          className={`px-4 py-2 rounded-full font-semibold transition-colors duration-200 
+            ${
+              activeTimeframe === "thisWeek"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+        >
+          This Week
+        </button>
+        <button
+          onClick={() => handleTimeframeChange("thisMonth")}
+          className={`px-4 py-2 rounded-full font-semibold transition-colors duration-200 
+            ${
+              activeTimeframe === "thisMonth"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+        >
+          This Month
+        </button>
+        <button
+          onClick={() => handleTimeframeChange("thisYear")}
+          className={`px-4 py-2 rounded-full font-semibold transition-colors duration-200 
+            ${
+              activeTimeframe === "thisYear"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+        >
+          This Year
+        </button>
+        <button
+          onClick={() => handleTimeframeChange("overall")}
+          className={`px-4 py-2 rounded-full font-semibold transition-colors duration-200 
+            ${
+              activeTimeframe === "overall"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+            }`}
+        >
+          Overall
+        </button>
+      </div>
+
+      {/* Line Chart */}
+      <ResponsiveContainer
+        width="100%"
+        height={300}
+        className={"-ml-[2vw] mt-4"}
+      >
+        <LineChart data={selectedDataRevenew}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="totalRevenue"
+            stroke="#007bff"
+            activeDot={{ r: 8 }}
+          />
+          <Line type="monotone" dataKey="netProfit" stroke="#ffc107" />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 
 const Dashboard = () => {
   const [timeframe, setTimeframe] = useState("This Week");
@@ -394,6 +534,8 @@ const Dashboard = () => {
         <UpcomingLessons />
         <LessonBooking />
       </div>
+      {/* -----------------------3rd row----------------------- */}
+      <RevenueGraph />
     </div>
   );
 };
