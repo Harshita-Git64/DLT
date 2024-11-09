@@ -76,7 +76,7 @@ const UpcomingLessons = () => {
     Rejected: "bg-red-100 text-red-600",
   };
   return (
-    <div className="w-[42%] p-4 bg-white rounded-lg shadow-lg border border-solid border-slate-200">
+    <div className="w-full md:w-[42%] p-4 bg-white rounded-lg shadow-lg border border-solid border-slate-200">
       <h2 className="text-xl font-bold text-gray-800 mb-4">Upcoming Lessons</h2>
       <div className="space-t-4 overflow-y-auto max-h-[340px] scrollbar-thin scrollbar-thumb-gray-300">
         {lessons.map((lesson, index) => (
@@ -181,7 +181,7 @@ const LessonBooking = () => {
     }
   };
   return (
-    <div className="w-[56%] p-6 px-4 lg:px-6 bg-white shadow-md rounded-lg border border-solid border-neutral-100">
+    <div className="w-full md:w-[56%] p-6 px-4 lg:px-6 mt-8 md:mt-auto bg-white shadow-md rounded-lg border border-solid border-neutral-100">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-xl font-bold">Student Enrollment</h2>
@@ -205,7 +205,11 @@ const LessonBooking = () => {
       </div>
 
       {/* Bar Chart */}
-      <ResponsiveContainer width="107%" height={300} className={"-ml-[2.5vw]"}>
+      <ResponsiveContainer
+        width="107%"
+        height={300}
+        className={"-ml-[6vw] xs:-ml-[4vw] md:-ml-[2.5vw]"}
+      >
         <BarChart data={selectedDataForDiversity}>
           <CartesianGrid strokeDasharray="5 5" />
           <XAxis dataKey="name" />
@@ -386,7 +390,7 @@ const Dashboard = () => {
         </div>
       </div>
       {/* --------------2nd row --------------- */}
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between flex-wrap md:flex-nowrap mt-6">
         <UpcomingLessons />
         <LessonBooking />
       </div>
