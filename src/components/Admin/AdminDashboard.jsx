@@ -14,10 +14,16 @@ import AdminQueries from "./AdminQueries";
 import AllStudents from "./AllStudents";
 import Dashboard from "./Dasboard";
 import AllBookings from "./AllBookings";
+import RolesAndPermissions, { AddNewRole } from "./RolesAndPermissions";
+import AllEmployees, { AddEmployeeForm } from "./AllEmployees";
 
 const AdminDashboard = () => {
   // State management
   const [activeTab, setActiveTab] = useState("Dashboard");
+  const [addEmployeeFormOpen, setAddEmployeeFormOpen] = useState(false);
+  const [addNewRoleOpen, setNewRoleOpen] = useState(false);
+
+  console.log("addEmployeeFormOpen", addEmployeeFormOpen);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
@@ -82,13 +88,22 @@ const AdminDashboard = () => {
           </div>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around border-b border-solid border-neutral-100 py-6">
             <button
-              onClick={() => setActiveTab("Staff")}
+              onClick={() => setActiveTab("Employees")}
               className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
-                activeTab === "Staff" ? "bg-secondary-400 text-white" : ""
+                activeTab === "Employees" ? "bg-secondary-400 text-white" : ""
               }`}
             >
               <FaListCheck className="w-5 h-5" />
-              <span className="hidden md:block">Staff & Roles</span>
+              <span className="hidden md:block">Employees</span>
+            </button>
+            <button
+              onClick={() => setActiveTab("Permissions")}
+              className={`flex items-center justify-center md:justify-start space-x-2 md:space-x-4 w-full px-4 py-2 rounded-lg ${
+                activeTab === "Permissions" ? "bg-secondary-400 text-white" : ""
+              }`}
+            >
+              <FaListCheck className="w-5 h-5" />
+              <span className="hidden md:block">Roles & Permissions</span>
             </button>
           </div>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around py-4">
@@ -115,7 +130,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-fullmd:w-[75%] overflow-y-scroll mb-10">
+      <div className="w-full md:w-[75%] overflow-y-scroll mb-10">
         {/* dashboard */}
         {activeTab === "Dashboard" && <Dashboard />}
         {/* other things on dashboard ----------------------------------------------------------- */}
@@ -125,6 +140,26 @@ const AdminDashboard = () => {
         {activeTab === "Bookings" && <AllBookings />}
         {activeTab === "queries" && <AdminQueries />}
         {activeTab === "Students" && <AllStudents />}
+        {activeTab === "Permissions" && (
+          <>
+            {!addNewRoleOpen ? (
+              <RolesAndPermissions setNewRoleOpen={setNewRoleOpen} />
+            ) : (
+              <AddNewRole setNewRoleOpen={setNewRoleOpen} />
+            )}
+          </>
+        )}
+        {activeTab === "Employees" && (
+          <>
+            {!addEmployeeFormOpen ? (
+              <AllEmployees setAddEmployeeFormOpen={setAddEmployeeFormOpen} />
+            ) : (
+              <AddEmployeeForm
+                setAddEmployeeFormOpen={setAddEmployeeFormOpen}
+              />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import { FaUserCircle, FaSearch } from "react-icons/fa";
 
 function AdminNavBar() {
   return (
-    <nav className="h-[100px] bg-white">
+    <nav className="h-[100px] bg-white border-b">
       <div className="flex justify-between items-center h-full mx-10 md:mx-20">
         {/* Startup */}
         <div className="text-[#001C51] text-3xl font-extrabold">
@@ -14,7 +14,7 @@ function AdminNavBar() {
         </div>
 
         <div className="flex gap-5 items-center">
-          <div className="flex items-center bg-gray-100 rounded-md px-4 py-2 w-[500px] border border-solid border-neutral-100 mr-4">
+          <div className="flex items-center bg-gray-100 rounded-l-full rounded-r-full px-4 py-2 w-[500px] border border-solid border-neutral-100 mr-4">
             <FaSearch className="text-gray-500" />
             <input
               type="text"

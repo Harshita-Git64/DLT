@@ -7,107 +7,624 @@ import { FaPlus } from "react-icons/fa6";
 import ReactModal from "react-modal";
 import axios from "../../axios";
 
-const mockData = [
-  {
-    id: 1,
-    name: "Rakesh Mehta",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Pending",
-    date: "2024-10-01",
-  },
-  {
-    id: 2,
-    name: "Ishika Mehta",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Accepted",
-    date: "2024-10-02",
-  },
-  {
-    id: 3,
-    name: "Kunal Sharma",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Pending",
-    date: "2024-10-03",
-  },
-  {
-    id: 4,
-    name: "Rohan Verma",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Rejected",
-    date: "2024-10-03",
-  },
-  {
-    id: 5,
-    name: "Rakesh Mehta",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Pending",
-    date: "2024-10-01",
-  },
-  {
-    id: 6,
-    name: "Ishika Mehta",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Accepted",
-    date: "2024-10-02",
-  },
-  {
-    id: 7,
-    name: "Kunal Sharma",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Pending",
-    date: "2024-10-03",
-  },
-  {
-    id: 8,
-    name: "Rohan Verma",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Rejected",
-    date: "2024-10-03",
-  },
-  {
-    id: 9,
-    name: "Rakesh Mehta",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Pending",
-    date: "2024-10-01",
-  },
-  {
-    id: 10,
-    name: "Ishika Mehta",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Accepted",
-    date: "2024-10-02",
-  },
-  {
-    id: 11,
-    name: "Kunal Sharma",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Pending",
-    date: "2024-10-03",
-  },
-  {
-    id: 12,
-    name: "Rohan Verma",
-    phone: "9876543210",
-    location: "Mumbai",
-    status: "Rejected",
-    date: "2024-10-03",
-  },
-];
+const QueriesFullDetailModal = ({setModalFullDetailOpen,selectedQuerytDetails}) =>{
+  const handleAddInstructor = async() => {
+    const mappedDetails = {
+      first_name: selectedQuerytDetails?.first_name,
+      last_name: selectedQuerytDetails?.last_name,
+      email: selectedQuerytDetails?.email,
+      date_of_birth: selectedQuerytDetails?.date_of_birth,      
+      phoneNumber: selectedQuerytDetails?.phone_number,
+      city:selectedQuerytDetails?.city,
+      state:selectedQuerytDetails?.state,
+      locality:selectedQuerytDetails?.locality,
+      pincode:selectedQuerytDetails?.pincode,
+      isInstructor: true // Set isInstructor to true
+    };
+    try {
+      const response = await axios.post("users",mappedDetails)
+      if (response.status === 200) {
+        console.log("User added successfully:", response.data);
+        //console.log("status updated successfully:", data.data);
+        // const data = await axios.patch(`items/queries/${selectedQuerytDetails.id}`,{status:"Accepted"})
+      }
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  }
+  return (
+    <div className="bg-white">
+    <GoArrowLeft
+      className="h-6 w-6 hover:cursor-pointer"
+      onClick={() => setModalFullDetailOpen(false)}
+    />
+    <h1 className="font-bold text-black text-3xl mt-8">
+      Personal Details
+    </h1>
 
+    {/* Profile Photo */}
+    <div className="">
+      <img  src={`https://i.pravatar.cc/150?u=${selectedQuerytDetails.id}`} className="h-20 w-20 rounded-full mt-5 ml-2"></img>
+    </div>
+    <p className="text-sm text-blue-500">Profile Photo</p>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 ">
+       {/* First name */}
+       <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          First Name
+        </label>
+        <input
+          type="text"
+          name="firstname"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          placeholder="Enter your name"
+          value={selectedQuerytDetails.first_name}
+          disabled
+        />
+      </div>
+       {/* last name */}
+       <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Last Name
+        </label>
+        <input
+          type="text"
+          name="lastname"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          placeholder="Enter your name"
+          value={selectedQuerytDetails.last_name}
+          disabled
+        />
+      </div>
+      {/* Date of birth */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Date of Birth{" "}
+        </label>
+        <input
+          // type="date"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-neutral-700"
+          name="dateofbirth"
+          value={selectedQuerytDetails.date_of_birth}
+          disabled
+        ></input>
+      </div>
+      {/* phone number */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Mobile Number
+        </label>
+        <input
+          type="tel"
+          placeholder="Enter your phone number"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
+          name="mobileno"
+          value={selectedQuerytDetails.phone_number}
+          disabled
+        />
+      </div>
+      {/* Email */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Email
+        </label>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
+          name="email"
+          value={selectedQuerytDetails.email}
+          disabled
+        />
+      </div>
+    </div>
+    <hr className="my-10"></hr>
+    <h1 className="font-bold text-black text-3xl">Location Details</h1>
+    <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-5">
+      {/* city */}
+      <div>
+        <label className="block text-sm text-[#202224] font-semibold">
+          City
+        </label>
+         <input
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          placeholder="Enter your name"
+          value={selectedQuerytDetails.city}
+          disabled
+        />
+        
+      </div>
+      {/* pin code */}
+      <div className="mt-3 sm:mt-0">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Pin code
+        </label>
+        <input
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  text-neutral-700"
+          value={selectedQuerytDetails.pincode}
+          placeholder="Pincode"
+          disabled
+        />
+      </div>
+      {/* state */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          State
+        </label>
+        <input
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.state}
+          disabled
+        />
+      </div>
+      {/* Locality */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Locality (Optional)
+        </label>
+        <input
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.locality}
+          disabled
+        />
+      </div>
+    </div>
+    <hr className="my-10"></hr>
+    <h1 className="font-bold text-black text-3xl">
+      License and Certification Details
+    </h1>
+    <div className="sm:grid sm:grid-cols-2 gap-x-5 ">
+      {/* license Number*/}
+      <div className="mt-5">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Driver’s License Number
+        </label>
+        <input
+          type="text"
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          name="licenseNumber"
+          value={selectedQuerytDetails.license_number}
+          disabled
+        />
+      </div>
+      {/* license issuing state */}
+      <div className="mt-3 sm:mt-5">
+        <label className="block text-sm text-[#202224] font-semibold">
+          License Issuing State (Dropdown)
+        </label>
+        <input
+          type="text"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.license_issue_state}
+          disabled
+        />
+      </div>
+      {/* expiry date */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          License Expiry Date
+        </label>
+        <input
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          name="licenseExpiryDate"
+          value={selectedQuerytDetails.license_expiry_date}
+          disabled
+        />
+      </div>
+      {/* license type */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          License Type (Manual/Automatic/Both)
+        </label>
+        <input
+          type="text"
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.license_type}
+          disabled
+        />
+      </div>
+
+      {/* checkboxes */}
+      <div className="mt-3">
+        <h1 className="text-[#202224] font-semibold">
+          Certificate IV in Training and Assessment
+        </h1>
+
+        <div className="flex space-x-4 mt-2">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="certificateIV"
+              value="yes"
+              className="mr-2 text-red-600 focus:ring-red-500"
+              checked={selectedQuerytDetails.training_certificate === "yes"} 
+              disabled
+            />
+            Yes
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              name="certificateIV"
+              disabled
+              className="mr-2 text-blue-500"
+              value="no"
+              checked={selectedQuerytDetails.training_certificate === "no"} 
+            />
+            No
+          </label>
+        </div>
+      </div>
+    </div>
+    <hr className="my-10"></hr>
+    {/* Experience and Availability */}
+    <h1 className="font-bold text-black text-3xl">
+      Experience and Availability
+    </h1>
+    <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
+      {/* Years of Experience */}
+      <div className="">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Years of Experience
+        </label>
+        <input
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.experience} years
+          disabled
+        />
+      </div>
+      {/*  Available Days (Optional)*/}
+      <div className="mt-3 sm:mt-0">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Available Days (Optional)
+        </label>
+        <input
+          type="text"
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          name="availableDays"
+          value={selectedQuerytDetails.available_days}
+          disabled
+        />
+      </div>
+    </div>
+    <hr className="my-10"></hr>
+    {/* Vehicle Information */}
+    <h1 className="font-bold text-black text-3xl">Vehicle Information</h1>
+    <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
+      {/*  Vehicle Make*/}
+      <div className="">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Vehicle Make
+        </label>
+        <input
+          type="text"
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.vehicle_company}
+          disabled
+        />
+      </div>
+
+      {/* Vehicle Model */}
+      <div className="mt-3 sm:mt-0">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Vehicle Model
+        </label>
+        <input
+          type="text"
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.vehicle_model}
+          disabled
+        />
+      </div>
+      {/* Vehicle Year */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Vehicle Year
+        </label>
+        <input
+          type="text"
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.vehicle_year}
+          disabled
+        />
+      </div>
+
+      {/*  Vehicle Registration Number */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Vehicle Registration Number
+        </label>
+        <input
+          type="text"
+          className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
+          value={selectedQuerytDetails.vehicle_registration_no}
+          disabled
+        />
+      </div>
+      {/* Registration Documents */}
+      <div className="mt-3">
+        <label
+          className="block text-sm text-[#202224] font-semibold"
+          htmlFor="vehicleRegDoc"
+        >
+          Upload Vehicle Registration Documents
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="vehicleRegDoc"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {vehicleDetails.vehicleRegDoc ? (
+                  <p className="text-center text-sm text-gray-700">
+                    {vehicleDetails.vehicleRegDoc.name}
+                  </p>
+                ) : (
+                  <span className="text-sm">Upload Image</span>
+                )} */}
+            Img123.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            type="file"
+            id="vehicleRegDoc"
+            name="vehicleRegDoc"
+            accept="image/*,.pdf"
+            className="hidden"
+            disabled
+          />
+        </div>
+      </div>
+
+      {/* Insurance Documents */}
+      <div className="mt-3">
+        <label
+          className="block text-sm text-[#202224] font-semibold"
+          htmlFor="vehicleInsuranceDoc"
+        >
+          Upload Vehicle Insurance Documents
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="vehicleInsuranceDoc"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {vehicleDetails.vehicleInsuranceDoc ? (
+                  <p className="text-center text-sm text-gray-700">
+                    {vehicleDetails.vehicleInsuranceDoc.name}
+                  </p>
+                ) : (
+                  <span className="text-sm">Upload Image</span>
+                )} */}
+            Img123.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            type="file"
+            id="vehicleInsuranceDoc"
+            name="vehicleInsuranceDoc"
+            accept="image/*,.pdf"
+            className="hidden"
+            disabled
+          />
+        </div>
+      </div>
+    
+    </div>
+
+    <hr className="my-10"></hr>
+    {/* Additional Documents */}
+    <h1 className="font-bold text-black text-3xl">
+      Additional Documents
+    </h1>
+    <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
+      {/* National Police Check */}
+
+      <div className="w-full">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Upload National Police Check
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="policeCheck"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {documentDetails.policeCheck ? (
+                <p className="text-center text-sm text-gray-700">
+                  {documentDetails.policeCheck.name}
+                </p>
+              ) : (
+                <span className="text-sm">Upload Image</span>
+              )} */}
+            Img1234.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            id="policeCheck"
+            type="file"
+            className="hidden"
+            name="policeCheck"
+            accept="image/*,.pdf"
+            disabled
+          />
+        </div>
+      </div>
+
+      {/* Working with Children Check */}
+      <div className="w-full mt-3 sm:mt-0">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Working with Children Check{" "}
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="childrenCheck"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {documentDetails.childrenCheck ? (
+                <p className="text-center text-sm text-gray-700">
+                  {documentDetails.childrenCheck.name}
+                </p>
+              ) : (
+                <span>Upload Image</span>
+              )} */}
+            Img1234.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            type="file"
+            className="hidden"
+            id="childrenCheck"
+            name="childrenCheck"
+            accept="image/*,.pdf"
+            disabled
+          />
+        </div>
+      </div>
+
+      {/* Proof of Identity */}
+      <div className="mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Upload Proof of Identity
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="proofOfIdentity"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {documentDetails.proofOfIdentity ? (
+                <p className="text-center text-sm text-gray-700">
+                  {documentDetails.proofOfIdentity.name}
+                </p>
+              ) : (
+                <span>Upload Image</span>
+              )} */}
+            Img1234.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            id="proofOfIdentity"
+            type="file"
+            className="hidden"
+            name="proofOfIdentity"
+            accept="image/*,.pdf"
+            disabled
+          />
+        </div>
+      </div>
+
+      {/* Proof of Address */}
+      <div className="w-full mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Upload Proof of Address
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="proofOfAddress"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {documentDetails.proofOfAddress ? (
+                <p className="text-center text-sm text-gray-700">
+                  {documentDetails.proofOfAddress.name}
+                </p>
+              ) : (
+                <span className="text-sm">Upload Image</span>
+              )} */}
+            Img1234.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            id="proofOfAddress"
+            type="file"
+            className="hidden"
+            name="proofOfAddress"
+            accept="image/*,.pdf"
+            disabled
+          />
+        </div>
+      </div>
+
+      {/* Qualifications Certificate */}
+      <div className="w-full mt-3">
+        <label className="block text-sm text-[#202224] font-semibold">
+          Upload Qualifications Certificate
+        </label>
+        <div className="flex flex-col items-center justify-center mt-1 w-full">
+          {/* Custom Label acting as Button */}
+          <label
+            htmlFor="qualificationCert"
+            className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
+          >
+            {/* {documentDetails.qualificationCert ? (
+                <p className="text-center text-sm text-gray-700">
+                  {documentDetails.qualificationCert.name}
+                </p>
+              ) : (
+                <span className="text-sm">Upload Image</span>
+              )} */}
+            Img1234.png
+          </label>
+          {/* Hidden File Input */}
+          <input
+            id="qualificationCert"
+            type="file"
+            className="hidden"
+            name="proofOfAddress"
+            accept="image/*,.pdf"
+            disabled
+          />
+        </div>
+      </div>
+    </div>
+    <hr className="my-10"></hr>
+    {/* Experience and Availability */}
+    <h1 className="font-bold text-black text-3xl">
+      Description (Tell Us About Yourself)
+    </h1>
+    <div className="mt-5 mb-20">
+      <label
+        htmlFor="description"
+        className="block text-sm text-[#202224] font-semibold"
+      >
+        A Few Words About You (150-200 characters)
+      </label>
+      <textarea
+        id="description"
+        name="selfdescription"
+        rows="10"
+        className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
+        value={selectedQuerytDetails.description}
+        disabled
+      />
+    </div>
+
+    {/* Action Buttons */}
+    <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full">
+      <button className="bg-secondary-400 rounded-md text-white px-8 py-2 transition-colors duration-200 hover:bg-secondary-500" onClick={handleAddInstructor}>
+        Accept
+      </button>
+      <button
+        className="bg-error-200 rounded-md px-8 py-2 text-white transition-colors duration-200 hover:bg-error-300"
+        onClick={() => setModalRejectApplicationOpen(true)}
+      >
+        Reject
+      </button>
+      <button
+        className="bg-neutral-300 rounded-md text-white px-8 py-2 transition-colors duration-200 hover:bg-neutral-400"
+        onClick={() => setModalFullDetailOpen(false)}
+      >
+        Cancel
+      </button>
+    </div>
+    </div>
+  )
+}
 const QueriesComponent = () => {
-  const [data, setData] = useState(mockData);
   const [viewMode, setViewMode] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -117,14 +634,13 @@ const QueriesComponent = () => {
   const [modalFullDetailOpen, setModalFullDetailOpen] = useState(false);
   const [modalRejectApplicationOpen, setModalRejectApplicationOpen] =useState(false);
   const [allQueryDetails, setAllQueryDetails] = useState([]);
-  const [selectedQueryId, setSelectedQueryId] = useState("");
   const [selectedQuerytDetails, setSelectedQueryDetails] = useState("");
 
   const getAllQueries = async () => {
     try {
       //API for fetching all Queries
       const response = await axios(
-        "items/queries?fields=id,avatar,fullname,phone_number,city,status"
+        "items/queries?fields=id,avatar,first_name,last_name,phone_number,city,status"
       );
       const allQueriesData = await response.data;
       setAllQueryDetails(allQueriesData.data);
@@ -145,8 +661,8 @@ const QueriesComponent = () => {
       const response = await axios(
         `items/queries/${queryId}`
       );
-      const Data = await response.data;
-      setSelectedQueryDetails(Data.data);
+      const data = await response.data;
+      setSelectedQueryDetails(data.data);
       setModalFullDetailOpen(true);
     } catch (error) {
       console.log("error in fetching details",error.message)
@@ -161,7 +677,6 @@ const QueriesComponent = () => {
   };
   const handleStatusFilter = (status) => {
     setStatusFilter(status);
-    setModalStatusOpen(false);
   };
 
   const handleDateFilter = (e) => {
@@ -177,7 +692,7 @@ const QueriesComponent = () => {
 
   const filteredData = allQueryDetails.filter((item) => {
     return (
-      item.fullname.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      item.first_name.toLowerCase().includes(searchQuery.toLowerCase()) &&
       (statusFilter === "All" || item.status === statusFilter) &&
       (dateFilter ? item.date === dateFilter : true)
     );
@@ -227,11 +742,6 @@ const QueriesComponent = () => {
           >
             <FaFilter className="mr-2" />
             {dateFilter ? `Date: ${dateFilter}` : "Date"}
-            {dateFilter && (
-              <span className="absolute top-0 right-0 p-1 text-xs text-blue-600">
-                Active
-              </span>
-            )}
             <FaCaretDown />
           </button>
 
@@ -278,7 +788,8 @@ const QueriesComponent = () => {
             {filteredData.map((query) => {
                const {
                 id,
-                fullname,
+                first_name,
+                last_name,
                 city,
                 status,
                 phone_number,
@@ -293,7 +804,7 @@ const QueriesComponent = () => {
                       <div className="">
                         <img
                           src={`https://i.pravatar.cc/150?u=${id}`}
-                          alt={fullname}
+                          alt={first_name}
                           className="w-10 h-10 rounded-full mr-4"
                         />
                         <span
@@ -308,7 +819,7 @@ const QueriesComponent = () => {
                       </div>
                     </div>
                     <div className="text-center">
-                      <h2 className="font-bold text-lg mb-2">{fullname}</h2>
+                      <h2 className="font-bold text-lg mb-2">{first_name} {last_name}</h2>
                       <div className="text-sm text-gray-600">
                         <p className="flex w-full justify-between mb-2">
                           <strong>Query ID:</strong> <p>{id}</p>
@@ -374,11 +885,11 @@ const QueriesComponent = () => {
                       {/* Replace the following with profileImage if available */}
                       <img
                         src={`https://i.pravatar.cc/150?u=${query.id}`}
-                        alt={query.fullname}
+                        alt={query.first_name}
                         className="w-10 h-10 rounded-full mr-20"
                       />
                       <div className="font-medium text-blue-600">
-                        {query.fullname}
+                        {query.first_name} {query.last_name}
                       </div>
                     </td>
                     <td className="py-3 px-4">{query.phone_number}</td>
@@ -556,581 +1067,7 @@ const QueriesComponent = () => {
         className="bg-white shadow-lg px-10 pt-5 w-full md:w-4/5 lg:w-8/12  overflow-y-auto"
         overlayClassName="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-end z-40"
       >
-        <div className="bg-white">
-          <GoArrowLeft
-            className="h-6 w-6 hover:cursor-pointer"
-            onClick={() => setModalFullDetailOpen(false)}
-          />
-          <h1 className="font-bold text-black text-3xl mt-8">
-            Personal Details
-          </h1>
-
-          {/* Profile Photo */}
-          <div className="">
-            <img  src={`https://i.pravatar.cc/150?u=${selectedQuerytDetails.id}`} className="h-20 w-20 rounded-full mt-5 ml-2"></img>
-          </div>
-          <p className="text-sm text-blue-500">Profile Photo</p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 ">
-            {/* Full name */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Full Name
-              </label>
-              <input
-                type="text"
-                name="fullname"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-                placeholder="Enter your name"
-                value={selectedQuerytDetails.fullname}
-                disabled
-              />
-            </div>
-            {/* Date of birth */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Date of Birth{" "}
-              </label>
-              <input
-                // type="date"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm text-neutral-700"
-                name="dateofbirth"
-                value={selectedQuerytDetails.date_of_birth}
-                disabled
-              ></input>
-            </div>
-            {/* phone number */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Mobile Number
-              </label>
-              <input
-                type="tel"
-                placeholder="Enter your phone number"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
-                name="mobileno"
-                value={selectedQuerytDetails.phone_number}
-                disabled
-              />
-            </div>
-            {/* Email */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
-                name="email"
-                value={selectedQuerytDetails.email}
-                disabled
-              />
-            </div>
-          </div>
-          <hr className="my-10"></hr>
-          <h1 className="font-bold text-black text-3xl">Location Details</h1>
-          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-5">
-            {/* city */}
-            <div>
-              <label className="block text-sm text-[#202224] font-semibold">
-                City
-              </label>
-               <input
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-                placeholder="Enter your name"
-                value={selectedQuerytDetails.city}
-                disabled
-              />
-              
-            </div>
-            {/* pin code */}
-            <div className="mt-3 sm:mt-0">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Pin code
-              </label>
-              <input
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none  text-neutral-700"
-                value={selectedQuerytDetails.pincode}
-                placeholder="Pincode"
-                disabled
-              />
-            </div>
-            {/* state */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                State
-              </label>
-              <input
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.state}
-                disabled
-              />
-            </div>
-            {/* Locality */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Locality (Optional)
-              </label>
-              <input
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.locality}
-                disabled
-              />
-            </div>
-          </div>
-          <hr className="my-10"></hr>
-          <h1 className="font-bold text-black text-3xl">
-            License and Certification Details
-          </h1>
-          <div className="sm:grid sm:grid-cols-2 gap-x-5 ">
-            {/* license Number*/}
-            <div className="mt-5">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Driver’s License Number
-              </label>
-              <input
-                type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                name="licenseNumber"
-                value={selectedQuerytDetails.license_number}
-                disabled
-              />
-            </div>
-            {/* license issuing state */}
-            <div className="mt-3 sm:mt-5">
-              <label className="block text-sm text-[#202224] font-semibold">
-                License Issuing State (Dropdown)
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.license_issue_state}
-                disabled
-              />
-            </div>
-            {/* expiry date */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                License Expiry Date
-              </label>
-              <input
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                name="licenseExpiryDate"
-                value={selectedQuerytDetails.license_expiry_date}
-                disabled
-              />
-            </div>
-            {/* license type */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                License Type (Manual/Automatic/Both)
-              </label>
-              <input
-                type="text"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.license_type}
-                disabled
-              />
-            </div>
-
-            {/* checkboxes */}
-            <div className="mt-3">
-              <h1 className="text-[#202224] font-semibold">
-                Certificate IV in Training and Assessment
-              </h1>
-
-              <div className="flex space-x-4 mt-2">
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="certificateIV"
-                    value="yes"
-                    className="mr-2 text-red-600 focus:ring-red-500"
-                    checked={selectedQuerytDetails.training_certificate === "yes"} 
-                    disabled
-                  />
-                  Yes
-                </label>
-                <label className="flex items-center">
-                  <input
-                    type="radio"
-                    name="certificateIV"
-                    disabled
-                    className="mr-2 text-blue-500"
-                    value="no"
-                    checked={selectedQuerytDetails.training_certificate === "no"} 
-                  />
-                  No
-                </label>
-              </div>
-            </div>
-          </div>
-          <hr className="my-10"></hr>
-          {/* Experience and Availability */}
-          <h1 className="font-bold text-black text-3xl">
-            Experience and Availability
-          </h1>
-          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
-            {/* Years of Experience */}
-            <div className="">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Years of Experience
-              </label>
-              <input
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.experience}
-                disabled
-              />
-            </div>
-            {/*  Available Days (Optional)*/}
-            <div className="mt-3 sm:mt-0">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Available Days (Optional)
-              </label>
-              <input
-                type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                name="availableDays"
-                value={selectedQuerytDetails.available_days}
-                disabled
-              />
-            </div>
-          </div>
-          <hr className="my-10"></hr>
-          {/* Vehicle Information */}
-          <h1 className="font-bold text-black text-3xl">Vehicle Information</h1>
-          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
-            {/*  Vehicle Make*/}
-            <div className="">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Vehicle Make
-              </label>
-              <input
-                type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.vehicle_company}
-                disabled
-              />
-            </div>
-
-            {/* Vehicle Model */}
-            <div className="mt-3 sm:mt-0">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Vehicle Model
-              </label>
-              <input
-                type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.vehicle_model}
-                disabled
-              />
-            </div>
-            {/* Vehicle Year */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Vehicle Year
-              </label>
-              <input
-                type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.vehicle_year}
-                disabled
-              />
-            </div>
-
-            {/*  Vehicle Registration Number */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Vehicle Registration Number
-              </label>
-              <input
-                type="text"
-                className="mt-1 p-2 w-full border border-gray-300 rounded-lg focus:outline-none text-neutral-700"
-                value={selectedQuerytDetails.vehicle_registration_no}
-                disabled
-              />
-            </div>
-            {/* Registration Documents */}
-            <div className="mt-3">
-              <label
-                className="block text-sm text-[#202224] font-semibold"
-                htmlFor="vehicleRegDoc"
-              >
-                Upload Vehicle Registration Documents
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="vehicleRegDoc"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {vehicleDetails.vehicleRegDoc ? (
-                        <p className="text-center text-sm text-gray-700">
-                          {vehicleDetails.vehicleRegDoc.name}
-                        </p>
-                      ) : (
-                        <span className="text-sm">Upload Image</span>
-                      )} */}
-                  Img123.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  type="file"
-                  id="vehicleRegDoc"
-                  name="vehicleRegDoc"
-                  accept="image/*,.pdf"
-                  className="hidden"
-                  disabled
-                />
-              </div>
-            </div>
-
-            {/* Insurance Documents */}
-            <div className="mt-3">
-              <label
-                className="block text-sm text-[#202224] font-semibold"
-                htmlFor="vehicleInsuranceDoc"
-              >
-                Upload Vehicle Insurance Documents
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="vehicleInsuranceDoc"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {vehicleDetails.vehicleInsuranceDoc ? (
-                        <p className="text-center text-sm text-gray-700">
-                          {vehicleDetails.vehicleInsuranceDoc.name}
-                        </p>
-                      ) : (
-                        <span className="text-sm">Upload Image</span>
-                      )} */}
-                  Img123.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  type="file"
-                  id="vehicleInsuranceDoc"
-                  name="vehicleInsuranceDoc"
-                  accept="image/*,.pdf"
-                  className="hidden"
-                  disabled
-                />
-              </div>
-            </div>
-          
-          </div>
-
-          <hr className="my-10"></hr>
-          {/* Additional Documents */}
-          <h1 className="font-bold text-black text-3xl">
-            Additional Documents
-          </h1>
-          <div className="sm:grid sm:grid-cols-2 gap-x-5 mt-4">
-            {/* National Police Check */}
-
-            <div className="w-full">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Upload National Police Check
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="policeCheck"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {documentDetails.policeCheck ? (
-                      <p className="text-center text-sm text-gray-700">
-                        {documentDetails.policeCheck.name}
-                      </p>
-                    ) : (
-                      <span className="text-sm">Upload Image</span>
-                    )} */}
-                  Img1234.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  id="policeCheck"
-                  type="file"
-                  className="hidden"
-                  name="policeCheck"
-                  accept="image/*,.pdf"
-                  disabled
-                />
-              </div>
-            </div>
-
-            {/* Working with Children Check */}
-            <div className="w-full mt-3 sm:mt-0">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Working with Children Check{" "}
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="childrenCheck"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {documentDetails.childrenCheck ? (
-                      <p className="text-center text-sm text-gray-700">
-                        {documentDetails.childrenCheck.name}
-                      </p>
-                    ) : (
-                      <span>Upload Image</span>
-                    )} */}
-                  Img1234.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  type="file"
-                  className="hidden"
-                  id="childrenCheck"
-                  name="childrenCheck"
-                  accept="image/*,.pdf"
-                  disabled
-                />
-              </div>
-            </div>
-
-            {/* Proof of Identity */}
-            <div className="mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Upload Proof of Identity
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="proofOfIdentity"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {documentDetails.proofOfIdentity ? (
-                      <p className="text-center text-sm text-gray-700">
-                        {documentDetails.proofOfIdentity.name}
-                      </p>
-                    ) : (
-                      <span>Upload Image</span>
-                    )} */}
-                  Img1234.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  id="proofOfIdentity"
-                  type="file"
-                  className="hidden"
-                  name="proofOfIdentity"
-                  accept="image/*,.pdf"
-                  disabled
-                />
-              </div>
-            </div>
-
-            {/* Proof of Address */}
-            <div className="w-full mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Upload Proof of Address
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="proofOfAddress"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {documentDetails.proofOfAddress ? (
-                      <p className="text-center text-sm text-gray-700">
-                        {documentDetails.proofOfAddress.name}
-                      </p>
-                    ) : (
-                      <span className="text-sm">Upload Image</span>
-                    )} */}
-                  Img1234.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  id="proofOfAddress"
-                  type="file"
-                  className="hidden"
-                  name="proofOfAddress"
-                  accept="image/*,.pdf"
-                  disabled
-                />
-              </div>
-            </div>
-
-            {/* Qualifications Certificate */}
-            <div className="w-full mt-3">
-              <label className="block text-sm text-[#202224] font-semibold">
-                Upload Qualifications Certificate
-              </label>
-              <div className="flex flex-col items-center justify-center mt-1 w-full">
-                {/* Custom Label acting as Button */}
-                <label
-                  htmlFor="qualificationCert"
-                  className="cursor-pointer w-full p-2 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50"
-                >
-                  {/* {documentDetails.qualificationCert ? (
-                      <p className="text-center text-sm text-gray-700">
-                        {documentDetails.qualificationCert.name}
-                      </p>
-                    ) : (
-                      <span className="text-sm">Upload Image</span>
-                    )} */}
-                  Img1234.png
-                </label>
-                {/* Hidden File Input */}
-                <input
-                  id="qualificationCert"
-                  type="file"
-                  className="hidden"
-                  name="proofOfAddress"
-                  accept="image/*,.pdf"
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-          <hr className="my-10"></hr>
-          {/* Experience and Availability */}
-          <h1 className="font-bold text-black text-3xl">
-            Description (Tell Us About Yourself)
-          </h1>
-          <div className="mt-5 mb-20">
-            <label
-              htmlFor="description"
-              className="block text-sm text-[#202224] font-semibold"
-            >
-              A Few Words About You (150-200 characters)
-            </label>
-            <textarea
-              id="description"
-              name="selfdescription"
-              rows="10"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none text-neutral-700"
-              value={selectedQuerytDetails.description}
-              disabled
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-5 bg-white py-5 fixed bottom-0 w-full">
-            <button className="bg-secondary-400 rounded-md text-white px-8 py-2 transition-colors duration-200 hover:bg-secondary-500">
-              Accept
-            </button>
-            <button
-              className="bg-error-200 rounded-md px-8 py-2 text-white transition-colors duration-200 hover:bg-error-300"
-              onClick={() => setModalRejectApplicationOpen(true)}
-            >
-              Reject
-            </button>
-            <button
-              className="bg-neutral-300 rounded-md text-white px-8 py-2 transition-colors duration-200 hover:bg-neutral-400"
-              onClick={() => setModalFullDetailOpen(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <QueriesFullDetailModal setModalFullDetailOpen = {setModalFullDetailOpen} selectedQuerytDetails = {selectedQuerytDetails}/>
       </ReactModal>
     </div>
   );

@@ -48,7 +48,7 @@ const ForgotPassword = () => {
           <Link to='/verifycode'>
           <button
             type="submit"
-            className={`w-full p-2 text-white py-3 rounded-full transition-all  ${
+            className={`w-full p-2 text-white py-2 rounded-full transition-all  ${
               isEmailValid
                 ? "bg-blue-500 hover:bg-blue-600"
                 : "bg-gray-400 cursor-not-allowed"
