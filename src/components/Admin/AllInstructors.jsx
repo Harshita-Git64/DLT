@@ -133,11 +133,11 @@ export const BookingCard = ({ booking, instructor }) => {
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
           Package Type:{" "}
-          <span className="font-normal text-black">package type</span>
+          <span className="font-normal text-black">{booking.package.name}</span>
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
           Session Fee:{" "}
-          <span className="font-normal text-black">sessionFee</span>
+          <span className="font-normal text-black">${booking?.package?.price}</span>
         </p>
       </div>
 
@@ -188,29 +188,24 @@ export const InstructorDetailModal = ({
   };
 
   //booking toggles
-  // const [currentBookingPage, setCurrentBookingPage] = useState(1);
-  // const bookingsPerPage = 3;
+  const [currentBookingPage, setCurrentBookingPage] = useState(1);
+  const bookingsPerPage = 3;
 
-  // const totalBookingPages = Math.ceil(bookingData.length / bookingsPerPage);
-  // const bookingCardstartIndex = (currentBookingPage - 1) * bookingsPerPage;
+  const totalBookingPages = Math.ceil(selectedInstructorDetails[0]?.booking.length / bookingsPerPage);
+  const bookingCardstartIndex = (currentBookingPage - 1) * bookingsPerPage;
 
-  // const currentBookings = bookingData.slice(
-  //   bookingCardstartIndex,
-  //   bookingCardstartIndex + bookingsPerPage
-  // );
+  // Handle the next and previous page toggles
+  const nextBookingsPage = () => {
+    if (currentBookingPage < totalBookingPages) {
+      setCurrentBookingPage(currentBookingPage + 1);
+    }
+  };
 
-  // // Handle the next and previous page toggles
-  // const nextBookingsPage = () => {
-  //   if (currentBookingPage < totalBookingPages) {
-  //     setCurrentBookingPage(currentBookingPage + 1);
-  //   }
-  // };
-
-  // const prevBookingsPage = () => {
-  //   if (currentBookingPage > 1) {
-  //     setCurrentBookingPage(currentBookingPage - 1);
-  //   }
-  // };
+  const prevBookingsPage = () => {
+    if (currentBookingPage > 1) {
+      setCurrentBookingPage(currentBookingPage - 1);
+    }
+  };
 
   // revenew graph data.....................
   const dataForYearRevenew = [
@@ -700,7 +695,7 @@ const handleTimeFilterChange = (e) => {
                 ))}
               </div>
 
-              {/* <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+              <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
             <div className="flex justify-center space-x-2 ">
               {[...Array(totalBookingPages)].map((_, i) => (
                 <button
@@ -737,7 +732,7 @@ const handleTimeFilterChange = (e) => {
                 />
               </button>
             </div>
-          </div>  */}
+          </div> 
             </div>
           ) : (
             <div className="text-gray-500 font-medium text-lg text-center">
@@ -1053,7 +1048,7 @@ const AllInstructors = () => {
     try {
       //API for fetching instructor detail by Id
       const response = await axios(
-        `items/Instructor?fields=*,user_id.*,booking.*,booking.learner.user_id.first_name,booking.learner.user_id.last_name,booking.learner.user_id.profileImg,vehicle.*,ratings.*,ratings.Given_by.user_id.first_name,ratings.Given_by.user_id.last_name,ratings.Given_by.user_id.profileImg,vehicle.*&filter[id]=${instructorId}`
+        `items/Instructor?fields=*,user_id.*,booking.*,booking.package.*,booking.learner.user_id.first_name,booking.learner.user_id.last_name,booking.learner.user_id.profileImg,vehicle.*,ratings.*,ratings.Given_by.user_id.first_name,ratings.Given_by.user_id.last_name,ratings.Given_by.user_id.profileImg&filter[id]=${instructorId}`
       );
       const instructorData = await response.data;
       setSelectedInstructorDetails(instructorData.data);
@@ -1089,7 +1084,7 @@ const AllInstructors = () => {
   };
 
   return (
-    <div className="flex-grow bg-white px-4 py-2 overflow-scroll">
+    <div className="flex-grow bg-white p-6 overflow-scroll">
       {/* heading */}
       <div className="flex justify-between">
         <div className="text-desk-h-6 font-sans font-bold">Instructors</div>
@@ -1113,7 +1108,7 @@ const AllInstructors = () => {
         </div>
       </div>
       {/* Header with Search and Filters */}
-      <div className="flex justify-between items-center py-4 px-4 my-3">
+      <div className="flex justify-between items-center my-6">
         {/* Search Bar */}
         <div className="flex items-center bg-gray-100 rounded-md px-4 py-2 w-[50%] border border-solid border-neutral-100">
           <FaSearch className="text-gray-500" />
@@ -1159,7 +1154,7 @@ const AllInstructors = () => {
       </div>
       {/* Instructor Cards */}
       {viewMode === "grid" ? (
-        <div className="p-4 ">
+        <div className=" ">
           <div className="flex flex-wrap gap-3 min-h-fit max-h-fit gap-y-6">
             {filteredInstructors.map((instructor) => {
               const {

@@ -57,7 +57,7 @@ export const BookingDetailModal = ({
               ></img>
             </div>
             <div>
-              <div className="flex gap-1 ">
+              <div className={`flex gap-1 ${location.pathname === "/instructordashboard"? "hidden": ""} `}>
                 <span className="font-semibold">Instructor:</span>
                 <span className="">
                   {first_name} {last_name}
@@ -90,12 +90,14 @@ export const BookingDetailModal = ({
               <p className="font-poppins text-[#202224]">
                 {selectedBookingDetails[0].id}
               </p>
+              <div className={`${location.pathname === "/instructordashboard"? "hidden": ""}`}>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Instructor Name
               </h3>
               <p className="font-poppins text-[#202224]">
                 {first_name} {last_name}
               </p>
+              </div>
               <h3 className="font-semibold font-poppins text-[#000000] mt-4">
                 Learner Name
               </h3>
@@ -158,12 +160,14 @@ export const BookingDetailModal = ({
                 Additional Details
               </h2>
               <div className="text-sm">
+                <div className={`${location.pathname === "/instructordashboard"? "hidden": ""}`}>
                 <div className="font-bold mt-4 font-poppins">
                   Instructor Contact
                 </div>
                 <div>{phoneNumber}</div>
                 <div className="font-bold mt-4">Instructor Email</div>
                 <div>{email}</div>
+                </div>
                 <div className="font-bold mt-4">Learner Contact</div>
                 <div>
                   {selectedBookingDetails[0]?.learner?.user_id.phoneNumber}
@@ -482,7 +486,7 @@ const AllBookings = () => {
                 </div>
                 <h2 className="font-semibold text-center mb-5">{booking.id}</h2>
                 <div className="w-full">
-                  <p className="font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3">
+                  <p className={`font-semibold flex w-full justify-between mb-2 font-poppins text-gray-500 text-desk-b-3 ${location.pathname === "/instructordashboard"? "hidden": ""}`}>
                     Instructor:{" "}
                     <span className="font-normal text-black">
                       {booking?.instructor?.user_id?.first_name}{" "}
@@ -497,7 +501,7 @@ const AllBookings = () => {
                     </span>
                   </p>
                   <p className="font-semibold flex w-full justify-between shrink-0 mb-2 text-gray-500 text-desk-b-3">
-                    Date:{" "}
+                    Booking Date:{" "}
                     <span className="font-normal shrink-0 text-black">
                       {new Date(booking?.start_date).toLocaleDateString(
                         "en-GB",
@@ -533,7 +537,7 @@ const AllBookings = () => {
             ))}
           </div>
         ) : (
-          <div className="p-4">
+          <div className="">
             <div className="overflow-x-auto rounded-xl border">
               <table className="min-w-full bg-white">
                 <thead className="bg-slate-50">
@@ -566,7 +570,7 @@ const AllBookings = () => {
                   {filteredData.map((booking) => (
                     <tr key={booking.id} className="border-t border-gray-200">
                       <td
-                        className={`py-3 px-4 flex items-center ${
+                        className={`py-3 px-4 flex${
                           location.pathname === "/instructordashboard"
                             ? "hidden"
                             : ""
@@ -582,7 +586,7 @@ const AllBookings = () => {
                           {booking.instructor.user_id.last_name}
                         </span>
                       </td>
-                      <td className="py-3 px-4 ">
+                      <td className="py-3 px-4">
                         <img
                           src={booking.learner.user_id.profileImg}
                           alt="Learner Avatar"

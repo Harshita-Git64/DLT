@@ -194,11 +194,11 @@ export const BookingCard = ({ booking, learner }) => {
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
           Package Type:{" "}
-          <span className="font-normal text-black">package type</span>
+          <span className="font-normal text-black">{booking?.package?.name}</span>
         </p>
         <p className="font-semibold flex w-full justify-between mb-2 text-gray-500 text-desk-b-3">
           Session Fee:{" "}
-          <span className="font-normal text-black">sessionFee</span>
+          <span className="font-normal text-black">${booking?.package?.price}</span>
         </p>
       </div>
 
@@ -250,13 +250,8 @@ export const StudentDetailModal = ({
   const [currentBookingPage, setCurrentBookingPage] = useState(1);
   const bookingsPerPage = 3;
 
-  const totalBookingPages = Math.ceil(bookingData.length / bookingsPerPage);
+  const totalBookingPages = Math.ceil(selectedStudentDetails[0].booking.length / bookingsPerPage);
   const bookingCardstartIndex = (currentBookingPage - 1) * bookingsPerPage;
-
-  const currentBookings = bookingData.slice(
-    bookingCardstartIndex,
-    bookingCardstartIndex + bookingsPerPage
-  );
 
   // Handle the next and previous page toggles
   const nextBookingsPage = () => {
@@ -370,6 +365,7 @@ export const StudentDetailModal = ({
             Bookings
           </div>
           {selectedStudentDetails[0].booking.length !== 0 ? (
+            <div>
             <div className="flex space-x-3 gap-3 my-5">
               {selectedStudentDetails[0].booking.map((booking) => (
                 <BookingCard
@@ -378,6 +374,47 @@ export const StudentDetailModal = ({
                   learner={selectedStudentDetails[0]?.user_id}
                 />
               ))}
+            </div>
+            {/* prev and next buttons */}
+             <div className="flex items-end w-full justify-end space-x-5 my-5 mt-8">
+            <div className="flex justify-center space-x-2 ">
+              {[...Array(totalBookingPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentBookingPage(i + 1)}
+                  className={`h-7 w-7 text-gray-500  ${
+                    currentBookingPage === i + 1
+                      ? "bg-black text-white rounded-full"
+                      : ""
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+           
+            <div>
+              <button className="py-2 px-4 rounded-l-lg border bg-slate-50 hover:bg-slate-100">
+                <FaAngleLeft
+                  onClick={prevBookingsPage}
+                  className={`${
+                    currentBookingPage === 1 ? "text-gray-500" : ""
+                  }`}
+                />
+              </button>
+              <button className="py-2 px-4 rounded-r-lg border bg-slate-50 hover:bg-slate-100">
+                <FaAngleRight
+                  onClick={nextBookingsPage}
+                  className={`${
+                    currentBookingPage === totalBookingPages
+                      ? "text-gray-500"
+                      : ""
+                  }`}
+                />
+              </button>
+            </div>
+          </div>
+
             </div>
           ) : (
             <div className="text-gray-500 font-medium text-lg text-center">
@@ -497,7 +534,7 @@ const AllStudents = () => {
     try {
       //API for fetching student detail by Id
       const response = await axios(
-        `items/Learner?fields=*,user_id.*,booking.*,booking.instructor.user_id.first_name,booking.instructor.user_id.last_name,booking.instructor.user_id.profileImg,booking.lesson.*,booking.lesson.title,booking.lesson.description,booking.lesson.Completed_Lessons,booking.lesson.Pending_Lesson,booking.lesson.Lesson_Notes,booking.lesson.Start_date,booking.lesson.End_Date,booking.lesson.Start_time,booking.lesson.End_time&filter[id]=${studentId}`
+        `items/Learner?fields=*,user_id.*,booking.*,booking.instructor.user_id.first_name,booking.instructor.user_id.last_name,booking.instructor.user_id.profileImg,booking.lesson.*,booking.package.*&filter[id]=${studentId}`
       );
       const Data = await response.data;
       setSelectedStudentDetails(Data.data);
@@ -534,8 +571,8 @@ const AllStudents = () => {
   });
 
   return (
-    <div className="w-full px-5">
-      <div className="flex justify-between">
+    <div className="p-6">
+      <div className="flex justify-between mb-6 items-center">
         <div className="font-bold text-desk-h-6 font-sans">Students</div>
         <div className="flex gap-4 items-center">
           <button
@@ -595,14 +632,14 @@ const AllStudents = () => {
         </div>
       </div>
       {viewMode === "grid" ? (
-        <div className="mt-10 flex justify-between flex-wrap gap-2 min-h-fit max-h-fit gap-y-6 ">
+        <div className="mt-10 flex flex-wrap gap-3 gap-y-6 ">
           {filteredStudents.map((item) => {
             const { first_name, last_name, phoneNumber, profileImg } =
               item?.user_id;
             return (
               <div
                 key={item.id}
-                className="w-[240px] p-4 rounded-lg shadow-md border border-solid border-slate-200 flex flex-col"
+                className="w-[235px] p-4 rounded-lg shadow-md border border-solid border-slate-200 flex flex-col"
               >
                 <img
                   className="h-14 w-14 rounded-full shrink-0 object-cover self-center"
