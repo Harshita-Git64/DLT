@@ -44,10 +44,10 @@ const LoginModal = () => {
         },
       });
       const user = userResponse.data.data; // Get user details
-      console.log("user",user)
-      if (user.isInstructor) {
+      console.log("user", user);
+      if (user.isInstructor === "true") {
         navigate("/instructordashboard"); // Navigate to instructor dashboard
-      } else if (user.isAdmin) {
+      } else if (user.isAdmin === "true") {
         navigate("/admindashboard"); // Navigate to admin dashboard
       } else {
         console.log("User is neither an admin nor an instructor");
