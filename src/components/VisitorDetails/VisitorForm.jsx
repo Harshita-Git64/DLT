@@ -11,9 +11,11 @@ import axios from "../../axios";
 
 const VisitorForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [errors, setErrors] = useState({});
   const [personalDetails, setPersonalDetails] = useState({
-    profileimg: null,
-    fullname: "", // Full name of the user
+   // profileimg: null,
+    first_name :"",
+    last_name :"",
     phone_number: "", // Mobile number
     city: "", // City (dropdown)
     state: "", // State (dropdown)
@@ -22,94 +24,6 @@ const VisitorForm = () => {
     pincode: "", // Pincode (ZIP code)
     locality: "", // Locality or area of residence
   });
-
-
-  const [errors, setErrors] = useState({});
-    const validate = () => {
-      let formErrors = {};
-      if(currentStep===1){
-
-    // Full name validation
-    if (!personalDetails.fullname.trim()) {
-      formErrors.fullname = "Full name is required";
-    }
-
-    // Phone number validation (basic example for 10 digits)
-    const phonePattern = /^[0-9]{10}$/;
-    if (!phonePattern.test(personalDetails.phone_number)) {
-      formErrors.phone_number = "Phone number must be 10 digits";
-    }
-
-    // State validation
-    if (personalDetails.state==="Select a state" ||!personalDetails.state) {
-      formErrors.state = "Please select a state";
-    }
-    if (personalDetails.city==="Select a City" || !personalDetails.city) {
-      formErrors.city = "Please select a city";
-    }
-
-    // Date of birth validation
-    if (!personalDetails.date_of_birth) {
-      formErrors.date_of_birth = "Date of birth is required";
-    }
-
-    // Email validation (basic)
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!personalDetails.email) {
-      formErrors.email = "Please enter your email address";
-    }
-    else if (!emailPattern.test(personalDetails.email)) {
-      formErrors.email = "Invalid email address";
-    }
-
-    // Pincode validation (5 to 6 digits as an example)
-    const pincodePattern = /^[0-9]{5,6}$/;
-    if (!pincodePattern.test(personalDetails.pincode)) {
-      formErrors.pincode = "Pincode must be 5 or 6 digits";
-    }
-
-  }
-  else if(currentStep===2){
-    // License number validation
-    if (!vehicleDetails.license_number.trim()) {
-      formErrors.license_number = "License number is required";
-    }
-    // License issuing state validation
-    if (!vehicleDetails.license_issue_state || vehicleDetails.license_issue_state === "Select a state") {
-      formErrors.license_issue_state = "Please select a license issue state";
-    }
-    // License expiry date validation
-    if (!vehicleDetails.license_expiry_date) {
-      formErrors.license_expiry_date = "License expiry date is required";
-    }
-    // License type validation
-    if (!vehicleDetails.license_type) {
-      formErrors.license_type = "Please select the license type";
-    }
-     // Vehicle company validation
-    if (!vehicleDetails.vehicle_company.trim()) {
-      formErrors.vehicle_company = "Vehicle company is required";
-    }
-    // Vehicle model validation
-    if (!vehicleDetails.vehicle_model.trim()) {
-      formErrors.vehicle_model = "Vehicle model is required";
-    }
-    // Vehicle registration number validation
-    if (!vehicleDetails.vehicle_registration_no.trim()) {
-      formErrors.vehicle_registration_no = "Vehicle registration number is required";
-    }
-
-  }
-
-  else if(currentStep===3){
-    // validation for experience
-      if (experienceDetails.experience==="Select Experience" || !experienceDetails.experience) {
-      formErrors.experience = "Please select experience level";
-    }
-  }
-  setErrors(formErrors);
-  return Object.keys(formErrors).length === 0;
-  };
 
   console.log("errors are",errors)
 
@@ -123,17 +37,16 @@ const VisitorForm = () => {
     vehicle_model: "", // Vehicle Model
     vehicle_year: "", // Vehicle Year
     vehicle_registration_no: "", // Vehicle Registration Number
-    vehicle_registration_document: null, // Vehicle Registration Document (File)
-    vehicle_insurance_document: null, // Vehicle Insurance Document (File)
+    vehicle_registration_document: "", // Vehicle Registration Document (File)
+    vehicle_insurance_document: "", // Vehicle Insurance Document (File)
   });
 
-
   const [documentDetails, setDocumentDetails] = useState({
-    police_check: null, // Upload National Police Check
-    children_check: null, // Working with Children Check
-    identity_proof: null, // Proof of Identity
-    address_proof: null, // Proof of Address
-    qualification_cert: null, // Qualifications Certificate
+    police_check: "", // Upload National Police Check
+    children_check: "", // Working with Children Check
+    identity_proof: "", // Proof of Identity
+    address_proof: "", // Proof of Address
+    qualification_cert: "", // Qualifications Certificate
   });
 
   const [experienceDetails, setExperienceDetails] = useState({
@@ -141,13 +54,102 @@ const VisitorForm = () => {
     available_days: "", // Available Days (optional - could be a multi-select or array of strings)
     description: "", // Describe Yourself (text input)
   });
-  
+
+// function for Validations
+const validate = () => {
+    let formErrors = {};
+  if(currentStep===1){
+
+  // First name validation
+  if (!personalDetails.first_name.trim()) {
+    formErrors.first_name = "First name is required";
+  }
+  // last name validation
+  if (!personalDetails.last_name.trim()) {
+    formErrors.last_name = "Last name is required";
+  }
+
+  // Phone number validation (basic example for 10 digits)
+  const phonePattern = /^[0-9]{10}$/;
+  if (!phonePattern.test(personalDetails.phone_number)) {
+    formErrors.phone_number = "Phone number must be 10 digits";
+  }
+
+  // State validation
+  if (personalDetails.state==="Select a state" ||!personalDetails.state) {
+    formErrors.state = "Please select a state";
+  }
+  if (personalDetails.city==="Select a City" || !personalDetails.city) {
+    formErrors.city = "Please select a city";
+  }
+
+  // Date of birth validation
+  if (!personalDetails.date_of_birth) {
+    formErrors.date_of_birth = "Date of birth is required";
+  }
+
+  // Email validation (basic)
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!personalDetails.email) {
+    formErrors.email = "Please enter your email address";
+  }
+  else if (!emailPattern.test(personalDetails.email)) {
+    formErrors.email = "Invalid email address";
+  }
+
+  // Pincode validation (5 to 6 digits as an example)
+  const pincodePattern = /^[0-9]{5,6}$/;
+  if (!pincodePattern.test(personalDetails.pincode)) {
+    formErrors.pincode = "Pincode must be 5 or 6 digits";
+  }
+
+}
+  else if(currentStep===2){
+  // License number validation
+  if (!vehicleDetails.license_number.trim()) {
+    formErrors.license_number = "License number is required";
+  }
+  // License issuing state validation
+  if (!vehicleDetails.license_issue_state || vehicleDetails.license_issue_state === "Select a state") {
+    formErrors.license_issue_state = "Please select a license issue state";
+  }
+  // License expiry date validation
+  if (!vehicleDetails.license_expiry_date) {
+    formErrors.license_expiry_date = "License expiry date is required";
+  }
+  // License type validation
+  if (!vehicleDetails.license_type) {
+    formErrors.license_type = "Please select the license type";
+  }
+   // Vehicle company validation
+  if (!vehicleDetails.vehicle_company.trim()) {
+    formErrors.vehicle_company = "Vehicle company is required";
+  }
+  // Vehicle model validation
+  if (!vehicleDetails.vehicle_model.trim()) {
+    formErrors.vehicle_model = "Vehicle model is required";
+  }
+  // Vehicle registration number validation
+  if (!vehicleDetails.vehicle_registration_no.trim()) {
+    formErrors.vehicle_registration_no = "Vehicle registration number is required";
+  }
+
+}
+
+  else if(currentStep===3){
+  // validation for experience
+    if (experienceDetails.experience==="Select Experience" || !experienceDetails.experience) {
+    formErrors.experience = "Please select experience level";
+  }
+}
+setErrors(formErrors);
+return Object.keys(formErrors).length === 0;
+};
   const formData = {
     ...personalDetails,
     ...vehicleDetails,
-    ...documentDetails,
+   // ...documentDetails,
     ...experienceDetails
-
   }
   // Function to handle personal details for Step 1
   const handlePersonalDetailChange = (e) => {
@@ -190,7 +192,7 @@ const VisitorForm = () => {
   const nextStep = () => {
     if (validate()) {
       setCurrentStep(currentStep + 1);
-      console.log("Form submitted");
+     // console.log("Form submitted");
     }
     else{
       console.log("form not submitted")
@@ -205,13 +207,16 @@ const VisitorForm = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
+      if (validate()) {
       const response = await axios.post("items/queries", formData);
+      //alert("Form submitted successfully:"
       console.log('Data posted successfully:', response.data);
+      }
     } catch (error) {
       console.error('Error posting data:', error.message);
     }
   };
-
+  console.log("formData:",formData)
   const [selectedFile, setSelectedFile] = useState(null);
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -377,20 +382,35 @@ const VisitorForm = () => {
                   onChange={handleImageChange}
                 />
               </div>
-              {/* Full name */}
-              <div className="">
+               {/* First name */}
+               <div className="">
                 <label className="block text-sm text-[#202224] font-semibold">
-                  Full Name
+                  First Name
                 </label>
                 <input
                   type="text"
-                  name="fullname"
+                  name="first_name"
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none"
                   placeholder="Enter your name"
-                  value={personalDetails.fullname}
+                  value={personalDetails.first_name}
                   onChange={handlePersonalDetailChange}
                 />
-                {errors.fullname &&  <p className="text-sm text-red-500 ml-1">{errors.fullname}</p>}
+                {errors.first_name &&  <p className="text-sm text-red-500 ml-1">{errors.first_name}</p>}
+              </div>
+               {/* Last name */}
+               <div className="">
+                <label className="block text-sm text-[#202224] font-semibold">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  name="last_name"
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none"
+                  placeholder="Enter your name"
+                  value={personalDetails.last_name}
+                  onChange={handlePersonalDetailChange}
+                />
+                {errors.last_name && <p className="text-sm text-red-500 ml-1">{errors.last_name}</p>}
               </div>
               {/* Date of birth */}
               <div className="">
@@ -525,7 +545,7 @@ const VisitorForm = () => {
             <h1 className="mt-5 text-[#202224]">
               Provide your basic information and location to get started.
             </h1>
-            <form className="mt-5 ">
+            <div className="mt-5 ">
               <h1 className="font-extrabold text-[#202224] text-xl my-5">
                 License Information
               </h1>
@@ -602,8 +622,7 @@ const VisitorForm = () => {
                   {errors.license_type &&  <p className="text-sm text-red-500 ml-1">{errors.license_type}</p>}
                 </div>
               </div>
-              {/* checkboxes */}
-
+              {/* Certificate */}
               <h1 className="mt-3 text-[#202224] font-semibold">
                 Certificate IV in Training and Assessment
               </h1>
@@ -896,7 +915,7 @@ const VisitorForm = () => {
                 </span>
                 <span>Add New Vehicle</span>
               </button>
-            </form>
+            </div>
 
             {/*Prev and Next button */}
             <div className="flex justify-end gap-10 my-10">
