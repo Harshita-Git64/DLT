@@ -20,15 +20,15 @@ import AllEmployees, { AddEmployeeForm } from "./AllEmployees";
 const AdminDashboard = () => {
   // State management
   const [activeTab, setActiveTab] = useState("Dashboard");
-  const [addEmployeeFormOpen,setAddEmployeeFormOpen]=useState(false)
-  const [addNewRoleOpen,setNewRoleOpen]=useState(false)
+  const [addEmployeeFormOpen, setAddEmployeeFormOpen] = useState(false);
+  const [addNewRoleOpen, setNewRoleOpen] = useState(false);
 
-  console.log("addEmployeeFormOpen",addEmployeeFormOpen)
+  console.log("addEmployeeFormOpen", addEmployeeFormOpen);
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
       {/* Sidebar */}
-      <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4 flex md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100 overflow-y-scroll">
+      <div className="bg-white text-neutral-1000 w-full md:w-[20%] p-4 md:flex-col justify-between fixed md:relative bottom-0 md:bottom-auto z-10 md:z-auto border-r border-solid border-neutral-100 hidden md:flex">
         <div>
           <div className="flex md:flex-col space-x-4 md:space-x-0 md:space-y-4 w-full justify-around border-b border-solid border-neutral-100 pb-4">
             <button
@@ -130,7 +130,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Main Content */}
-      <div className="w-[75%] overflow-y-scroll mb-10">
+      <div className="w-full md:w-[75%] overflow-y-scroll mb-10">
         {/* dashboard */}
         {activeTab === "Dashboard" && <Dashboard />}
         {/* other things on dashboard ----------------------------------------------------------- */}
@@ -140,23 +140,26 @@ const AdminDashboard = () => {
         {activeTab === "Bookings" && <AllBookings />}
         {activeTab === "queries" && <AdminQueries />}
         {activeTab === "Students" && <AllStudents />}
-        {activeTab === "Permissions" && 
-         (
+        {activeTab === "Permissions" && (
           <>
-          {
-            !addNewRoleOpen ? <RolesAndPermissions setNewRoleOpen = {setNewRoleOpen} /> : <AddNewRole setNewRoleOpen = {setNewRoleOpen}/>
-          }
+            {!addNewRoleOpen ? (
+              <RolesAndPermissions setNewRoleOpen={setNewRoleOpen} />
+            ) : (
+              <AddNewRole setNewRoleOpen={setNewRoleOpen} />
+            )}
           </>
-        )
-        }
+        )}
         {activeTab === "Employees" && (
           <>
-          {
-            !addEmployeeFormOpen ? <AllEmployees setAddEmployeeFormOpen = {setAddEmployeeFormOpen} /> : <AddEmployeeForm setAddEmployeeFormOpen = {setAddEmployeeFormOpen}/>
-          }
+            {!addEmployeeFormOpen ? (
+              <AllEmployees setAddEmployeeFormOpen={setAddEmployeeFormOpen} />
+            ) : (
+              <AddEmployeeForm
+                setAddEmployeeFormOpen={setAddEmployeeFormOpen}
+              />
+            )}
           </>
-        )
-       }
+        )}
       </div>
     </div>
   );
