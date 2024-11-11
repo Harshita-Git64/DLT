@@ -195,7 +195,7 @@ return Object.keys(formErrors).length === 0;
      // console.log("Form submitted");
     }
     else{
-      console.log("form not submitted")
+      console.log("Validations not match!!")
     }
   };
 

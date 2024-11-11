@@ -21,12 +21,32 @@ const QueriesFullDetailModal = ({setModalFullDetailOpen,selectedQuerytDetails}) 
       pincode:selectedQuerytDetails?.pincode,
       isInstructor: true // Set isInstructor to true
     };
+   
     try {
       const response = await axios.post("users",mappedDetails)
       if (response.status === 200) {
         console.log("User added successfully:", response.data);
-        //console.log("status updated successfully:", data.data);
-        // const data = await axios.patch(`items/queries/${selectedQuerytDetails.id}`,{status:"Accepted"})
+        const id = response.data.data.id
+        const instructorDetails = {
+          user_id: id,
+          Experience: selectedQuerytDetails?.experience,
+          License_number: selectedQuerytDetails?.license_number,
+          License_Issuing_state: selectedQuerytDetails?.license_issue_state,
+          License_expiry_date: selectedQuerytDetails?.license_expiry_date,
+          License_type: selectedQuerytDetails?.license_type,
+          Certified_in_training: selectedQuerytDetails?.training_certificate,
+          Available_days: selectedQuerytDetails?.available_days,
+          Self_description: selectedQuerytDetails?.description
+        }
+        const instructorResponse = await axios.post("items/Instructor",instructorDetails)
+        if(instructorResponse.status === 200)
+        {
+        console.log("User details sent to instructor table successfully:", instructorResponse.data);
+        }
+        // const statusResponse = await axios.patch(`items/queries/${selectedQuerytDetails.id}`,{status:"Accepted"})
+        // if(statusResponse.status === 200){
+        //   console.log("Status updated successfully");
+        // }
       }
     } catch (error) {
       console.error("Error adding user:", error);
@@ -270,7 +290,7 @@ const QueriesFullDetailModal = ({setModalFullDetailOpen,selectedQuerytDetails}) 
         </label>
         <input
           className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none text-neutral-700"
-          value={selectedQuerytDetails.experience} years
+          value={selectedQuerytDetails.experience}
           disabled
         />
       </div>
@@ -822,7 +842,7 @@ const QueriesComponent = () => {
                       <h2 className="font-bold text-lg mb-2">{first_name} {last_name}</h2>
                       <div className="text-sm text-gray-600">
                         <p className="flex w-full justify-between mb-2">
-                          <strong>Query ID:</strong> <p>{id}</p>
+                          <strong>Query ID:</strong> {id}
                         </p>
                         <p className="flex w-full justify-between mb-2">
                           <strong>Phone:</strong> {phone_number}
